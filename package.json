@@ -1,0 +1,205 @@
+{
+  "name": "code-coach-ai-agent",
+  "displayName": "FlowPilot Agent",
+  "description": "Teaching-first AI code coach for Python in VS Code",
+  "version": "1.1.4",
+  "publisher": "ChromaCraft",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Other",
+    "Education"
+  ],
+  "keywords": [
+    "python",
+    "education",
+    "learning",
+    "code explanation",
+    "teaching"
+  ],
+  "activationEvents": [
+    "onLanguage:python"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "codeCoach.explainSelection",
+        "title": "Explain Selected Code",
+        "category": "Code Coach",
+        "icon": "$(mortar-board)"
+      },
+      {
+        "command": "codeCoach.reviewSelection",
+        "title": "Review Selected Code",
+        "category": "Code Coach",
+        "icon": "$(checklist)"
+      },
+      {
+        "command": "codeCoach.explainError",
+        "title": "Explain This Error",
+        "category": "Code Coach",
+        "icon": "$(question)"
+      },
+      {
+        "command": "codeCoach.explainErrorAtPosition",
+        "title": "Explain Error at Position",
+        "category": "Code Coach"
+      },
+      {
+        "command": "codeCoach.explainAllErrorsAtPosition",
+        "title": "Explain All Errors at Position",
+        "category": "Code Coach"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "codeCoach.explainSelection",
+          "when": "resourceLangId == python && editorHasSelection",
+          "group": "codeCoach@1"
+        },
+        {
+          "command": "codeCoach.explainSelection",
+          "when": "resourceLangId == python && !editorHasSelection",
+          "group": "codeCoach@1"
+        },
+        {
+          "command": "codeCoach.reviewSelection",
+          "when": "resourceLangId == python && editorHasSelection",
+          "group": "codeCoach@2"
+        },
+        {
+          "command": "codeCoach.reviewSelection",
+          "when": "resourceLangId == python && !editorHasSelection",
+          "group": "codeCoach@2"
+        },
+        {
+          "command": "codeCoach.explainError",
+          "when": "resourceLangId == python",
+          "group": "codeCoach@3"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "codeCoach.explainSelection",
+          "when": "resourceLangId == python"
+        },
+        {
+          "command": "codeCoach.reviewSelection",
+          "when": "resourceLangId == python"
+        },
+        {
+          "command": "codeCoach.explainError",
+          "when": "resourceLangId == python"
+        },
+        {
+          "command": "codeCoach.explainErrorAtPosition",
+          "when": "false"
+        },
+        {
+          "command": "codeCoach.explainAllErrorsAtPosition",
+          "when": "false"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "codeCoach",
+          "title": "Code Coach",
+          "icon": "$(mortar-board)"
+        }
+      ]
+    },
+    "views": {
+      "codeCoach": [
+        {
+          "id": "codeCoachPanel",
+          "name": "Code Coach",
+          "type": "webview"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Code Coach",
+      "properties": {
+        "codeCoach.apiBaseUrl": {
+          "type": "string",
+          "default": "https://api.codecoach.dev",
+          "description": "Base URL for the Code Coach API service",
+          "order": 1
+        },
+        "codeCoach.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "API key for authentication with Code Coach service",
+          "order": 2
+        },
+        "codeCoach.telemetryEnabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable anonymous telemetry collection to improve the service",
+          "order": 3
+        },
+        "codeCoach.userLevel": {
+          "type": "string",
+          "enum": [
+            "beginner",
+            "intermediate"
+          ],
+          "default": "beginner",
+          "description": "Your programming experience level for tailored explanations",
+          "order": 4
+        },
+        "codeCoach.proactiveSuggestions": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable proactive suggestions when Code Coach detects confusion",
+          "order": 5
+        },
+        "codeCoach.demoMode": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable demo mode with mock responses (no API key required)",
+          "order": 6
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "package": "vsce package",
+    "build:webview": "webpack --mode production",
+    "build:webview:dev": "webpack --mode development --watch"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.90.0",
+    "@types/node": "20.x",
+    "@types/jest": "^29.5.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "eslint": "^8.57.0",
+    "jest": "^29.5.0",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.4.0",
+    "webpack": "^5.90.0",
+    "webpack-cli": "^5.1.0",
+    "ts-loader": "^9.5.0",
+    "html-webpack-plugin": "^5.6.0",
+    "css-loader": "^7.1.0",
+    "style-loader": "^4.0.0",
+    "@vscode/test-electron": "^2.3.9",
+    "fast-check": "^3.15.0"
+  },
+  "dependencies": {
+    "axios": "^1.6.0"
+  }
+}

@@ -1,0 +1,2110 @@
+/* Modern Design System Foundation */
+
+/* ===== DESIGN TOKENS ===== */
+:root {
+  /* Spacing Scale - Based on 4px base unit */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 40px;
+  --spacing-3xl: 48px;
+  
+  /* Typography Scale - Harmonious scale based on VS Code defaults */
+  --text-xs: 11px;
+  --text-sm: 12px;
+  --text-base: 13px;
+  --text-lg: 14px;
+  --text-xl: 16px;
+  --text-2xl: 18px;
+  --text-3xl: 20px;
+  
+  /* Line Heights */
+  --leading-tight: 1.25;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  
+  /* Font Weights */
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+  
+  /* Border Radius Scale */
+  --radius-none: 0;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  
+  /* Animation Timing */
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 350ms;
+  --duration-slower: 500ms;
+  
+  /* Easing Functions */
+  --ease-linear: linear;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.15);
+  --shadow-xl: 0 8px 16px rgba(0, 0, 0, 0.2);
+  
+  /* Z-Index Scale */
+  --z-base: 0;
+  --z-dropdown: 10;
+  --z-sticky: 20;
+  --z-fixed: 30;
+  --z-modal: 40;
+  --z-popover: 50;
+  --z-tooltip: 60;
+  
+  /* Container Breakpoints */
+  --breakpoint-sm: 320px;
+  --breakpoint-md: 400px;
+  --breakpoint-lg: 500px;
+  --breakpoint-xl: 600px;
+}
+
+/* ===== THEME-AWARE COLOR SYSTEM ===== */
+:root {
+  /* Primary Colors - Using VS Code native variables with comprehensive fallbacks */
+  --color-primary: var(--vscode-textLink-foreground, var(--vscode-button-background, #007acc));
+  --color-primary-hover: var(--vscode-textLink-activeForeground, var(--vscode-button-hoverBackground, #005a9e));
+  --color-primary-active: var(--vscode-button-hoverBackground, #004578);
+  
+  /* Surface Colors - Complete VS Code surface hierarchy */
+  --color-surface: var(--vscode-sideBar-background, var(--vscode-editor-background, #1e1e1e));
+  --color-surface-elevated: var(--vscode-textBlockQuote-background, var(--vscode-sideBar-background, #2d2d30));
+  --color-surface-overlay: var(--vscode-dropdown-background, var(--vscode-menu-background, #3c3c3c));
+  --color-surface-hover: var(--vscode-list-hoverBackground, var(--vscode-toolbar-hoverBackground, #2a2d2e));
+  --color-surface-active: var(--vscode-list-activeSelectionBackground, var(--vscode-button-background, #094771));
+  --color-surface-selection: var(--vscode-list-inactiveSelectionBackground, var(--vscode-selection-background, #264f78));
+  
+  /* Text Colors - Complete text hierarchy with accessibility-compliant fallbacks */
+  --color-text-primary: var(--vscode-foreground, var(--vscode-editor-foreground, #d4d4d4));
+  --color-text-secondary: var(--vscode-descriptionForeground, var(--vscode-textPreformat-foreground, #9d9d9d));
+  --color-text-muted: var(--vscode-disabledForeground, var(--vscode-textSeparator-foreground, #6a6a6a));
+  --color-text-inverse: var(--vscode-button-foreground, var(--vscode-list-activeSelectionForeground, #ffffff));
+  --color-text-link: var(--vscode-textLink-foreground, #4fc3f7);
+  --color-text-code: var(--vscode-textPreformat-foreground, var(--vscode-editor-foreground, #d4d4d4));
+  
+  /* Border Colors - Complete border system */
+  --color-border: var(--vscode-panel-border, var(--vscode-sideBar-border, #3c3c3c));
+  --color-border-light: var(--vscode-widget-border, var(--vscode-panel-border, #464647));
+  --color-border-focus: var(--vscode-focusBorder, var(--vscode-textLink-foreground, #007fd4));
+  --color-border-hover: var(--vscode-textLink-foreground, var(--vscode-button-background, #007acc));
+  --color-border-active: var(--vscode-button-hoverBackground, #1177bb);
+  --color-border-error: var(--vscode-inputValidation-errorBorder, var(--vscode-charts-red, #f14c4c));
+  --color-border-warning: var(--vscode-inputValidation-warningBorder, var(--vscode-charts-orange, #ff8c00));
+  --color-border-success: var(--vscode-charts-green, #89d185);
+  
+  /* Status Colors - Enhanced status system with VS Code semantic colors */
+  --color-success: var(--vscode-charts-green, var(--vscode-terminal-ansiGreen, #89d185));
+  --color-success-bg: var(--vscode-inputValidation-infoBorder, rgba(137, 209, 133, 0.1));
+  --color-warning: var(--vscode-charts-orange, var(--vscode-terminal-ansiYellow, #d18616));
+  --color-warning-bg: var(--vscode-inputValidation-warningBackground, rgba(209, 134, 22, 0.1));
+  --color-error: var(--vscode-charts-red, var(--vscode-terminal-ansiRed, #f85149));
+  --color-error-bg: var(--vscode-inputValidation-errorBackground, rgba(248, 81, 73, 0.1));
+  --color-info: var(--vscode-charts-blue, var(--vscode-terminal-ansiBlue, #75beff));
+  --color-info-bg: var(--vscode-inputValidation-infoBackground, rgba(117, 190, 255, 0.1));
+  
+  /* Interactive Colors - Complete button and input system */
+  --color-button-bg: var(--vscode-button-background, #0e639c);
+  --color-button-hover: var(--vscode-button-hoverBackground, #1177bb);
+  --color-button-text: var(--vscode-button-foreground, #ffffff);
+  --color-button-border: var(--vscode-button-border, transparent);
+  --color-button-secondary-bg: var(--vscode-button-secondaryBackground, transparent);
+  --color-button-secondary-hover: var(--vscode-button-secondaryHoverBackground, var(--vscode-toolbar-hoverBackground, #2a2d2e));
+  --color-button-secondary-text: var(--vscode-button-secondaryForeground, var(--vscode-foreground, #d4d4d4));
+  
+  /* Input Colors - Complete form system */
+  --color-input-bg: var(--vscode-input-background, var(--vscode-dropdown-background, #3c3c3c));
+  --color-input-border: var(--vscode-input-border, var(--vscode-dropdown-border, #3c3c3c));
+  --color-input-text: var(--vscode-input-foreground, var(--vscode-foreground, #d4d4d4));
+  --color-input-placeholder: var(--vscode-input-placeholderForeground, var(--vscode-descriptionForeground, #9d9d9d));
+  --color-input-focus-border: var(--vscode-focusBorder, #007fd4);
+  --color-input-error-border: var(--vscode-inputValidation-errorBorder, #f14c4c);
+  --color-input-warning-border: var(--vscode-inputValidation-warningBorder, #ff8c00);
+  
+  /* Scrollbar Colors */
+  --color-scrollbar-bg: var(--vscode-scrollbar-shadow, transparent);
+  --color-scrollbar-thumb: var(--vscode-scrollbarSlider-background, rgba(121, 121, 121, 0.4));
+  --color-scrollbar-thumb-hover: var(--vscode-scrollbarSlider-hoverBackground, rgba(100, 100, 100, 0.7));
+  --color-scrollbar-thumb-active: var(--vscode-scrollbarSlider-activeBackground, rgba(191, 191, 191, 0.4));
+  
+  /* Code Colors - Syntax highlighting support */
+  --color-code-bg: var(--vscode-textCodeBlock-background, var(--vscode-editor-background, #1e1e1e));
+  --color-code-border: var(--vscode-textBlockQuote-border, var(--vscode-panel-border, #3c3c3c));
+  --color-code-keyword: var(--vscode-symbolIcon-keywordForeground, #569cd6);
+  --color-code-string: var(--vscode-symbolIcon-stringForeground, #ce9178);
+  --color-code-comment: var(--vscode-symbolIcon-textForeground, #6a9955);
+  --color-code-number: var(--vscode-symbolIcon-numberForeground, #b5cea8);
+  
+  /* Shadow Colors - Elevation system */
+  --color-shadow-light: rgba(0, 0, 0, 0.05);
+  --color-shadow-medium: rgba(0, 0, 0, 0.1);
+  --color-shadow-heavy: rgba(0, 0, 0, 0.15);
+  --color-shadow-focus: rgba(0, 127, 212, 0.4);
+}
+
+/* ===== AUTOMATIC THEME ADAPTATION ===== */
+/* Enhanced theme detection and adaptation system */
+
+/* Light Theme Overrides - Automatically applied when VS Code is in light mode */
+[data-vscode-theme-kind="vscode-light"],
+[data-vscode-theme-name*="light" i],
+body.theme-light,
+body.prefers-light {
+  /* Light theme specific overrides for better contrast */
+  --color-shadow-light: rgba(0, 0, 0, 0.1);
+  --color-shadow-medium: rgba(0, 0, 0, 0.15);
+  --color-shadow-heavy: rgba(0, 0, 0, 0.2);
+  --color-shadow-focus: rgba(0, 127, 212, 0.3);
+  
+  /* Enhanced light theme color overrides */
+  --color-text-secondary: var(--vscode-descriptionForeground, #6c6c6c);
+  --color-text-muted: var(--vscode-disabledForeground, #8c8c8c);
+  --color-border: var(--vscode-panel-border, #d4d4d4);
+  --color-border-light: var(--vscode-widget-border, #c8c8c8);
+  
+  /* Light theme button adjustments */
+  --color-button-secondary-bg: var(--vscode-button-secondaryBackground, #f8f8f8);
+  --color-button-secondary-hover: var(--vscode-button-secondaryHoverBackground, #e8e8e8);
+  
+  /* Light theme surface adjustments */
+  --color-surface-elevated: var(--vscode-textBlockQuote-background, #f8f8f8);
+  --color-surface-hover: var(--vscode-list-hoverBackground, #f0f0f0);
+}
+
+/* Dark Theme Overrides - Automatically applied when VS Code is in dark mode */
+[data-vscode-theme-kind="vscode-dark"],
+[data-vscode-theme-name*="dark" i],
+body.theme-dark,
+body.prefers-dark {
+  /* Dark theme specific overrides for better contrast */
+  --color-shadow-light: rgba(0, 0, 0, 0.2);
+  --color-shadow-medium: rgba(0, 0, 0, 0.3);
+  --color-shadow-heavy: rgba(0, 0, 0, 0.4);
+  --color-shadow-focus: rgba(0, 127, 212, 0.5);
+  
+  /* Enhanced dark theme color overrides */
+  --color-text-secondary: var(--vscode-descriptionForeground, #9d9d9d);
+  --color-text-muted: var(--vscode-disabledForeground, #6a6a6a);
+  --color-border: var(--vscode-panel-border, #3c3c3c);
+  --color-border-light: var(--vscode-widget-border, #464647);
+  
+  /* Dark theme surface adjustments */
+  --color-surface-elevated: var(--vscode-textBlockQuote-background, #2d2d30);
+  --color-surface-hover: var(--vscode-list-hoverBackground, #2a2d2e);
+}
+
+/* High Contrast Theme Support */
+[data-vscode-theme-kind="vscode-high-contrast"],
+[data-vscode-theme-name*="high-contrast" i],
+body.theme-high-contrast,
+body.high-contrast-preference {
+  /* High contrast overrides for accessibility */
+  --color-border: var(--vscode-contrastBorder, #6fc3df);
+  --color-border-focus: var(--vscode-contrastActiveBorder, #f38518);
+  --color-shadow-light: transparent;
+  --color-shadow-medium: transparent;
+  --color-shadow-heavy: transparent;
+  --color-shadow-focus: transparent;
+  
+  /* High contrast text improvements */
+  --color-text-primary: var(--vscode-foreground, #ffffff);
+  --color-text-secondary: var(--vscode-descriptionForeground, #ffffff);
+  --color-text-muted: var(--vscode-disabledForeground, #cccccc);
+  
+  /* High contrast borders */
+  --color-border-light: var(--vscode-contrastBorder, #6fc3df);
+  --color-border-hover: var(--vscode-contrastActiveBorder, #f38518);
+  
+  /* Remove subtle effects that may reduce contrast */
+  filter: contrast(1.2);
+}
+
+/* Theme-specific component adjustments */
+body.theme-light .modern-card {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+body.theme-dark .modern-card {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+body.theme-high-contrast .modern-card {
+  box-shadow: none;
+  border-width: 2px;
+}
+
+body.theme-high-contrast .modern-button {
+  border-width: 2px;
+  font-weight: var(--font-semibold);
+}
+
+/* Automatic theme adaptation based on system preferences */
+@media (prefers-color-scheme: light) {
+  :root:not([data-vscode-theme-kind]) {
+    /* Fallback light theme when VS Code theme is not detected */
+    --color-surface: #ffffff;
+    --color-text-primary: #000000;
+    --color-border: #e5e5e5;
+    --color-primary: #0066cc;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-vscode-theme-kind]) {
+    /* Fallback dark theme when VS Code theme is not detected */
+    --color-surface: #1e1e1e;
+    --color-text-primary: #ffffff;
+    --color-border: #3c3c3c;
+    --color-primary: #007acc;
+  }
+}
+
+/* ===== COLOR CONTRAST COMPLIANCE ===== */
+/* Ensure minimum 4.5:1 contrast ratio for all text elements */
+
+/* Enhanced contrast for secondary text */
+.modern-text--secondary {
+  color: var(--color-text-secondary);
+  /* Ensure minimum contrast - fallback to higher contrast if needed */
+  filter: contrast(1.1);
+}
+
+.modern-text--muted {
+  color: var(--color-text-muted);
+  /* Ensure readability for muted text */
+  filter: contrast(1.2);
+}
+
+/* Button contrast compliance */
+.modern-button--primary {
+  background: var(--color-button-bg);
+  color: var(--color-button-text);
+  /* Ensure button text has sufficient contrast */
+  text-shadow: 0 0 0 transparent;
+}
+
+.modern-button--secondary {
+  background: var(--color-button-secondary-bg);
+  color: var(--color-button-secondary-text);
+  border-color: var(--color-border);
+  /* Ensure secondary button has visible border */
+  border-width: 1px;
+  border-style: solid;
+}
+
+/* Link contrast compliance */
+.modern-text--primary-color,
+a {
+  color: var(--color-text-link);
+  /* Ensure links are distinguishable and accessible */
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  transition: text-decoration-color var(--duration-fast) var(--ease-out);
+}
+
+.modern-text--primary-color:hover,
+a:hover {
+  text-decoration-color: currentColor;
+}
+
+/* Focus indicator contrast compliance */
+.modern-focus,
+.modern-button:focus-visible,
+.modern-card--interactive:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+  /* Ensure focus indicators are always visible */
+  box-shadow: 0 0 0 1px var(--color-surface), 0 0 0 3px var(--color-border-focus);
+}
+
+/* Status color contrast compliance */
+.status-success { color: var(--color-success); filter: contrast(1.1); }
+.status-warning { color: var(--color-warning); filter: contrast(1.1); }
+.status-error { color: var(--color-error); filter: contrast(1.1); }
+.status-info { color: var(--color-info); filter: contrast(1.1); }
+
+/* Low contrast fix class for elements that fail contrast validation */
+.low-contrast-fix {
+  /* Automatically applied by JavaScript for low contrast elements */
+  filter: contrast(1.3) brightness(1.1);
+  font-weight: var(--font-medium);
+}
+
+/* Enhanced contrast for specific theme combinations */
+body.theme-light .low-contrast-fix {
+  filter: contrast(1.2) brightness(0.9);
+}
+
+body.theme-dark .low-contrast-fix {
+  filter: contrast(1.4) brightness(1.2);
+}
+
+body.theme-high-contrast .low-contrast-fix {
+  filter: none; /* High contrast theme already has sufficient contrast */
+  font-weight: var(--font-bold);
+}
+
+/* Ensure minimum contrast for interactive elements */
+.modern-button,
+.feedback-btn,
+.modern-input,
+.modern-checkbox,
+.modern-radio {
+  /* Minimum contrast enforcement */
+  position: relative;
+}
+
+.modern-button::before,
+.feedback-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: currentColor;
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-out);
+  pointer-events: none;
+}
+
+/* Contrast validation for different background combinations */
+.modern-card .modern-text--secondary,
+.modern-card .modern-text--muted {
+  /* Ensure text on card backgrounds maintains contrast */
+  color: var(--color-text-primary);
+  opacity: 0.8;
+}
+
+.modern-card--error .modern-text--secondary,
+.modern-card--warning .modern-text--secondary,
+.modern-card--success .modern-text--secondary,
+.modern-card--info .modern-text--secondary {
+  /* Ensure text on colored card backgrounds maintains contrast */
+  color: var(--color-text-primary);
+  opacity: 0.9;
+  font-weight: var(--font-medium);
+}
+
+/* Code block contrast compliance */
+.modern-card--code,
+.line-code,
+.improvement-code {
+  /* Ensure code has sufficient contrast */
+  color: var(--color-text-code);
+  background: var(--color-code-bg);
+  border: 1px solid var(--color-code-border);
+  /* Add subtle text shadow for better readability */
+  text-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+body.theme-light .modern-card--code,
+body.theme-light .line-code,
+body.theme-light .improvement-code {
+  text-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+}
+
+/* Input contrast compliance */
+.modern-input,
+.modern-textarea,
+.modern-select {
+  /* Ensure form inputs have sufficient contrast */
+  color: var(--color-input-text);
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-input-border);
+}
+
+.modern-input::placeholder,
+.modern-textarea::placeholder {
+  /* Ensure placeholder text meets contrast requirements */
+  color: var(--color-input-placeholder);
+  opacity: 1; /* Override browser default opacity */
+}
+
+/* Feedback section contrast compliance */
+.feedback-section {
+  /* Ensure feedback section has proper contrast */
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+}
+
+.feedback-btn.helpful-btn {
+  /* Ensure positive feedback button has sufficient contrast */
+  border-color: var(--color-success);
+  color: var(--color-success);
+  background: transparent;
+}
+
+.feedback-btn.not-helpful-btn {
+  /* Ensure negative feedback button has sufficient contrast */
+  border-color: var(--color-error);
+  color: var(--color-error);
+  background: transparent;
+}
+
+.feedback-btn.helpful-btn:hover {
+  background: var(--color-success);
+  color: var(--color-text-inverse);
+}
+
+.feedback-btn.not-helpful-btn:hover {
+  background: var(--color-error);
+  color: var(--color-text-inverse);
+}
+
+/* Automatic contrast adjustment for dynamic content */
+.dynamic-content {
+  /* Applied to content that may change colors dynamically */
+  transition: color var(--duration-fast) var(--ease-out),
+              background-color var(--duration-fast) var(--ease-out);
+}
+
+/* Contrast compliance for different VS Code themes */
+body[data-vscode-theme-name*="solarized"] .modern-text--secondary,
+body[data-vscode-theme-name*="monokai"] .modern-text--secondary,
+body[data-vscode-theme-name*="tomorrow"] .modern-text--secondary {
+  /* Special handling for popular themes that may have contrast issues */
+  filter: contrast(1.3);
+  font-weight: var(--font-medium);
+}
+
+/* ===== BASE COMPONENT STYLES ===== */
+
+/* Container System */
+.modern-container {
+  container-type: inline-size;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+}
+
+/* Grid System */
+.modern-grid {
+  display: grid;
+  gap: var(--spacing-md);
+  grid-template-columns: 1fr;
+}
+
+@container (min-width: 300px) {
+  .modern-grid {
+    gap: var(--spacing-lg);
+  }
+}
+
+@container (min-width: 400px) {
+  .modern-grid--two-col {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Card Component Base */
+.modern-card {
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
+  transition: all var(--duration-normal) var(--ease-out);
+  position: relative;
+  overflow: hidden;
+  /* Ensure proper contrast for card content */
+  color: var(--color-text-primary);
+}
+
+.modern-card:hover {
+  border-color: var(--color-border-hover);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+  background: var(--color-surface-hover);
+}
+
+.modern-card--interactive {
+  cursor: pointer;
+}
+
+.modern-card--interactive:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+.modern-card--elevated {
+  box-shadow: var(--shadow-sm);
+  background: var(--color-surface-overlay);
+}
+
+.modern-card--elevated:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+/* Card Variants for Different Content Types */
+.modern-card--summary {
+  border-left: 4px solid var(--color-primary);
+  background: var(--color-surface-elevated);
+}
+
+.modern-card--code {
+  background: var(--color-code-bg);
+  border: 1px solid var(--color-code-border);
+  font-family: var(--vscode-editor-font-family, 'Consolas', 'Courier New', monospace);
+}
+
+.modern-card--error {
+  border-left: 4px solid var(--color-error);
+  background: var(--color-error-bg);
+}
+
+.modern-card--warning {
+  border-left: 4px solid var(--color-warning);
+  background: var(--color-warning-bg);
+}
+
+.modern-card--success {
+  border-left: 4px solid var(--color-success);
+  background: var(--color-success-bg);
+}
+
+.modern-card--info {
+  border-left: 4px solid var(--color-info);
+  background: var(--color-info-bg);
+}
+
+/* Typography System */
+.modern-text {
+  color: var(--color-text-primary);
+  line-height: var(--leading-normal);
+  margin: 0;
+}
+
+.modern-text--xs { font-size: var(--text-xs); }
+.modern-text--sm { font-size: var(--text-sm); }
+.modern-text--base { font-size: var(--text-base); }
+.modern-text--lg { font-size: var(--text-lg); }
+.modern-text--xl { font-size: var(--text-xl); }
+.modern-text--2xl { font-size: var(--text-2xl); }
+.modern-text--3xl { font-size: var(--text-3xl); }
+
+.modern-text--secondary { color: var(--color-text-secondary); }
+.modern-text--muted { color: var(--color-text-muted); }
+.modern-text--primary-color { color: var(--color-primary); }
+
+.modern-text--medium { font-weight: var(--font-medium); }
+.modern-text--semibold { font-weight: var(--font-semibold); }
+.modern-text--bold { font-weight: var(--font-bold); }
+
+.modern-text--tight { line-height: var(--leading-tight); }
+.modern-text--relaxed { line-height: var(--leading-relaxed); }
+
+/* Responsive Typography */
+.modern-text--adaptive {
+  font-size: clamp(var(--text-sm), 2.5vw, var(--text-base));
+}
+
+.modern-heading--adaptive {
+  font-size: clamp(var(--text-base), 3vw, var(--text-lg));
+  font-weight: var(--font-semibold);
+  line-height: var(--leading-tight);
+}
+
+/* Button System */
+.modern-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 1px solid var(--color-button-border);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  line-height: 1;
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+  text-decoration: none;
+  min-height: 32px;
+  min-width: 44px; /* Accessibility: minimum touch target */
+  position: relative;
+  /* Ensure button text is always readable */
+  text-shadow: none;
+}
+
+.modern-button:hover {
+  transform: translateY(-1px);
+}
+
+.modern-button:active {
+  transform: translateY(0);
+  transition-duration: 50ms;
+}
+
+.modern-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.modern-button--primary {
+  background: var(--color-button-bg);
+  color: var(--color-button-text);
+  border-color: var(--color-button-bg);
+}
+
+.modern-button--primary:hover:not(:disabled) {
+  background: var(--color-button-hover);
+  border-color: var(--color-button-hover);
+  box-shadow: 0 2px 8px var(--color-shadow-medium);
+}
+
+.modern-button--secondary {
+  background: var(--color-button-secondary-bg);
+  color: var(--color-button-secondary-text);
+  border-color: var(--color-border);
+}
+
+.modern-button--secondary:hover:not(:disabled) {
+  background: var(--color-button-secondary-hover);
+  border-color: var(--color-border-hover);
+  box-shadow: 0 1px 4px var(--color-shadow-light);
+}
+
+.modern-button--ghost {
+  background: transparent;
+  color: var(--color-text-primary);
+  border-color: transparent;
+}
+
+.modern-button--ghost:hover:not(:disabled) {
+  background: var(--color-surface-hover);
+  color: var(--color-primary);
+}
+
+/* Button Sizes */
+.modern-button--small {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--text-xs);
+  min-height: 28px;
+  min-width: 40px;
+}
+
+.modern-button--large {
+  padding: var(--spacing-md) var(--spacing-lg);
+  font-size: var(--text-base);
+  min-height: 40px;
+  min-width: 48px;
+}
+
+/* Status Button Variants */
+.modern-button--success {
+  background: var(--color-success);
+  color: var(--color-text-inverse);
+  border-color: var(--color-success);
+}
+
+.modern-button--success:hover:not(:disabled) {
+  background: var(--color-success);
+  filter: brightness(1.1);
+}
+
+.modern-button--warning {
+  background: var(--color-warning);
+  color: var(--color-text-inverse);
+  border-color: var(--color-warning);
+}
+
+.modern-button--warning:hover:not(:disabled) {
+  background: var(--color-warning);
+  filter: brightness(1.1);
+}
+
+.modern-button--error {
+  background: var(--color-error);
+  color: var(--color-text-inverse);
+  border-color: var(--color-error);
+}
+
+.modern-button--error:hover:not(:disabled) {
+  background: var(--color-error);
+  filter: brightness(1.1);
+}
+
+/* ===== FORM AND INPUT SYSTEM ===== */
+
+/* Input Base Styles */
+.modern-input {
+  display: block;
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-md);
+  background: var(--color-input-bg);
+  color: var(--color-input-text);
+  font-size: var(--text-sm);
+  font-family: inherit;
+  line-height: 1.5;
+  transition: all var(--duration-fast) var(--ease-out);
+  min-height: 32px;
+}
+
+.modern-input::placeholder {
+  color: var(--color-input-placeholder);
+  opacity: 1;
+}
+
+.modern-input:focus {
+  outline: none;
+  border-color: var(--color-input-focus-border);
+  box-shadow: 0 0 0 2px var(--color-shadow-focus);
+}
+
+.modern-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: var(--color-surface);
+}
+
+/* Input States */
+.modern-input--error {
+  border-color: var(--color-input-error-border);
+}
+
+.modern-input--error:focus {
+  border-color: var(--color-input-error-border);
+  box-shadow: 0 0 0 2px rgba(241, 76, 76, 0.2);
+}
+
+.modern-input--warning {
+  border-color: var(--color-input-warning-border);
+}
+
+.modern-input--warning:focus {
+  border-color: var(--color-input-warning-border);
+  box-shadow: 0 0 0 2px rgba(255, 140, 0, 0.2);
+}
+
+.modern-input--success {
+  border-color: var(--color-success);
+}
+
+.modern-input--success:focus {
+  border-color: var(--color-success);
+  box-shadow: 0 0 0 2px rgba(137, 209, 133, 0.2);
+}
+
+/* Textarea Styles */
+.modern-textarea {
+  resize: vertical;
+  min-height: 80px;
+  font-family: inherit;
+}
+
+/* Select Styles */
+.modern-select {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right var(--spacing-sm) center;
+  background-repeat: no-repeat;
+  background-size: 16px 16px;
+  padding-right: var(--spacing-xl);
+  cursor: pointer;
+}
+
+/* Form Group Styles */
+.modern-form-group {
+  margin-bottom: var(--spacing-lg);
+}
+
+.modern-label {
+  display: block;
+  margin-bottom: var(--spacing-xs);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--color-text-primary);
+}
+
+.modern-label--required::after {
+  content: " *";
+  color: var(--color-error);
+}
+
+.modern-help-text {
+  margin-top: var(--spacing-xs);
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+}
+
+.modern-error-text {
+  margin-top: var(--spacing-xs);
+  font-size: var(--text-xs);
+  color: var(--color-error);
+}
+
+/* Checkbox and Radio Styles */
+.modern-checkbox,
+.modern-radio {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--color-input-border);
+  background: var(--color-input-bg);
+  cursor: pointer;
+  position: relative;
+  margin-right: var(--spacing-sm);
+  flex-shrink: 0;
+}
+
+.modern-checkbox {
+  border-radius: var(--radius-sm);
+}
+
+.modern-radio {
+  border-radius: 50%;
+}
+
+.modern-checkbox:checked,
+.modern-radio:checked {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.modern-checkbox:checked::after {
+  content: "✓";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--color-text-inverse);
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.modern-radio:checked::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-text-inverse);
+}
+
+.modern-checkbox:focus,
+.modern-radio:focus {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+/* Form Control Group */
+.modern-control-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--spacing-sm);
+}
+
+.modern-control-label {
+  margin: 0;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Animation Classes */
+.modern-fade-in {
+  animation: modernFadeIn var(--duration-normal) var(--ease-out);
+}
+
+.modern-slide-up {
+  animation: modernSlideUp var(--duration-normal) var(--ease-out);
+}
+
+.modern-scale-in {
+  animation: modernScaleIn var(--duration-fast) var(--ease-bounce);
+}
+
+@keyframes modernFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(var(--spacing-sm));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes modernSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(var(--spacing-md));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes modernScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Loading States */
+.modern-skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-surface-elevated) 25%,
+    var(--color-surface) 50%,
+    var(--color-surface-elevated) 75%
+  );
+  background-size: 200% 100%;
+  animation: modernShimmer 1.5s infinite;
+  border-radius: var(--radius-sm);
+}
+
+@keyframes modernShimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Accessibility: Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .modern-card,
+  .modern-button,
+  .modern-skeleton {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .modern-card:hover,
+  .modern-button:hover {
+    transform: none !important;
+  }
+}
+
+/* ===== RESPONSIVE BREAKPOINT SYSTEM ===== */
+
+/* Container Queries for Modern Components */
+@container (min-width: 320px) {
+  .modern-container {
+    padding: 0 var(--spacing-lg);
+  }
+  
+  .modern-card {
+    padding: var(--spacing-xl);
+  }
+}
+
+@container (min-width: 400px) {
+  .modern-grid {
+    gap: var(--spacing-xl);
+  }
+  
+  .modern-button {
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: var(--text-base);
+  }
+}
+
+@container (min-width: 500px) {
+  .modern-container {
+    padding: 0 var(--spacing-xl);
+  }
+}
+
+/* Legacy Media Queries for Fallback */
+@media (max-width: 320px) {
+  .modern-container {
+    padding: 0 var(--spacing-sm);
+  }
+  
+  .modern-card {
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .modern-button {
+    padding: var(--spacing-sm);
+    font-size: var(--text-xs);
+  }
+}
+
+/* ===== UTILITY CLASSES ===== */
+
+/* Spacing Utilities */
+.modern-p-xs { padding: var(--spacing-xs); }
+.modern-p-sm { padding: var(--spacing-sm); }
+.modern-p-md { padding: var(--spacing-md); }
+.modern-p-lg { padding: var(--spacing-lg); }
+.modern-p-xl { padding: var(--spacing-xl); }
+
+.modern-m-xs { margin: var(--spacing-xs); }
+.modern-m-sm { margin: var(--spacing-sm); }
+.modern-m-md { margin: var(--spacing-md); }
+.modern-m-lg { margin: var(--spacing-lg); }
+.modern-m-xl { margin: var(--spacing-xl); }
+
+.modern-mb-xs { margin-bottom: var(--spacing-xs); }
+.modern-mb-sm { margin-bottom: var(--spacing-sm); }
+.modern-mb-md { margin-bottom: var(--spacing-md); }
+.modern-mb-lg { margin: var(--spacing-lg); }
+.modern-mb-xl { margin-bottom: var(--spacing-xl); }
+
+/* Display Utilities */
+.modern-hidden { display: none !important; }
+.modern-block { display: block; }
+.modern-flex { display: flex; }
+.modern-grid { display: grid; }
+
+/* Flex Utilities */
+.modern-flex-col { flex-direction: column; }
+.modern-flex-row { flex-direction: row; }
+.modern-items-center { align-items: center; }
+.modern-justify-center { justify-content: center; }
+.modern-justify-between { justify-content: space-between; }
+.modern-gap-sm { gap: var(--spacing-sm); }
+.modern-gap-md { gap: var(--spacing-md); }
+.modern-gap-lg { gap: var(--spacing-lg); }
+
+/* Text Utilities */
+.modern-text-center { text-align: center; }
+.modern-text-left { text-align: left; }
+.modern-text-right { text-align: right; }
+
+/* Code Coach Panel Styles - Updated with Modern Theme Integration */
+
+.container {
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-surface);
+    color: var(--color-text-primary);
+}
+
+.header {
+    background: var(--color-surface);
+    padding: var(--spacing-lg);
+    border-bottom: 1px solid var(--color-border);
+    text-align: center;
+}
+
+.title {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-semibold);
+    margin-bottom: var(--spacing-sm);
+    color: var(--color-text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+}
+
+.icon {
+    font-size: var(--text-3xl);
+}
+
+.subtitle {
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    margin: 0;
+    font-style: italic;
+}
+
+.content {
+    flex: 1;
+    padding: var(--spacing-lg);
+    overflow-y: auto;
+    /* Custom scrollbar styling */
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-scrollbar-thumb) var(--color-scrollbar-bg);
+}
+
+.content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.content::-webkit-scrollbar-track {
+    background: var(--color-scrollbar-bg);
+}
+
+.content::-webkit-scrollbar-thumb {
+    background: var(--color-scrollbar-thumb);
+    border-radius: var(--radius-sm);
+}
+
+.content::-webkit-scrollbar-thumb:hover {
+    background: var(--color-scrollbar-thumb-hover);
+}
+
+/* Welcome Message */
+.welcome-message {
+    text-align: center;
+    padding: var(--spacing-2xl) var(--spacing-lg);
+    color: var(--color-text-primary);
+}
+
+.welcome-icon {
+    font-size: 48px;
+    margin-bottom: var(--spacing-lg);
+}
+
+.welcome-message h2 {
+    font-size: var(--text-xl);
+    font-weight: var(--font-semibold);
+    margin-bottom: var(--spacing-md);
+    color: var(--color-primary);
+}
+
+.welcome-message p {
+    margin-bottom: var(--spacing-md);
+    color: var(--color-text-secondary);
+    line-height: var(--leading-normal);
+}
+
+.command-list {
+    text-align: left;
+    display: inline-block;
+    margin: var(--spacing-lg) 0;
+}
+
+.command-list li {
+    margin-bottom: var(--spacing-sm);
+    color: var(--color-text-primary);
+}
+
+.command-list strong {
+    color: var(--color-primary);
+    font-weight: var(--font-medium);
+}
+
+.tip {
+    font-size: var(--text-xs);
+    color: var(--color-text-secondary);
+    font-style: italic;
+    margin-top: var(--spacing-lg);
+}
+
+/* Context Header */
+.context-header {
+    margin-bottom: var(--spacing-xl);
+    padding: var(--spacing-md);
+    background: var(--color-surface-elevated);
+    border-radius: var(--radius-md);
+    border-left: 4px solid var(--color-primary);
+}
+
+.operation-type {
+    font-size: var(--text-lg);
+    font-weight: var(--font-semibold);
+    color: var(--color-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.file-info {
+    font-size: var(--text-xs);
+    color: var(--color-text-secondary);
+    font-family: var(--vscode-editor-font-family, 'Consolas', 'Courier New', monospace);
+}
+
+/* Main Content Sections */
+.main-content section {
+    margin-bottom: var(--spacing-xl);
+}
+
+.main-content h3 {
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+    margin-bottom: var(--spacing-md);
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px solid var(--color-border);
+}
+
+/* Summary Section */
+.summary-content {
+    padding: var(--spacing-md);
+    background: var(--color-surface-elevated);
+    border-radius: var(--radius-md);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text-primary);
+}
+
+/* Line-by-Line Section */
+.line-explanations {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.line-explanation {
+    padding: var(--spacing-md);
+    background: var(--color-surface-elevated);
+    border-radius: var(--radius-md);
+    border-left: 3px solid var(--color-info);
+}
+
+.line-number {
+    font-size: var(--text-xs);
+    color: var(--color-text-secondary);
+    font-weight: var(--font-semibold);
+    margin-bottom: var(--spacing-xs);
+}
+
+.line-code {
+    font-family: var(--vscode-editor-font-family, 'Consolas', 'Courier New', monospace);
+    font-size: var(--vscode-editor-font-size, var(--text-sm));
+    background: var(--color-code-bg);
+    color: var(--color-text-code);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--spacing-sm);
+    border: 1px solid var(--color-code-border);
+    white-space: pre-wrap;
+    overflow-x: auto;
+}
+
+.line-text {
+    color: var(--color-text-primary);
+    line-height: var(--leading-normal);
+}
+
+/* Error Analysis Sections */
+.error-meaning-content,
+.error-context-content,
+.error-fix-content {
+    padding: var(--spacing-md);
+    background: var(--color-surface-elevated);
+    border-radius: var(--radius-md);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text-primary);
+}
+
+.error-meaning-section {
+    border-left: 4px solid var(--color-error);
+}
+
+.error-context-section {
+    border-left: 4px solid var(--color-warning);
+}
+
+.error-fix-section {
+    border-left: 4px solid var(--color-success);
+}
+
+/* Review Sections */
+.good-points-content,
+.improvements-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.good-point,
+.improvement-point {
+    padding: var(--spacing-md);
+    background: var(--color-surface-elevated);
+    border-radius: var(--radius-md);
+    line-height: var(--leading-normal);
+}
+
+.good-point {
+    border-left: 3px solid var(--color-success);
+}
+
+.improvement-point {
+    border-left: 3px solid var(--color-info);
+}
+
+.improvement-item {
+    margin-bottom: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: var(--color-surface-elevated);
+    border-radius: var(--radius-md);
+    border-left: 3px solid var(--color-info);
+}
+
+.improvement-description {
+    font-weight: var(--font-semibold);
+    margin-bottom: var(--spacing-sm);
+    color: var(--color-primary);
+}
+
+.improvement-code {
+    font-family: var(--vscode-editor-font-family, 'Consolas', 'Courier New', monospace);
+    font-size: var(--vscode-editor-font-size, var(--text-sm));
+    background: var(--color-code-bg);
+    color: var(--color-text-code);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-sm);
+    margin: var(--spacing-sm) 0;
+    border: 1px solid var(--color-code-border);
+    white-space: pre-wrap;
+    overflow-x: auto;
+}
+
+.improvement-reasoning {
+    color: var(--color-text-primary);
+    font-style: italic;
+    margin-top: var(--spacing-sm);
+    line-height: var(--leading-normal);
+}
+
+/* Common Sections */
+.pitfalls-content,
+.try-it-content,
+.related-concepts-content {
+    padding: var(--spacing-md);
+    background: var(--color-surface-elevated);
+    border-radius: var(--radius-md);
+    line-height: var(--leading-relaxed);
+}
+
+.pitfalls-section {
+    border-left: 4px solid var(--color-warning);
+}
+
+.try-it-section {
+    border-left: 4px solid var(--color-info);
+}
+
+.related-concepts-section {
+    border-left: 4px solid var(--color-info);
+}
+
+.pitfalls-content ul,
+.related-concepts-content ul {
+    margin: 0;
+    padding-left: var(--spacing-lg);
+}
+
+.pitfalls-content li,
+.related-concepts-content li {
+    margin-bottom: var(--spacing-sm);
+    color: var(--color-text-primary);
+}
+
+/* Feedback Section */
+.feedback-section {
+    margin-top: var(--spacing-2xl);
+    padding: var(--spacing-lg);
+    background: var(--color-surface);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+}
+
+.feedback-section h3 {
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+    margin-bottom: var(--spacing-md);
+    color: var(--color-primary);
+    text-align: center;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.feedback-controls {
+    display: flex;
+    gap: var(--spacing-md);
+    justify-content: center;
+    margin-bottom: var(--spacing-md);
+}
+
+.feedback-btn {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-button-secondary-bg);
+    color: var(--color-button-secondary-text);
+    cursor: pointer;
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    transition: all var(--duration-fast) var(--ease-out);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    min-height: 36px;
+    min-width: 44px;
+}
+
+.feedback-btn:hover {
+    background: var(--color-button-secondary-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+.feedback-btn:active {
+    transform: translateY(0);
+}
+
+.helpful-btn {
+    border-color: var(--color-success);
+    color: var(--color-success);
+}
+
+.helpful-btn:hover {
+    background: var(--color-success);
+    color: var(--color-text-inverse);
+    border-color: var(--color-success);
+}
+
+.not-helpful-btn {
+    border-color: var(--color-error);
+    color: var(--color-error);
+}
+
+.not-helpful-btn:hover {
+    background: var(--color-error);
+    color: var(--color-text-inverse);
+    border-color: var(--color-error);
+}
+
+.feedback-comment {
+    margin-top: var(--spacing-md);
+}
+
+.feedback-comment textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: var(--spacing-md);
+    border: 1px solid var(--color-input-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-input-bg);
+    color: var(--color-input-text);
+    font-family: inherit;
+    font-size: var(--text-sm);
+    resize: vertical;
+    margin-bottom: var(--spacing-md);
+    transition: border-color var(--duration-fast) var(--ease-out);
+}
+
+.feedback-comment textarea::placeholder {
+    color: var(--color-input-placeholder);
+}
+
+.feedback-comment textarea:focus {
+    outline: none;
+    border-color: var(--color-input-focus-border);
+    box-shadow: 0 0 0 2px var(--color-shadow-focus);
+}
+
+.feedback-comment-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    justify-content: flex-end;
+}
+
+.submit-feedback-btn,
+.cancel-feedback-btn {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: var(--text-xs);
+    font-weight: var(--font-medium);
+    transition: all var(--duration-fast) var(--ease-out);
+    min-height: 32px;
+}
+
+.submit-feedback-btn {
+    background: var(--color-button-bg);
+    color: var(--color-button-text);
+    border-color: var(--color-button-bg);
+}
+
+.submit-feedback-btn:hover {
+    background: var(--color-button-hover);
+    border-color: var(--color-button-hover);
+}
+
+.cancel-feedback-btn {
+    background: var(--color-button-secondary-bg);
+    color: var(--color-button-secondary-text);
+    border-color: var(--color-border);
+}
+
+.cancel-feedback-btn:hover {
+    background: var(--color-button-secondary-hover);
+    border-color: var(--color-border-hover);
+}
+
+.feedback-thanks {
+    text-align: center;
+    padding: var(--spacing-md);
+    background: var(--color-success-bg);
+    border-radius: var(--radius-md);
+    border-left: 4px solid var(--color-success);
+}
+
+.thanks-message {
+    color: var(--color-success);
+    font-weight: var(--font-medium);
+}
+
+/* Utility Classes */
+.hidden {
+    display: none !important;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.mb-16 {
+    margin-bottom: var(--spacing-md);
+}
+
+.mt-16 {
+    margin-top: var(--spacing-md);
+}
+
+/* ===== FOCUS MANAGEMENT AND ACCESSIBILITY ===== */
+
+/* Enhanced Focus Indicators */
+.modern-focus,
+.modern-button:focus-visible,
+.modern-card--interactive:focus-visible,
+.modern-input:focus-visible,
+.modern-checkbox:focus-visible,
+.modern-radio:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+button:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+  /* Ensure focus indicators are always visible with high contrast */
+  box-shadow: 0 0 0 1px var(--color-surface), 0 0 0 3px var(--color-border-focus);
+}
+
+/* Remove default focus styles to use our enhanced ones */
+*:focus {
+  outline: none;
+}
+
+/* Keyboard Navigation Support */
+.modern-skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: var(--color-button-bg);
+  color: var(--color-button-text);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  font-weight: var(--font-medium);
+  z-index: var(--z-tooltip);
+  transition: top var(--duration-fast) var(--ease-out);
+}
+
+.modern-skip-link:focus {
+  top: 6px;
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .modern-card {
+    border-width: 2px;
+  }
+  
+  .modern-button {
+    border-width: 2px;
+  }
+  
+  .modern-input {
+    border-width: 2px;
+  }
+  
+  /* Increase shadow contrast */
+  :root {
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* Screen Reader Support */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.sr-only-focusable:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: inherit;
+  margin: inherit;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/* Touch Target Accessibility */
+@media (pointer: coarse) {
+  .modern-button {
+    min-height: 44px;
+    min-width: 44px;
+    padding: var(--spacing-md) var(--spacing-lg);
+  }
+  
+  .modern-checkbox,
+  .modern-radio {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .feedback-btn {
+    min-height: 44px;
+    padding: var(--spacing-md) var(--spacing-lg);
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .modern-card:hover,
+  .modern-button:hover,
+  .feedback-btn:hover {
+    transform: none !important;
+  }
+  
+  .modern-skeleton {
+    animation: none !important;
+    background: var(--color-surface-elevated) !important;
+  }
+}
+
+/* Color Scheme Preference Support */
+@media (prefers-color-scheme: light) {
+  :root {
+    /* Light mode fallbacks when VS Code theme detection fails */
+    --fallback-surface: #ffffff;
+    --fallback-text: #000000;
+    --fallback-border: #e5e5e5;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Dark mode fallbacks when VS Code theme detection fails */
+    --fallback-surface: #1e1e1e;
+    --fallback-text: #ffffff;
+    --fallback-border: #3c3c3c;
+  }
+}
+
+/* ===== ENHANCED RESPONSIVE DESIGN ===== */
+
+/* Mobile-First Responsive Breakpoints */
+@media (max-width: 320px) {
+  .modern-container {
+    padding: 0 var(--spacing-sm);
+  }
+  
+  .modern-card {
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .modern-button {
+    padding: var(--spacing-sm);
+    font-size: var(--text-xs);
+  }
+  
+  .feedback-controls {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+  
+  .feedback-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: var(--spacing-md);
+  }
+  
+  .title {
+    font-size: var(--text-xl);
+  }
+  
+  .content {
+    padding: var(--spacing-md);
+  }
+  
+  .context-header {
+    margin-bottom: var(--spacing-lg);
+    padding: var(--spacing-sm);
+  }
+  
+  .main-content section {
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .feedback-comment-actions {
+    justify-content: center;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+  
+  .submit-feedback-btn,
+  .cancel-feedback-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .feedback-controls {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .feedback-btn {
+    width: 100%;
+    max-width: 200px;
+    justify-content: center;
+  }
+}
+
+/* Tablet and Desktop Enhancements */
+@media (min-width: 768px) {
+  .modern-container {
+    padding: 0 var(--spacing-xl);
+  }
+  
+  .modern-grid {
+    gap: var(--spacing-xl);
+  }
+  
+  .content {
+    padding: var(--spacing-xl);
+  }
+  
+  .feedback-section {
+    padding: var(--spacing-xl);
+  }
+}
+
+/* Large Screen Optimizations */
+@media (min-width: 1024px) {
+  .modern-container {
+    max-width: 800px;
+  }
+  
+  .welcome-message {
+    padding: var(--spacing-3xl) var(--spacing-xl);
+  }
+  
+  .context-header {
+    padding: var(--spacing-lg);
+  }
+}
+
+/* Print Styles */
+@media print {
+  .feedback-section,
+  .modern-button,
+  .feedback-btn {
+    display: none !important;
+  }
+  
+  .modern-card {
+    border: 1px solid #000;
+    box-shadow: none;
+    break-inside: avoid;
+  }
+  
+  .content {
+    padding: 0;
+  }
+  
+  .header {
+    border-bottom: 2px solid #000;
+  }
+}
+
+/* ===== THEME DETECTION AND FALLBACKS ===== */
+
+/* Enhanced fallback styles when VS Code theme variables are not available */
+@supports not (color: var(--vscode-foreground)) {
+  :root {
+    /* Comprehensive fallback color system */
+    --color-text-primary: var(--fallback-text, #d4d4d4);
+    --color-text-secondary: var(--fallback-text-secondary, #9d9d9d);
+    --color-text-muted: var(--fallback-text-muted, #6a6a6a);
+    --color-surface: var(--fallback-surface, #1e1e1e);
+    --color-surface-elevated: var(--fallback-surface-elevated, #2d2d30);
+    --color-border: var(--fallback-border, #3c3c3c);
+    --color-primary: #007acc;
+    --color-success: #89d185;
+    --color-warning: #d18616;
+    --color-error: #f85149;
+    --color-info: #75beff;
+  }
+}
+
+/* Progressive enhancement for VS Code integration */
+@supports (color: var(--vscode-foreground)) {
+  :root {
+    /* Enhanced VS Code variable integration with better fallbacks */
+    --color-text-primary: var(--vscode-foreground, var(--vscode-editor-foreground, #d4d4d4));
+    --color-text-secondary: var(--vscode-descriptionForeground, var(--vscode-textPreformat-foreground, #9d9d9d));
+    --color-text-muted: var(--vscode-disabledForeground, var(--vscode-textSeparator-foreground, #6a6a6a));
+    
+    /* Surface colors with multiple fallback levels */
+    --color-surface: var(--vscode-sideBar-background, var(--vscode-editor-background, var(--vscode-panel-background, #1e1e1e)));
+    --color-surface-elevated: var(--vscode-textBlockQuote-background, var(--vscode-sideBar-background, var(--vscode-dropdown-background, #2d2d30)));
+    --color-surface-overlay: var(--vscode-dropdown-background, var(--vscode-menu-background, var(--vscode-panel-background, #3c3c3c)));
+    
+    /* Border colors with comprehensive fallbacks */
+    --color-border: var(--vscode-panel-border, var(--vscode-sideBar-border, var(--vscode-widget-border, #3c3c3c)));
+    --color-border-light: var(--vscode-widget-border, var(--vscode-panel-border, var(--vscode-dropdown-border, #464647)));
+    --color-border-focus: var(--vscode-focusBorder, var(--vscode-textLink-foreground, var(--vscode-button-background, #007fd4)));
+    
+    /* Interactive colors with fallback chains */
+    --color-button-bg: var(--vscode-button-background, var(--vscode-textLink-foreground, #0e639c));
+    --color-button-hover: var(--vscode-button-hoverBackground, var(--vscode-textLink-activeForeground, #1177bb));
+    --color-button-text: var(--vscode-button-foreground, var(--vscode-list-activeSelectionForeground, #ffffff));
+    
+    /* Input colors with fallbacks */
+    --color-input-bg: var(--vscode-input-background, var(--vscode-dropdown-background, var(--vscode-editor-background, #3c3c3c)));
+    --color-input-border: var(--vscode-input-border, var(--vscode-dropdown-border, var(--vscode-panel-border, #3c3c3c)));
+    --color-input-text: var(--vscode-input-foreground, var(--vscode-foreground, var(--vscode-editor-foreground, #d4d4d4)));
+  }
+}
+
+/* Enhanced theme detection for better VS Code integration */
+body[data-vscode-theme-kind="vscode-light"] {
+  --color-shadow-light: rgba(0, 0, 0, 0.1);
+  --color-shadow-medium: rgba(0, 0, 0, 0.15);
+  --color-shadow-heavy: rgba(0, 0, 0, 0.2);
+  
+  /* Light theme specific color adjustments */
+  --fallback-text: #000000;
+  --fallback-text-secondary: #6c6c6c;
+  --fallback-text-muted: #8c8c8c;
+  --fallback-surface: #ffffff;
+  --fallback-surface-elevated: #f8f8f8;
+  --fallback-border: #d4d4d4;
+}
+
+body[data-vscode-theme-kind="vscode-dark"] {
+  --color-shadow-light: rgba(0, 0, 0, 0.2);
+  --color-shadow-medium: rgba(0, 0, 0, 0.3);
+  --color-shadow-heavy: rgba(0, 0, 0, 0.4);
+  
+  /* Dark theme specific color adjustments */
+  --fallback-text: #d4d4d4;
+  --fallback-text-secondary: #9d9d9d;
+  --fallback-text-muted: #6a6a6a;
+  --fallback-surface: #1e1e1e;
+  --fallback-surface-elevated: #2d2d30;
+  --fallback-border: #3c3c3c;
+}
+
+body[data-vscode-theme-kind="vscode-high-contrast"] {
+  --color-border: var(--vscode-contrastBorder, #6fc3df);
+  --color-border-focus: var(--vscode-contrastActiveBorder, #f38518);
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+  
+  /* High contrast specific adjustments */
+  --fallback-text: #ffffff;
+  --fallback-text-secondary: #ffffff;
+  --fallback-text-muted: #cccccc;
+  --fallback-surface: #000000;
+  --fallback-surface-elevated: #000000;
+  --fallback-border: #6fc3df;
+}
+
+/* Graceful degradation for older VS Code versions */
+@supports not (color: var(--vscode-sideBar-background)) {
+  /* Fallback for VS Code versions that don't support all CSS variables */
+  .container {
+    background: var(--vscode-editor-background, #1e1e1e);
+    color: var(--vscode-foreground, #d4d4d4);
+  }
+  
+  .modern-card {
+    background: var(--vscode-editor-background, #2d2d30);
+    border-color: var(--vscode-panel-border, #3c3c3c);
+  }
+  
+  .modern-button--primary {
+    background: var(--vscode-button-background, #0e639c);
+    color: var(--vscode-button-foreground, #ffffff);
+  }
+}
+
+/* Theme-specific component fallbacks */
+.theme-detection-fallback {
+  /* Applied when automatic theme detection fails */
+  --color-text-primary: #d4d4d4;
+  --color-surface: #1e1e1e;
+  --color-border: #3c3c3c;
+  --color-primary: #007acc;
+}
+
+/* System preference integration as ultimate fallback */
+@media (prefers-color-scheme: light) {
+  :root:not([data-vscode-theme-kind]):not(.theme-dark):not(.theme-high-contrast) {
+    /* System light theme fallback */
+    --fallback-text: #000000;
+    --fallback-text-secondary: #6c6c6c;
+    --fallback-text-muted: #8c8c8c;
+    --fallback-surface: #ffffff;
+    --fallback-surface-elevated: #f8f8f8;
+    --fallback-border: #e5e5e5;
+    --color-primary: #0066cc;
+    --color-success: #28a745;
+    --color-warning: #ffc107;
+    --color-error: #dc3545;
+    --color-info: #17a2b8;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-vscode-theme-kind]):not(.theme-light):not(.theme-high-contrast) {
+    /* System dark theme fallback */
+    --fallback-text: #ffffff;
+    --fallback-text-secondary: #b3b3b3;
+    --fallback-text-muted: #808080;
+    --fallback-surface: #1a1a1a;
+    --fallback-surface-elevated: #2a2a2a;
+    --fallback-border: #404040;
+    --color-primary: #007acc;
+    --color-success: #89d185;
+    --color-warning: #d18616;
+    --color-error: #f85149;
+    --color-info: #75beff;
+  }
+}
+
+/* Emergency fallback for complete theme failure */
+.theme-emergency-fallback {
+  /* Applied by JavaScript when all theme detection fails */
+  background: #1e1e1e !important;
+  color: #d4d4d4 !important;
+}
+
+.theme-emergency-fallback .modern-card {
+  background: #2d2d30 !important;
+  border-color: #3c3c3c !important;
+  color: #d4d4d4 !important;
+}
+
+.theme-emergency-fallback .modern-button--primary {
+  background: #0e639c !important;
+  color: #ffffff !important;
+  border-color: #0e639c !important;
+}
+
+.theme-emergency-fallback .modern-button--secondary {
+  background: transparent !important;
+  color: #d4d4d4 !important;
+  border-color: #3c3c3c !important;
+}
+
+/* Theme transition smoothing */
+* {
+  transition-property: color, background-color, border-color, box-shadow;
+  transition-duration: var(--duration-fast);
+  transition-timing-function: var(--ease-out);
+}
+
+/* Disable transitions during theme changes to prevent flashing */
+.theme-changing * {
+  transition: none !important;
+}
+
+/* Re-enable transitions after theme change */
+.theme-stable * {
+  transition-property: color, background-color, border-color, box-shadow;
+  transition-duration: var(--duration-fast);
+  transition-timing-function: var(--ease-out);
+}
+
+/* ===== PERFORMANCE OPTIMIZATIONS ===== */
+
+/* GPU acceleration for smooth animations */
+.modern-card,
+.modern-button,
+.feedback-btn {
+  will-change: transform;
+}
+
+/* Optimize repaints */
+.modern-card:hover,
+.modern-button:hover,
+.feedback-btn:hover {
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Contain layout shifts */
+.modern-container {
+  contain: layout style;
+}
+
+.modern-card {
+  contain: layout style paint;
+}
+
+/* Optimize scrolling performance */
+.content {
+  contain: strict;
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content {
+    scroll-behavior: auto;
+  }
+}
