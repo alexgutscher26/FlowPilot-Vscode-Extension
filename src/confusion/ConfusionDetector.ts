@@ -23,13 +23,14 @@ export class ConfusionDetector implements vscode.Disposable {
     private statusBarNotificationManager: StatusBarNotificationManager;
     private onHelpOffered: ((diagnostic: vscode.Diagnostic, reason: 'dwell' | 'repeat') => void) | undefined;
     private telemetry?: Telemetry;
+    private configurationManager: ConfigurationManager;
 
-    constructor(
-        private configurationManager: ConfigurationManager
-    ) {
+    constructor(configurationManager: ConfigurationManager);
+    constructor(context: vscode.ExtensionContext, configurationManager: ConfigurationManager);
+    constructor(arg1: vscode.ExtensionContext | ConfigurationManager, arg2?: ConfigurationManager) {
+        this.configurationManager = (arg2 ?? arg1) as ConfigurationManager;
         this.statusBarNotificationManager = new StatusBarNotificationManager();
         this.disposables.push(this.statusBarNotificationManager);
-        
         this.setupEventListeners();
     }
 
