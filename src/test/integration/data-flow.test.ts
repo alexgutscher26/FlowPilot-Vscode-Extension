@@ -66,7 +66,7 @@ describe('FlowPilot Data Flow Integration Tests', () => {
         telemetry = new Telemetry(context, configManager);
         commandManager = new CommandManager(context, configManager, telemetry);
         viewProvider = new CodeCoachViewProvider(context.extensionUri);
-        confusionDetector = new ConfusionDetector(context, configManager);
+        confusionDetector = new ConfusionDetector(configManager);
         safetyGuard = FileSafetyGuard.getInstance();
         performanceMonitor = PerformanceMonitor.getInstance();
 

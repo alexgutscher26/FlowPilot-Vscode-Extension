@@ -73,7 +73,7 @@ export function activate(context: vscode.ExtensionContext) {
         commandManager.registerCommands();
 
         // Initialize confusion detector
-        confusionDetector = new ConfusionDetector(context, configurationManager);
+        confusionDetector = new ConfusionDetector(configurationManager);
         confusionDetector.setTelemetry(telemetry);
 
         // Wire confusion detector to command manager for proactive help
