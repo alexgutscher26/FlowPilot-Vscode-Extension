@@ -291,107 +291,177 @@ export class CodeCoachViewProvider implements vscode.WebviewViewProvider {
                     </header>
 
                     <main class="content" id="content">
-                        <div class="welcome-message" id="welcome">
-                            <div class="welcome-icon">📚</div>
-                            <h2>Welcome!</h2>
-                            <p>Select Python code and use:</p>
-                            <ul class="command-list">
-                                <li><strong>Explain Code</strong></li>
-                                <li><strong>Review Code</strong></li>
-                                <li><strong>Explain Error</strong></li>
-                            </ul>
-                            <p class="tip">💡 Right-click for quick access!</p>
+                        <div class="modern-card modern-card--info modern-card--large" id="welcome">
+                            <div class="card-header">
+                                <span class="card-icon">📚</span>
+                                <div>
+                                    <h2 class="card-title">Welcome!</h2>
+                                    <p class="card-subtitle">Understanding your code</p>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <p>Select Python code and use:</p>
+                                <ul class="command-list">
+                                    <li><strong>Explain Code</strong></li>
+                                    <li><strong>Review Code</strong></li>
+                                    <li><strong>Explain Error</strong></li>
+                                </ul>
+                            </div>
+                            <div class="card-footer">
+                                <p class="tip">💡 Right-click for quick access!</p>
+                            </div>
                         </div>
 
                         <!-- Explanation content will be dynamically inserted here -->
                         <div class="explanation-content" id="explanation" style="display: none;">
-                            <!-- Content sections -->
-                            <div class="context-header" id="context-header">
-                                <div class="operation-type" id="operation-type"></div>
-                                <div class="file-info" id="file-info"></div>
+                            <!-- Context header -->
+                            <div class="modern-card modern-card--summary modern-card--compact" id="context-header">
+                                <div class="card-header">
+                                    <span class="card-icon">🎯</span>
+                                    <div>
+                                        <div class="operation-type card-title" id="operation-type"></div>
+                                        <div class="file-info card-subtitle" id="file-info"></div>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="main-content" id="main-content">
                                 <!-- Summary section -->
-                                <section class="summary-section" id="summary-section">
-                                    <h3>📋 Summary</h3>
-                                    <div class="summary-content" id="summary-content"></div>
+                                <section class="modern-card modern-card--summary" id="summary-section">
+                                    <div class="card-header">
+                                        <span class="card-icon">📋</span>
+                                        <h3 class="card-title">Summary</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="summary-content" id="summary-content"></div>
+                                    </div>
                                 </section>
 
                                 <!-- Line-by-line section (for explanations) -->
-                                <section class="line-by-line-section" id="line-by-line-section" style="display: none;">
-                                    <h3>🔍 Line-by-Line</h3>
-                                    <div class="line-explanations" id="line-explanations"></div>
+                                <section class="modern-card modern-card--code" id="line-by-line-section" style="display: none;">
+                                    <div class="card-header">
+                                        <span class="card-icon">🔍</span>
+                                        <h3 class="card-title">Line-by-Line</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="line-explanations" id="line-explanations"></div>
+                                    </div>
                                 </section>
 
                                 <!-- Error analysis sections (for errors) -->
-                                <section class="error-meaning-section" id="error-meaning-section" style="display: none;">
-                                    <h3>❓ What This Means</h3>
-                                    <div class="error-meaning-content" id="error-meaning-content"></div>
+                                <section class="modern-card modern-card--error" id="error-meaning-section" style="display: none;">
+                                    <div class="card-header">
+                                        <span class="card-icon">❓</span>
+                                        <h3 class="card-title">What This Means</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="error-meaning-content" id="error-meaning-content"></div>
+                                    </div>
                                 </section>
 
-                                <section class="error-context-section" id="error-context-section" style="display: none;">
-                                    <h3>🎯 Why It Happened</h3>
-                                    <div class="error-context-content" id="error-context-content"></div>
+                                <section class="modern-card modern-card--warning" id="error-context-section" style="display: none;">
+                                    <div class="card-header">
+                                        <span class="card-icon">🎯</span>
+                                        <h3 class="card-title">Why It Happened</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="error-context-content" id="error-context-content"></div>
+                                    </div>
                                 </section>
 
-                                <section class="error-fix-section" id="error-fix-section" style="display: none;">
-                                    <h3>🔧 How to Fix</h3>
-                                    <div class="error-fix-content" id="error-fix-content"></div>
+                                <section class="modern-card modern-card--success" id="error-fix-section" style="display: none;">
+                                    <div class="card-header">
+                                        <span class="card-icon">🔧</span>
+                                        <h3 class="card-title">How to Fix</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="error-fix-content" id="error-fix-content"></div>
+                                    </div>
                                 </section>
 
                                 <!-- Review sections (for reviews) -->
-                                <section class="good-points-section" id="good-points-section" style="display: none;">
-                                    <h3>✅ What's Good</h3>
-                                    <div class="good-points-content" id="good-points-content"></div>
+                                <section class="modern-card modern-card--success" id="good-points-section" style="display: none;">
+                                    <div class="card-header">
+                                        <span class="card-icon">✅</span>
+                                        <h3 class="card-title">What's Good</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="good-points-content" id="good-points-content"></div>
+                                    </div>
                                 </section>
 
-                                <section class="improvements-section" id="improvements-section" style="display: none;">
-                                    <h3>🚀 Improvements</h3>
-                                    <div class="improvements-content" id="improvements-content"></div>
+                                <section class="modern-card modern-card--info" id="improvements-section" style="display: none;">
+                                    <div class="card-header">
+                                        <span class="card-icon">🚀</span>
+                                        <h3 class="card-title">Improvements</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="improvements-content" id="improvements-content"></div>
+                                    </div>
                                 </section>
 
                                 <!-- Common sections -->
-                                <section class="pitfalls-section" id="pitfalls-section" style="display: none;">
-                                    <h3>⚠️ Pitfalls</h3>
-                                    <div class="pitfalls-content" id="pitfalls-content"></div>
+                                <section class="modern-card modern-card--warning" id="pitfalls-section" style="display: none;">
+                                    <div class="card-header">
+                                        <span class="card-icon">⚠️</span>
+                                        <h3 class="card-title">Pitfalls</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="pitfalls-content" id="pitfalls-content"></div>
+                                    </div>
                                 </section>
 
-                                <section class="try-it-section" id="try-it-section" style="display: none;">
-                                    <h3>🧪 Try It</h3>
-                                    <div class="try-it-content" id="try-it-content"></div>
+                                <section class="modern-card modern-card--info" id="try-it-section" style="display: none;">
+                                    <div class="card-header">
+                                        <span class="card-icon">🧪</span>
+                                        <h3 class="card-title">Try It</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="try-it-content" id="try-it-content"></div>
+                                    </div>
                                 </section>
 
-                                <section class="related-concepts-section" id="related-concepts-section" style="display: none;">
-                                    <h3>🔗 Related</h3>
-                                    <div class="related-concepts-content" id="related-concepts-content"></div>
+                                <section class="modern-card modern-card--info" id="related-concepts-section" style="display: none;">
+                                    <div class="card-header">
+                                        <span class="card-icon">🔗</span>
+                                        <h3 class="card-title">Related</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="related-concepts-content" id="related-concepts-content"></div>
+                                    </div>
                                 </section>
                             </div>
 
                             <!-- Feedback section -->
-                            <div class="feedback-section" id="feedback-section">
-                                <h3>💬 Helpful?</h3>
-                                <div class="feedback-controls">
-                                    <button class="feedback-btn helpful-btn" id="helpful-btn" data-helpful="true">
-                                        👍 Yes
-                                    </button>
-                                    <button class="feedback-btn not-helpful-btn" id="not-helpful-btn" data-helpful="false">
-                                        👎 No
-                                    </button>
+                            <div class="modern-card modern-card--feedback" id="feedback-section">
+                                <div class="card-header">
+                                    <span class="card-icon">💬</span>
+                                    <h3 class="card-title feedback-title">Helpful?</h3>
                                 </div>
-                                <div class="feedback-comment" id="feedback-comment" style="display: none;">
-                                    <textarea 
-                                        id="feedback-text" 
-                                        placeholder="How can we improve?"
-                                        rows="3"
-                                    ></textarea>
-                                    <div class="feedback-comment-actions">
-                                        <button class="submit-feedback-btn" id="submit-feedback-btn">Submit</button>
-                                        <button class="cancel-feedback-btn" id="cancel-feedback-btn">Cancel</button>
+                                <div class="card-body">
+                                    <div class="feedback-controls">
+                                        <button class="modern-button modern-button--success feedback-btn helpful-btn" id="helpful-btn" data-helpful="true">
+                                            👍 Yes
+                                        </button>
+                                        <button class="modern-button modern-button--error feedback-btn not-helpful-btn" id="not-helpful-btn" data-helpful="false">
+                                            👎 No
+                                        </button>
                                     </div>
-                                </div>
-                                <div class="feedback-thanks" id="feedback-thanks" style="display: none;">
-                                    <span class="thanks-message">Thanks! 🙏</span>
+                                    <div class="feedback-comment" id="feedback-comment" style="display: none;">
+                                        <textarea 
+                                            class="modern-input modern-textarea"
+                                            id="feedback-text" 
+                                            placeholder="How can we improve?"
+                                            rows="3"
+                                        ></textarea>
+                                        <div class="feedback-comment-actions">
+                                            <button class="modern-button modern-button--primary submit-feedback-btn" id="submit-feedback-btn">Submit</button>
+                                            <button class="modern-button modern-button--secondary cancel-feedback-btn" id="cancel-feedback-btn">Cancel</button>
+                                        </div>
+                                    </div>
+                                    <div class="feedback-thanks" id="feedback-thanks" style="display: none;">
+                                        <span class="thanks-message">Thanks! 🙏</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>

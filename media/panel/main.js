@@ -1,315 +1,107 @@
 // Main script for the Code Coach webview panel
-
 // Get VS Code API
 const vscode = acquireVsCodeApi();
-
 // State management
 let currentExplanation = null;
 let feedbackSubmitted = false;
-let currentTheme = null;
-
 // Initialize the webview
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Code Coach webview loaded');
-    
-    // Initialize theme detection and adaptation
-    initializeThemeSystem();
-    
+    // Initialize theme detection and monitoring
+    initializeThemeDetection();
+    // Initialize animation system
+    initializeAnimationSystem();
     // Initialize event listeners
     initializeEventListeners();
-    
     // Send ready message to extension
     vscode.postMessage({
         type: 'ready'
     });
 });
-
-// Theme System Initialization
-function initializeThemeSystem() {
-    // Use initial theme information passed from extension
-    if (window.initialTheme) {
-        console.log('Using initial theme from extension:', window.initialTheme);
-        applyTheme(window.initialTheme.className.replace('theme-', ''));
-    } else {
-        // Fallback: detect theme from CSS variables
-        detectAndApplyTheme();
-    }
-    
-    // Listen for theme changes from extension
-    window.addEventListener('message', (event) => {
-        if (event.data.type === 'themeChanged') {
-            handleThemeChange(event.data.theme);
-        }
-    });
-    
-    // Fallback: Monitor for CSS variable changes
-    observeThemeChanges();
-    
-    // Apply accessibility preferences
-    applyAccessibilityPreferences();
-    
-    // Validate initial color contrast
-    setTimeout(validateColorContrast, 500); // Delay to ensure CSS is loaded
-}
-
-function detectAndApplyTheme() {
-    // Try to detect theme from VS Code CSS variables
-    const computedStyle = getComputedStyle(document.documentElement);
-    const backgroundColor = computedStyle.getPropertyValue('--vscode-editor-background').trim();
-    const foregroundColor = computedStyle.getPropertyValue('--vscode-foreground').trim();
-    
-    let detectedTheme = 'dark'; // Default fallback
-    
-    if (backgroundColor && foregroundColor) {
-        // Simple heuristic: if background is lighter than foreground, it's likely light theme
-        const bgLuminance = getLuminance(backgroundColor);
-        const fgLuminance = getLuminance(foregroundColor);
-        
-        if (bgLuminance > fgLuminance) {
-            detectedTheme = 'light';
-        } else {
-            detectedTheme = 'dark';
-        }
-    }
-    
-    // Check for high contrast
-    const contrastBorder = computedStyle.getPropertyValue('--vscode-contrastBorder').trim();
-    if (contrastBorder) {
-        detectedTheme = 'high-contrast';
-    }
-    
-    applyTheme(detectedTheme);
-}
-
-function applyTheme(themeName) {
-    if (currentTheme === themeName) return;
-    
-    currentTheme = themeName;
-    const body = document.body;
-    
-    // Remove existing theme classes
-    body.classList.remove('theme-light', 'theme-dark', 'theme-high-contrast');
-    
-    // Apply new theme class
-    body.classList.add(`theme-${themeName}`);
-    
-    // Set data attribute for CSS targeting
-    body.setAttribute('data-vscode-theme-kind', `vscode-${themeName}`);
-    
-    // Validate color contrast after theme change
-    validateColorContrast();
-    
-    console.log(`Applied theme: ${themeName}`);
-}
-
-function handleThemeChange(themeInfo) {
-    if (themeInfo && themeInfo.kind) {
-        const themeMap = {
-            1: 'light',
-            2: 'dark',
-            3: 'high-contrast'
-        };
-        
-        const themeName = themeMap[themeInfo.kind] || 'dark';
-        applyTheme(themeName);
-    }
-}
-
-function observeThemeChanges() {
-    // Create a mutation observer to watch for CSS variable changes
-    const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-            if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
-                // Re-detect theme when CSS variables might have changed
-                setTimeout(detectAndApplyTheme, 100);
-            }
-        });
-    });
-    
-    // Observe changes to the document element's style attribute
-    observer.observe(document.documentElement, {
-        attributes: true,
-        attributeFilter: ['style']
-    });
-}
-
-function applyAccessibilityPreferences() {
-    // Check for reduced motion preference
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        document.body.classList.add('reduce-motion');
-    }
-    
-    // Check for high contrast preference
-    if (window.matchMedia('(prefers-contrast: high)').matches) {
-        document.body.classList.add('high-contrast-preference');
-    }
-    
-    // Check for color scheme preference as fallback
-    if (window.matchMedia('(prefers-color-scheme: light)').matches) {
-        document.body.classList.add('prefers-light');
-    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        document.body.classList.add('prefers-dark');
-    }
-}
-
-function validateColorContrast() {
-    // Validate that text has sufficient contrast
-    const textElements = document.querySelectorAll('p, span, div, h1, h2, h3, h4, h5, h6, li, button');
-    
-    textElements.forEach(element => {
-        const style = getComputedStyle(element);
-        const textColor = style.color;
-        const backgroundColor = getEffectiveBackgroundColor(element);
-        
-        if (textColor && backgroundColor) {
-            const contrastRatio = getContrastRatio(textColor, backgroundColor);
-            
-            // WCAG AA standard requires 4.5:1 for normal text
-            if (contrastRatio < 4.5) {
-                console.warn(`Low contrast detected on element:`, element, `Ratio: ${contrastRatio.toFixed(2)}`);
-                // Apply high contrast class to improve readability
-                element.classList.add('low-contrast-fix');
-            }
-        }
-    });
-}
-
-function getEffectiveBackgroundColor(element) {
-    // Walk up the DOM tree to find the effective background color
-    let currentElement = element;
-    
-    while (currentElement && currentElement !== document.body) {
-        const style = getComputedStyle(currentElement);
-        const bgColor = style.backgroundColor;
-        
-        if (bgColor && bgColor !== 'rgba(0, 0, 0, 0)' && bgColor !== 'transparent') {
-            return bgColor;
-        }
-        
-        currentElement = currentElement.parentElement;
-    }
-    
-    // Fallback to body background
-    return getComputedStyle(document.body).backgroundColor || '#1e1e1e';
-}
-
-function getLuminance(color) {
-    // Convert color to RGB values
-    const rgb = parseColor(color);
-    if (!rgb) return 0;
-    
-    // Calculate relative luminance
-    const [r, g, b] = rgb.map(c => {
-        c = c / 255;
-        return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
-    });
-    
-    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
-}
-
-function getContrastRatio(color1, color2) {
-    const lum1 = getLuminance(color1);
-    const lum2 = getLuminance(color2);
-    
-    const brightest = Math.max(lum1, lum2);
-    const darkest = Math.min(lum1, lum2);
-    
-    return (brightest + 0.05) / (darkest + 0.05);
-}
-
-function parseColor(color) {
-    // Simple RGB color parser
-    if (color.startsWith('rgb(')) {
-        const match = color.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
-        return match ? [parseInt(match[1]), parseInt(match[2]), parseInt(match[3])] : null;
-    }
-    
-    if (color.startsWith('rgba(')) {
-        const match = color.match(/rgba\((\d+),\s*(\d+),\s*(\d+),\s*[\d.]+\)/);
-        return match ? [parseInt(match[1]), parseInt(match[2]), parseInt(match[3])] : null;
-    }
-    
-    if (color.startsWith('#')) {
-        const hex = color.slice(1);
-        if (hex.length === 3) {
-            return [
-                parseInt(hex[0] + hex[0], 16),
-                parseInt(hex[1] + hex[1], 16),
-                parseInt(hex[2] + hex[2], 16)
-            ];
-        } else if (hex.length === 6) {
-            return [
-                parseInt(hex.slice(0, 2), 16),
-                parseInt(hex.slice(2, 4), 16),
-                parseInt(hex.slice(4, 6), 16)
-            ];
-        }
-    }
-    
-    return null;
-}
-
 // Handle messages from the extension
 window.addEventListener('message', event => {
     const message = event.data;
-    
     switch (message.type) {
         case 'update':
-            updateContent(message.data);
+            updateContentWithAnimation(message.data);
             break;
         case 'error':
             showError(message.data);
             break;
         case 'clear':
-            clearContent();
+            clearContentWithAnimation();
             break;
     }
 });
-
+function clearContent() {
+    // Show welcome message and hide explanation content
+    const welcomeElement = document.getElementById('welcome');
+    const explanationElement = document.getElementById('explanation');
+    if (welcomeElement) {
+        welcomeElement.style.display = 'block';
+    }
+    if (explanationElement) {
+        explanationElement.style.display = 'none';
+    }
+    currentExplanation = null;
+    feedbackSubmitted = false;
+}
+function clearContentWithAnimation() {
+    const welcomeElement = document.getElementById('welcome');
+    const explanationElement = document.getElementById('explanation');
+    if (explanationElement && explanationElement.style.display !== 'none') {
+        // Animate out the explanation content
+        animateContentExit(explanationElement, () => {
+            explanationElement.style.display = 'none';
+            // Animate in the welcome message
+            if (welcomeElement) {
+                welcomeElement.style.display = 'block';
+                animateContentEntry(welcomeElement, 'fade-in');
+            }
+        });
+    }
+    else if (welcomeElement) {
+        // Just show welcome if explanation is already hidden
+        welcomeElement.style.display = 'block';
+        animateContentEntry(welcomeElement, 'fade-in');
+    }
+    currentExplanation = null;
+    feedbackSubmitted = false;
+}
 function initializeEventListeners() {
     // Feedback button listeners
     const helpfulBtn = document.getElementById('helpful-btn');
     const notHelpfulBtn = document.getElementById('not-helpful-btn');
     const submitFeedbackBtn = document.getElementById('submit-feedback-btn');
     const cancelFeedbackBtn = document.getElementById('cancel-feedback-btn');
-
     if (helpfulBtn) {
         helpfulBtn.addEventListener('click', () => handleFeedbackClick(true));
     }
-
     if (notHelpfulBtn) {
         notHelpfulBtn.addEventListener('click', () => handleFeedbackClick(false));
     }
-
     if (submitFeedbackBtn) {
         submitFeedbackBtn.addEventListener('click', submitFeedback);
     }
-
     if (cancelFeedbackBtn) {
         cancelFeedbackBtn.addEventListener('click', cancelFeedback);
     }
 }
-
 function updateContent(data) {
     console.log('Updating content:', data);
     currentExplanation = data;
     feedbackSubmitted = false;
-
     // Hide welcome message and show explanation content
     const welcomeElement = document.getElementById('welcome');
     const explanationElement = document.getElementById('explanation');
-    
     if (welcomeElement) {
         welcomeElement.style.display = 'none';
     }
-    
     if (explanationElement) {
         explanationElement.style.display = 'block';
     }
-
     // Update context header
     updateContextHeader(data);
-
     // Update content based on type
     switch (data.type) {
         case 'explain':
@@ -324,15 +116,12 @@ function updateContent(data) {
         default:
             console.warn('Unknown content type:', data.type);
     }
-
     // Reset feedback section
     resetFeedbackSection();
 }
-
 function updateContextHeader(data) {
     const operationTypeElement = document.getElementById('operation-type');
     const fileInfoElement = document.getElementById('file-info');
-
     if (operationTypeElement) {
         let operationText = '';
         switch (data.type) {
@@ -348,13 +137,11 @@ function updateContextHeader(data) {
         }
         operationTypeElement.textContent = operationText;
     }
-
     if (fileInfoElement) {
         // This would be populated with actual file info from the extension
         fileInfoElement.textContent = 'Python file';
     }
 }
-
 function renderExplanation(data) {
     // Show/hide relevant sections
     showSection('summary-section');
@@ -364,36 +151,33 @@ function renderExplanation(data) {
     hideSection('error-fix-section');
     hideSection('good-points-section');
     hideSection('improvements-section');
-
     // Update summary
     updateElementContent('summary-content', data.summary);
-
     // Update line-by-line explanations
     renderLineByLineExplanations(data.lineByLine || []);
-
     // Update optional sections
     if (data.pitfalls && data.pitfalls.length > 0) {
         showSection('pitfalls-section');
         renderList('pitfalls-content', data.pitfalls);
-    } else {
+    }
+    else {
         hideSection('pitfalls-section');
     }
-
     if (data.tryItYourself) {
         showSection('try-it-section');
         updateElementContent('try-it-content', data.tryItYourself);
-    } else {
+    }
+    else {
         hideSection('try-it-section');
     }
-
     if (data.relatedConcepts && data.relatedConcepts.length > 0) {
         showSection('related-concepts-section');
         renderList('related-concepts-content', data.relatedConcepts);
-    } else {
+    }
+    else {
         hideSection('related-concepts-section');
     }
 }
-
 function renderReview(data) {
     // Show/hide relevant sections
     showSection('summary-section');
@@ -403,28 +187,23 @@ function renderReview(data) {
     hideSection('error-fix-section');
     showSection('good-points-section');
     showSection('improvements-section');
-
     // Update summary
     updateElementContent('summary-content', data.summary);
-
     // Update good points
     renderList('good-points-content', data.goodPoints || [], 'good-point');
-
     // Update improvements
     renderImprovements(data.improvements || []);
-
     // Update optional sections
     if (data.tryItYourself) {
         showSection('try-it-section');
         updateElementContent('try-it-content', data.tryItYourself);
-    } else {
+    }
+    else {
         hideSection('try-it-section');
     }
-
     hideSection('pitfalls-section');
     hideSection('related-concepts-section');
 }
-
 function renderError(data) {
     // Show/hide relevant sections
     hideSection('summary-section');
@@ -434,100 +213,82 @@ function renderError(data) {
     showSection('error-fix-section');
     hideSection('good-points-section');
     hideSection('improvements-section');
-
     // Update error sections
     updateElementContent('error-meaning-content', data.errorMeaning);
     updateElementContent('error-context-content', data.whyHere);
     updateElementContent('error-fix-content', data.howToFix);
-
     // Update optional sections
     if (data.tryItYourself) {
         showSection('try-it-section');
         updateElementContent('try-it-content', data.tryItYourself);
-    } else {
+    }
+    else {
         hideSection('try-it-section');
     }
-
     if (data.relatedConcepts && data.relatedConcepts.length > 0) {
         showSection('related-concepts-section');
         renderList('related-concepts-content', data.relatedConcepts);
-    } else {
+    }
+    else {
         hideSection('related-concepts-section');
     }
-
     hideSection('pitfalls-section');
 }
-
 function renderLineByLineExplanations(lineExplanations) {
     const container = document.getElementById('line-explanations');
-    if (!container) return;
-
+    if (!container)
+        return;
     container.innerHTML = '';
-
     lineExplanations.forEach((line, index) => {
         const lineDiv = document.createElement('div');
         lineDiv.className = 'line-explanation';
-
         const lineNumber = document.createElement('div');
         lineNumber.className = 'line-number';
         lineNumber.textContent = `Line ${line.lineOffset + 1}`;
-
         const lineCode = document.createElement('div');
         lineCode.className = 'line-code';
         lineCode.textContent = line.code;
-
         const lineText = document.createElement('div');
         lineText.className = 'line-text';
         lineText.textContent = line.explanation;
-
         lineDiv.appendChild(lineNumber);
         lineDiv.appendChild(lineCode);
         lineDiv.appendChild(lineText);
-
         container.appendChild(lineDiv);
     });
 }
-
 function renderImprovements(improvements) {
     const container = document.getElementById('improvements-content');
-    if (!container) return;
-
+    if (!container)
+        return;
     container.innerHTML = '';
-
     improvements.forEach((improvement, index) => {
         const improvementDiv = document.createElement('div');
         improvementDiv.className = 'improvement-item';
-
         const description = document.createElement('div');
         description.className = 'improvement-description';
         description.textContent = improvement.description;
-
         improvementDiv.appendChild(description);
-
         if (improvement.improvedCode) {
             const code = document.createElement('div');
             code.className = 'improvement-code';
             code.textContent = improvement.improvedCode;
             improvementDiv.appendChild(code);
         }
-
         const reasoning = document.createElement('div');
         reasoning.className = 'improvement-reasoning';
         reasoning.textContent = improvement.reasoning;
         improvementDiv.appendChild(reasoning);
-
         container.appendChild(improvementDiv);
     });
 }
-
 function renderList(containerId, items, itemClass) {
     const container = document.getElementById(containerId);
-    if (!container) return;
-
+    if (!container)
+        return;
     container.innerHTML = '';
-
-    if (items.length === 0) return;
-
+    if (items.length === 0)
+        return;
     const ul = document.createElement('ul');
     items.forEach(item => {
         const li = document.createElement('li');
@@ -537,67 +298,642 @@ function renderList(containerId, items, itemClass) {
         li.textContent = item;
         ul.appendChild(li);
     });
-
     container.appendChild(ul);
 }
-
 function showSection(sectionId) {
     const section = document.getElementById(sectionId);
     if (section) {
         section.style.display = 'block';
     }
 }
-
 function hideSection(sectionId) {
     const section = document.getElementById(sectionId);
     if (section) {
         section.style.display = 'none';
     }
 }
-
 function updateElementContent(elementId, content) {
     const element = document.getElementById(elementId);
     if (element) {
         element.textContent = content;
     }
 }
-
-function clearContent() {
-    // Show welcome message and hide explanation content
-    const welcomeElement = document.getElementById('welcome');
-    const explanationElement = document.getElementById('explanation');
-    
-    if (welcomeElement) {
-        welcomeElement.style.display = 'block';
+// Animation and Micro-interaction System Functions
+function initializeAnimationSystem() {
+    console.log('Initializing animation system...');
+    // Initialize content loading animations
+    initializeContentAnimations();
+    // Initialize collapsible sections
+    initializeCollapsibleSections();
+    // Initialize intersection observer for scroll animations
+    initializeScrollAnimations();
+    // Initialize ripple effects
+    initializeRippleEffects();
+    // Initialize loading states
+    initializeLoadingStates();
+    // Apply initial animations to existing content
+    applyInitialAnimations();
+}
+function initializeContentAnimations() {
+    // Add fade-in animation to content sections when they appear
+    const contentSections = document.querySelectorAll('.modern-card, .main-content section');
+    contentSections.forEach((section, index) => {
+        // Add staggered fade-in animation
+        section.classList.add('modern-stagger-fade-in');
+        // Apply delay based on index
+        const delay = Math.min(index * 50, 300); // Max 300ms delay
+        section.style.animationDelay = `${delay}ms`;
+    });
+}
+function initializeCollapsibleSections() {
+    // Find all collapsible sections and add toggle functionality
+    const collapsibleSections = document.querySelectorAll('[data-collapsible]');
+    collapsibleSections.forEach(section => {
+        const toggle = section.querySelector('[data-collapse-toggle]');
+        const content = section.querySelector('[data-collapse-content]');
+        if (toggle && content) {
+            // Set initial state
+            const isExpanded = section.getAttribute('data-expanded') === 'true';
+            updateCollapsibleState(section, content, toggle, isExpanded);
+            // Add click handler
+            toggle.addEventListener('click', () => {
+                const currentlyExpanded = section.getAttribute('data-expanded') === 'true';
+                const newState = !currentlyExpanded;
+                section.setAttribute('data-expanded', newState.toString());
+                updateCollapsibleState(section, content, toggle, newState);
+            });
+        }
+    });
+}
+function updateCollapsibleState(section, content, toggle, isExpanded) {
+    if (isExpanded) {
+        content.classList.remove('modern-collapsible--collapsed');
+        content.classList.add('modern-collapsible--expanded');
+        toggle.classList.remove('modern-collapse-toggle--collapsed');
+        toggle.classList.add('modern-collapse-toggle--expanded');
+        section.setAttribute('aria-expanded', 'true');
     }
-    
-    if (explanationElement) {
-        explanationElement.style.display = 'none';
+    else {
+        content.classList.remove('modern-collapsible--expanded');
+        content.classList.add('modern-collapsible--collapsed');
+        toggle.classList.remove('modern-collapse-toggle--expanded');
+        toggle.classList.add('modern-collapse-toggle--collapsed');
+        section.setAttribute('aria-expanded', 'false');
     }
-
-    currentExplanation = null;
+}
+function initializeScrollAnimations() {
+    // Create intersection observer for scroll-triggered animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('modern-in-view');
+            }
+        });
+    }, observerOptions);
+    // Observe elements with scroll animation classes
+    const scrollElements = document.querySelectorAll('.modern-animate-on-scroll, .modern-stagger-scroll');
+    scrollElements.forEach(element => {
+        observer.observe(element);
+    });
+}
+function initializeRippleEffects() {
+    // Add ripple effect to buttons and interactive elements
+    const rippleElements = document.querySelectorAll('.modern-button, .feedback-btn, [data-ripple]');
+    rippleElements.forEach(element => {
+        element.classList.add('modern-ripple-effect');
+        element.addEventListener('click', (e) => {
+            // Create ripple effect
+            createRippleEffect(e.target, e);
+        });
+    });
+}
+function createRippleEffect(element, event) {
+    const rect = element.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    const x = event.clientX - rect.left - size / 2;
+    const y = event.clientY - rect.top - size / 2;
+    const ripple = document.createElement('span');
+    ripple.className = 'modern-ripple';
+    ripple.style.cssText = `
+        position: absolute;
+        width: ${size}px;
+        height: ${size}px;
+        left: ${x}px;
+        top: ${y}px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        transform: scale(0);
+        animation: modernRipple 0.6s ease-out;
+        pointer-events: none;
+        z-index: 1;
+    `;
+    element.style.position = 'relative';
+    element.appendChild(ripple);
+    // Remove ripple after animation
+    setTimeout(() => {
+        if (ripple.parentNode) {
+            ripple.parentNode.removeChild(ripple);
+        }
+    }, 600);
+}
+function initializeLoadingStates() {
+    // Initialize skeleton screens for loading content
+    const loadingElements = document.querySelectorAll('[data-loading]');
+    loadingElements.forEach(element => {
+        if (element.getAttribute('data-loading') === 'true') {
+            showLoadingState(element);
+        }
+    });
+}
+function showLoadingState(element) {
+    const loadingType = element.getAttribute('data-loading-type') || 'skeleton';
+    // Store original content
+    const originalContent = element.innerHTML;
+    element.setAttribute('data-original-content', originalContent);
+    switch (loadingType) {
+        case 'skeleton':
+            element.innerHTML = createSkeletonContent(element);
+            break;
+        case 'spinner':
+            element.innerHTML = '<div class="modern-spinner"></div>';
+            break;
+        case 'dots':
+            element.innerHTML = '<div class="modern-loading-dots"></div>';
+            break;
+        default:
+            element.classList.add('modern-skeleton');
+    }
+    element.classList.add('modern-loading-active');
+}
+function hideLoadingState(element) {
+    const originalContent = element.getAttribute('data-original-content');
+    if (originalContent) {
+        element.innerHTML = originalContent;
+        element.removeAttribute('data-original-content');
+    }
+    element.classList.remove('modern-loading-active', 'modern-skeleton');
+    element.removeAttribute('data-loading');
+    // Add fade-in animation to restored content
+    element.classList.add('modern-content-fade-in');
+}
+function createSkeletonContent(element) {
+    const elementType = element.tagName.toLowerCase();
+    switch (elementType) {
+        case 'h1':
+        case 'h2':
+        case 'h3':
+            return '<div class="modern-skeleton modern-skeleton--heading"></div>';
+        case 'p':
+            return `
+                <div class="modern-skeleton modern-skeleton--paragraph"></div>
+                <div class="modern-skeleton modern-skeleton--paragraph"></div>
+                <div class="modern-skeleton modern-skeleton--paragraph"></div>
+            `;
+        case 'button':
+            return '<div class="modern-skeleton modern-skeleton--button"></div>';
+        default:
+            return '<div class="modern-skeleton modern-skeleton--card"></div>';
+    }
+}
+function applyInitialAnimations() {
+    // Apply initial animations to content that's already visible
+    const visibleContent = document.querySelectorAll('.modern-card:not(.modern-stagger-fade-in)');
+    visibleContent.forEach((element, index) => {
+        // Add entrance animation with delay
+        setTimeout(() => {
+            element.classList.add('modern-content-fade-in');
+        }, index * 100);
+    });
+}
+// Animation utility functions
+function animateContentEntry(element, animationType = 'fade-in') {
+    element.classList.add(`modern-content-${animationType}`);
+}
+function animateContentExit(element, callback) {
+    element.style.transition = 'opacity 0.25s ease-out, transform 0.25s ease-out';
+    element.style.opacity = '0';
+    element.style.transform = 'translateY(-8px)';
+    setTimeout(() => {
+        if (callback)
+            callback();
+    }, 250);
+}
+function createFloatingAnimation(element) {
+    element.classList.add('modern-float');
+}
+function createBounceAnimation(element) {
+    element.classList.add('modern-bounce');
+    // Remove class after animation completes
+    setTimeout(() => {
+        element.classList.remove('modern-bounce');
+    }, 1000);
+}
+function createShakeAnimation(element) {
+    element.classList.add('modern-shake');
+    // Remove class after animation completes
+    setTimeout(() => {
+        element.classList.remove('modern-shake');
+    }, 500);
+}
+function createGlowEffect(element, duration = 2000) {
+    element.classList.add('modern-glow');
+    setTimeout(() => {
+        element.classList.remove('modern-glow');
+    }, duration);
+}
+// Performance optimization for animations
+function optimizeAnimationPerformance() {
+    // Add will-change property to elements that will be animated
+    const animatedElements = document.querySelectorAll(`
+        .modern-card,
+        .modern-button,
+        .feedback-btn,
+        .modern-collapsible,
+        .modern-skeleton
+    `);
+    animatedElements.forEach(element => {
+        element.style.willChange = 'transform, opacity';
+    });
+    // Remove will-change after animations complete to free up resources
+    setTimeout(() => {
+        animatedElements.forEach(element => {
+            element.style.willChange = 'auto';
+        });
+    }, 1000);
+}
+// Enhanced content update function with animations
+function updateContentWithAnimation(data) {
+    console.log('Updating content with animations:', data);
+    // Show loading state first
+    const contentElement = document.getElementById('explanation');
+    if (contentElement) {
+        showLoadingState(contentElement);
+        // Simulate loading delay for smooth transition
+        setTimeout(() => {
+            // Update content using existing function
+            updateContent(data);
+            // Hide loading state and show content with animation
+            hideLoadingState(contentElement);
+            // Apply entrance animations to new content
+            applyInitialAnimations();
+            // Optimize performance
+            optimizeAnimationPerformance();
+        }, 500); // Short delay for better UX
+    }
+    else {
+        // Fallback to regular update if element not found
+        updateContent(data);
+    }
+}
+function handleFeedbackClick(helpful) {
+    if (feedbackSubmitted)
+        return;
+    const feedbackComment = document.getElementById('feedback-comment');
+    if (feedbackComment) {
+        // Add entrance animation to feedback comment section
+        feedbackComment.style.display = 'block';
+        animateContentEntry(feedbackComment, 'slide-in');
+        // Store the feedback choice for later submission
+        feedbackComment.helpfulChoice = helpful;
+        // Focus on textarea with slight delay for smooth animation
+        setTimeout(() => {
+            const textarea = document.getElementById('feedback-text');
+            if (textarea) {
+                textarea.focus();
+            }
+        }, 150);
+        // Add visual feedback to the clicked button
+        const clickedButton = helpful ?
+            document.getElementById('helpful-btn') :
+            document.getElementById('not-helpful-btn');
+        if (clickedButton) {
+            createBounceAnimation(clickedButton);
+        }
+    }
+}
+function submitFeedback() {
+    if (feedbackSubmitted)
+        return;
+    const feedbackComment = document.getElementById('feedback-comment');
+    const textarea = document.getElementById('feedback-text');
+    if (!feedbackComment || !textarea)
+        return;
+    const helpful = feedbackComment.helpfulChoice;
+    const comment = textarea.value.trim();
+    // Add loading animation to submit button
+    const submitButton = document.getElementById('submit-feedback-btn');
+    if (submitButton) {
+        submitButton.innerHTML = '<div class="modern-spinner modern-spinner--small"></div> Submitting...';
+        submitButton.setAttribute('disabled', 'true');
+    }
+    // Send feedback to extension
+    vscode.postMessage({
+        type: 'feedback',
+        data: {
+            helpful: helpful,
+            comment: comment || undefined
+        }
+    });
+    // Show thanks message with animation after short delay
+    setTimeout(() => {
+        showFeedbackThanksWithAnimation();
+        feedbackSubmitted = true;
+    }, 500);
+}
+function showFeedbackThanksWithAnimation() {
+    const feedbackComment = document.getElementById('feedback-comment');
+    const feedbackThanks = document.getElementById('feedback-thanks');
+    const feedbackControls = document.querySelector('.feedback-controls');
+    // Animate out the comment section
+    if (feedbackComment) {
+        animateContentExit(feedbackComment, () => {
+            feedbackComment.style.display = 'none';
+        });
+    }
+    // Hide feedback controls
+    if (feedbackControls) {
+        feedbackControls.style.display = 'none';
+    }
+    // Animate in the thanks message
+    if (feedbackThanks) {
+        setTimeout(() => {
+            feedbackThanks.style.display = 'block';
+            animateContentEntry(feedbackThanks, 'scale-in');
+            // Add a subtle glow effect
+            createGlowEffect(feedbackThanks, 1500);
+        }, 250);
+    }
+}
+function cancelFeedback() {
+    const feedbackComment = document.getElementById('feedback-comment');
+    const textarea = document.getElementById('feedback-text');
+    if (feedbackComment) {
+        // Animate out the feedback comment section
+        animateContentExit(feedbackComment, () => {
+            feedbackComment.style.display = 'none';
+        });
+    }
+    if (textarea) {
+        textarea.value = '';
+    }
+}
+function resetFeedbackSection() {
+    const feedbackComment = document.getElementById('feedback-comment');
+    const feedbackThanks = document.getElementById('feedback-thanks');
+    const textarea = document.getElementById('feedback-text');
+    if (feedbackComment) {
+        feedbackComment.style.display = 'none';
+    }
+    if (feedbackThanks) {
+        feedbackThanks.style.display = 'none';
+    }
+    if (textarea) {
+        textarea.value = '';
+    }
     feedbackSubmitted = false;
 }
+function showFeedbackThanks() {
+    showFeedbackThanksWithAnimation();
+}
+function showError(error) {
+    console.error('Error:', error);
+    // Show a simple error message in the content area with animation
+    const contentElement = document.getElementById('content');
+    if (contentElement) {
+        // Create error content with animation
+        const errorHtml = `
+            <div class="modern-card modern-card--error modern-content-fade-in">
+                <div class="card-header">
+                    <span class="card-icon">⚠️</span>
+                    <h3 class="card-title">Error</h3>
+                </div>
+                <div class="card-body">
+                    <p>${error.message || 'An unexpected error occurred.'}</p>
+                    <p><em>Please try again or check your Code Coach configuration.</em></p>
+                </div>
+            </div>
+        `;
+        // Animate out existing content first
+        animateContentExit(contentElement, () => {
+            contentElement.innerHTML = errorHtml;
+            // Add shake animation to draw attention to error
+            const errorCard = contentElement.querySelector('.modern-card--error');
+            if (errorCard) {
+                createShakeAnimation(errorCard);
+            }
+        });
+    }
+}
+// Theme Detection and Monitoring Functions
+function initializeThemeDetection() {
+    // Apply initial theme class based on VS Code theme data
+    applyThemeClass();
+    // Monitor for theme changes
+    monitorThemeChanges();
+    // Validate color contrast on load
+    validateColorContrast();
+    // Apply emergency fallback if theme detection fails
+    setTimeout(() => {
+        if (!isThemeDetected()) {
+            applyEmergencyFallback();
+        }
+    }, 1000);
+}
+function applyThemeClass() {
+    const body = document.body;
+    // Get theme information from window.initialTheme (set by extension)
+    const themeInfo = window.initialTheme;
+    if (themeInfo) {
+        // Remove existing theme classes
+        body.classList.remove('theme-light', 'theme-dark', 'theme-high-contrast');
+        // Apply appropriate theme class
+        body.classList.add(themeInfo.className);
+        // Set data attribute for CSS targeting
+        if (themeInfo.kind === 1) { // Light
+            body.setAttribute('data-vscode-theme-kind', 'vscode-light');
+        }
+        else if (themeInfo.kind === 2) { // Dark
+            body.setAttribute('data-vscode-theme-kind', 'vscode-dark');
+        }
+        else if (themeInfo.kind === 3) { // High Contrast
+            body.setAttribute('data-vscode-theme-kind', 'vscode-high-contrast');
+        }
+        // Set theme name attribute for specific theme targeting
+        if (themeInfo.name) {
+            body.setAttribute('data-vscode-theme-name', themeInfo.name.toLowerCase());
+        }
+        console.log('Applied theme:', themeInfo.className, themeInfo.name);
+    }
+    else {
+        // Fallback to system preference
+        applySystemThemePreference();
+    }
+}
+function applySystemThemePreference() {
+    const body = document.body;
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        body.classList.add('theme-dark');
+        body.setAttribute('data-vscode-theme-kind', 'vscode-dark');
+    }
+    else {
+        body.classList.add('theme-light');
+        body.setAttribute('data-vscode-theme-kind', 'vscode-light');
+    }
+    console.log('Applied system theme preference');
+}
+function monitorThemeChanges() {
+    // Listen for system theme changes as fallback
+    if (window.matchMedia) {
+        const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        darkModeQuery.addEventListener('change', (e) => {
+            if (!isThemeDetected()) {
+                applySystemThemePreference();
+                validateColorContrast();
+            }
+        });
+    }
+    // Monitor for VS Code theme changes via mutation observer
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.type === 'attributes' &&
+                (mutation.attributeName === 'data-vscode-theme-kind' ||
+                    mutation.attributeName === 'data-vscode-theme-name')) {
+                validateColorContrast();
+            }
+        });
+    });
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['data-vscode-theme-kind', 'data-vscode-theme-name', 'class']
+    });
+}
+function isThemeDetected() {
+    const body = document.body;
+    return body.hasAttribute('data-vscode-theme-kind') ||
+        body.classList.contains('theme-light') ||
+        body.classList.contains('theme-dark') ||
+        body.classList.contains('theme-high-contrast');
+}
+function applyEmergencyFallback() {
+    console.warn('Theme detection failed, applying emergency fallback');
+    const body = document.body;
+    body.classList.add('theme-emergency-fallback');
+    // Apply basic dark theme as fallback
+    body.classList.add('theme-dark');
+    body.setAttribute('data-vscode-theme-kind', 'vscode-dark');
+}
+function validateColorContrast() {
+    // Check for elements that might have low contrast
+    const elementsToCheck = document.querySelectorAll('.modern-text--secondary, .modern-text--muted');
+    elementsToCheck.forEach((element) => {
+        const styles = window.getComputedStyle(element);
+        const color = styles.color;
+        const backgroundColor = styles.backgroundColor;
+        // Simple contrast check - in a real implementation, you'd calculate the actual contrast ratio
+        if (isLowContrast(color, backgroundColor)) {
+            element.classList.add('low-contrast-fix');
+        }
+    });
+}
+function isLowContrast(color, backgroundColor) {
+    // Simplified contrast check - in production, you'd use a proper contrast ratio calculation
+    // This is a placeholder that could be enhanced with a proper contrast calculation library
+    // For now, we'll apply the fix to elements that might need it based on theme
+    const body = document.body;
+    if (body.classList.contains('theme-light')) {
+        // In light theme, secondary text might need contrast boost
+        return true;
+    }
+    if (body.classList.contains('theme-high-contrast')) {
+        // High contrast theme usually doesn't need fixes
+        return false;
+    }
+    // Default to applying contrast fix for safety
+    return false;
+}
+// Color Contrast Utilities
+function calculateContrastRatio(color1, color2) {
+    // This would implement the WCAG contrast ratio calculation
+    // For now, returning a placeholder value
+    return 4.5; // Minimum acceptable ratio
+}
+function ensureMinimumContrast(element, minRatio = 4.5) {
+    // This would ensure the element meets minimum contrast requirements
+    const styles = window.getComputedStyle(element);
+    const color = styles.color;
+    const backgroundColor = styles.backgroundColor;
+    const ratio = calculateContrastRatio(color, backgroundColor);
+    if (ratio < minRatio) {
+        element.classList.add('low-contrast-fix');
+    }
+}
+// Theme-aware animation control
+function respectReducedMotion() {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+        document.body.classList.add('reduced-motion');
+        // Disable animations for accessibility
+        const style = document.createElement('style');
+        style.textContent = `
+            .reduced-motion *,
+            .reduced-motion *::before,
+            .reduced-motion *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+}
+// Initialize reduced motion support
+document.addEventListener('DOMContentLoaded', () => {
+    respectReducedMotion();
+    // Monitor for changes in motion preferences
+    if (window.matchMedia) {
+        const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+        motionQuery.addEventListener('change', respectReducedMotion);
+    }
+});
 
-function handleFeedbackClick(helpful) {
+// Enhanced feedback handling with animations
+function handleFeedbackClickWithAnimation(helpful) {
     if (feedbackSubmitted) return;
 
     const feedbackComment = document.getElementById('feedback-comment');
     if (feedbackComment) {
+        // Add entrance animation to feedback comment section
         feedbackComment.style.display = 'block';
+        animateContentEntry(feedbackComment, 'slide-in');
         
         // Store the feedback choice for later submission
         feedbackComment.helpfulChoice = helpful;
         
-        // Focus on textarea
-        const textarea = document.getElementById('feedback-text');
-        if (textarea) {
-            textarea.focus();
+        // Focus on textarea with slight delay for smooth animation
+        setTimeout(() => {
+            const textarea = document.getElementById('feedback-text');
+            if (textarea) {
+                textarea.focus();
+            }
+        }, 150);
+        
+        // Add visual feedback to the clicked button
+        const clickedButton = helpful ? 
+            document.getElementById('helpful-btn') : 
+            document.getElementById('not-helpful-btn');
+        
+        if (clickedButton) {
+            createBounceAnimation(clickedButton);
         }
     }
 }
 
-function submitFeedback() {
+function submitFeedbackWithAnimation() {
     if (feedbackSubmitted) return;
 
     const feedbackComment = document.getElementById('feedback-comment');
@@ -608,6 +944,13 @@ function submitFeedback() {
     const helpful = feedbackComment.helpfulChoice;
     const comment = textarea.value.trim();
 
+    // Add loading animation to submit button
+    const submitButton = document.getElementById('submit-feedback-btn');
+    if (submitButton) {
+        submitButton.innerHTML = '<div class="modern-spinner modern-spinner--small"></div> Submitting...';
+        submitButton.setAttribute('disabled', 'true');
+    }
+
     // Send feedback to extension
     vscode.postMessage({
         type: 'feedback',
@@ -617,79 +960,122 @@ function submitFeedback() {
         }
     });
 
-    // Show thanks message
-    showFeedbackThanks();
-    feedbackSubmitted = true;
+    // Show thanks message with animation after short delay
+    setTimeout(() => {
+        showFeedbackThanksWithAnimation();
+        feedbackSubmitted = true;
+    }, 500);
 }
 
-function cancelFeedback() {
-    const feedbackComment = document.getElementById('feedback-comment');
-    const textarea = document.getElementById('feedback-text');
-    
-    if (feedbackComment) {
-        feedbackComment.style.display = 'none';
-    }
-    
-    if (textarea) {
-        textarea.value = '';
-    }
-}
-
-function resetFeedbackSection() {
-    const feedbackComment = document.getElementById('feedback-comment');
-    const feedbackThanks = document.getElementById('feedback-thanks');
-    const textarea = document.getElementById('feedback-text');
-    const feedbackControls = document.querySelector('.feedback-controls');
-    
-    if (feedbackComment) {
-        feedbackComment.style.display = 'none';
-    }
-    
-    if (feedbackThanks) {
-        feedbackThanks.style.display = 'none';
-    }
-    
-    if (feedbackControls) {
-        feedbackControls.style.display = 'flex';
-    }
-    
-    if (textarea) {
-        textarea.value = '';
-    }
-    
-    feedbackSubmitted = false;
-}
-
-function showFeedbackThanks() {
+function showFeedbackThanksWithAnimation() {
     const feedbackComment = document.getElementById('feedback-comment');
     const feedbackThanks = document.getElementById('feedback-thanks');
     const feedbackControls = document.querySelector('.feedback-controls');
     
+    // Animate out the comment section
     if (feedbackComment) {
-        feedbackComment.style.display = 'none';
+        animateContentExit(feedbackComment, () => {
+            feedbackComment.style.display = 'none';
+        });
     }
     
+    // Hide feedback controls
     if (feedbackControls) {
         feedbackControls.style.display = 'none';
     }
     
+    // Animate in the thanks message
     if (feedbackThanks) {
-        feedbackThanks.style.display = 'block';
+        setTimeout(() => {
+            feedbackThanks.style.display = 'block';
+            animateContentEntry(feedbackThanks, 'scale-in');
+            
+            // Add a subtle glow effect
+            createGlowEffect(feedbackThanks, 1500);
+        }, 250);
     }
 }
 
-function showError(error) {
-    console.error('Error:', error);
+function cancelFeedbackWithAnimation() {
+    const feedbackComment = document.getElementById('feedback-comment');
+    const textarea = document.getElementById('feedback-text');
     
-    // Show a simple error message in the content area
-    const contentElement = document.getElementById('content');
-    if (contentElement) {
-        contentElement.innerHTML = `
-            <div class="error-message">
-                <h3>⚠️ Error</h3>
-                <p>${error.message || 'An unexpected error occurred.'}</p>
-                <p><em>Please try again or check your Code Coach configuration.</em></p>
-            </div>
-        `;
+    if (feedbackComment) {
+        // Animate out the feedback comment section
+        animateContentExit(feedbackComment, () => {
+            feedbackComment.style.display = 'none';
+        });
     }
+    
+    if (textarea) {
+        textarea.value = '';
+    }
+}
+
+// Update message handling to use animations
+function handleMessageWithAnimations(event) {
+    const message = event.data;
+    
+    switch (message.type) {
+        case 'update':
+            updateContentWithAnimation(message.data);
+            break;
+        case 'error':
+            showError(message.data);
+            break;
+        case 'clear':
+            clearContentWithAnimation();
+            break;
+    }
+}
+
+// Override existing event listeners to use animated versions
+function initializeAnimatedEventListeners() {
+    // Feedback button listeners with animations
+    const helpfulBtn = document.getElementById('helpful-btn');
+    const notHelpfulBtn = document.getElementById('not-helpful-btn');
+    const submitFeedbackBtn = document.getElementById('submit-feedback-btn');
+    const cancelFeedbackBtn = document.getElementById('cancel-feedback-btn');
+
+    if (helpfulBtn) {
+        helpfulBtn.removeEventListener('click', () => handleFeedbackClick(true));
+        helpfulBtn.addEventListener('click', () => handleFeedbackClickWithAnimation(true));
+    }
+
+    if (notHelpfulBtn) {
+        notHelpfulBtn.removeEventListener('click', () => handleFeedbackClick(false));
+        notHelpfulBtn.addEventListener('click', () => handleFeedbackClickWithAnimation(false));
+    }
+
+    if (submitFeedbackBtn) {
+        submitFeedbackBtn.removeEventListener('click', submitFeedback);
+        submitFeedbackBtn.addEventListener('click', submitFeedbackWithAnimation);
+    }
+
+    if (cancelFeedbackBtn) {
+        cancelFeedbackBtn.removeEventListener('click', cancelFeedback);
+        cancelFeedbackBtn.addEventListener('click', cancelFeedbackWithAnimation);
+    }
+}
+
+// Initialize enhanced animation system
+function initializeEnhancedAnimationSystem() {
+    // Initialize base animation system
+    initializeAnimationSystem();
+    
+    // Initialize animated event listeners
+    initializeAnimatedEventListeners();
+    
+    // Override message handling to use animations
+    window.removeEventListener('message', handleMessage);
+    window.addEventListener('message', handleMessageWithAnimations);
+    
+    console.log('Enhanced animation system initialized');
+}
+
+// Call enhanced initialization on DOM ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeEnhancedAnimationSystem);
+} else {
+    initializeEnhancedAnimationSystem();
 }

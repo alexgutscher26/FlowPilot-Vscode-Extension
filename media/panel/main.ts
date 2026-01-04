@@ -14,6 +14,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize theme detection and monitoring
     initializeThemeDetection();
     
+    // Initialize animation system
+    initializeAnimationSystem();
+    
     // Initialize event listeners
     initializeEventListeners();
     
@@ -29,16 +32,58 @@ window.addEventListener('message', event => {
     
     switch (message.type) {
         case 'update':
-            updateContent(message.data);
+            updateContentWithAnimation(message.data);
             break;
         case 'error':
             showError(message.data);
             break;
         case 'clear':
-            clearContent();
+            clearContentWithAnimation();
             break;
     }
 });
+
+function clearContent() {
+    // Show welcome message and hide explanation content
+    const welcomeElement = document.getElementById('welcome');
+    const explanationElement = document.getElementById('explanation');
+    
+    if (welcomeElement) {
+        welcomeElement.style.display = 'block';
+    }
+    
+    if (explanationElement) {
+        explanationElement.style.display = 'none';
+    }
+
+    currentExplanation = null;
+    feedbackSubmitted = false;
+}
+
+function clearContentWithAnimation() {
+    const welcomeElement = document.getElementById('welcome');
+    const explanationElement = document.getElementById('explanation');
+    
+    if (explanationElement && explanationElement.style.display !== 'none') {
+        // Animate out the explanation content
+        animateContentExit(explanationElement, () => {
+            explanationElement.style.display = 'none';
+            
+            // Animate in the welcome message
+            if (welcomeElement) {
+                welcomeElement.style.display = 'block';
+                animateContentEntry(welcomeElement, 'fade-in');
+            }
+        });
+    } else if (welcomeElement) {
+        // Just show welcome if explanation is already hidden
+        welcomeElement.style.display = 'block';
+        animateContentEntry(welcomeElement, 'fade-in');
+    }
+
+    currentExplanation = null;
+    feedbackSubmitted = false;
+}
 
 function initializeEventListeners() {
     // Feedback button listeners
@@ -336,21 +381,331 @@ function updateElementContent(elementId: string, content: string) {
     }
 }
 
-function clearContent() {
-    // Show welcome message and hide explanation content
-    const welcomeElement = document.getElementById('welcome');
-    const explanationElement = document.getElementById('explanation');
+// Animation and Micro-interaction System Functions
+function initializeAnimationSystem() {
+    console.log('Initializing animation system...');
     
-    if (welcomeElement) {
-        welcomeElement.style.display = 'block';
-    }
+    // Initialize content loading animations
+    initializeContentAnimations();
     
-    if (explanationElement) {
-        explanationElement.style.display = 'none';
-    }
+    // Initialize collapsible sections
+    initializeCollapsibleSections();
+    
+    // Initialize intersection observer for scroll animations
+    initializeScrollAnimations();
+    
+    // Initialize ripple effects
+    initializeRippleEffects();
+    
+    // Initialize loading states
+    initializeLoadingStates();
+    
+    // Apply initial animations to existing content
+    applyInitialAnimations();
+}
 
-    currentExplanation = null;
-    feedbackSubmitted = false;
+function initializeContentAnimations() {
+    // Add fade-in animation to content sections when they appear
+    const contentSections = document.querySelectorAll('.modern-card, .main-content section');
+    
+    contentSections.forEach((section, index) => {
+        // Add staggered fade-in animation
+        section.classList.add('modern-stagger-fade-in');
+        
+        // Apply delay based on index
+        const delay = Math.min(index * 50, 300); // Max 300ms delay
+        (section as HTMLElement).style.animationDelay = `${delay}ms`;
+    });
+}
+
+function initializeCollapsibleSections() {
+    // Find all collapsible sections and add toggle functionality
+    const collapsibleSections = document.querySelectorAll('[data-collapsible]');
+    
+    collapsibleSections.forEach(section => {
+        const toggle = section.querySelector('[data-collapse-toggle]');
+        const content = section.querySelector('[data-collapse-content]');
+        
+        if (toggle && content) {
+            // Set initial state
+            const isExpanded = section.getAttribute('data-expanded') === 'true';
+            updateCollapsibleState(section as HTMLElement, content as HTMLElement, toggle as HTMLElement, isExpanded);
+            
+            // Add click handler
+            toggle.addEventListener('click', () => {
+                const currentlyExpanded = section.getAttribute('data-expanded') === 'true';
+                const newState = !currentlyExpanded;
+                
+                section.setAttribute('data-expanded', newState.toString());
+                updateCollapsibleState(section as HTMLElement, content as HTMLElement, toggle as HTMLElement, newState);
+            });
+        }
+    });
+}
+
+function updateCollapsibleState(section: HTMLElement, content: HTMLElement, toggle: HTMLElement, isExpanded: boolean) {
+    if (isExpanded) {
+        content.classList.remove('modern-collapsible--collapsed');
+        content.classList.add('modern-collapsible--expanded');
+        toggle.classList.remove('modern-collapse-toggle--collapsed');
+        toggle.classList.add('modern-collapse-toggle--expanded');
+        section.setAttribute('aria-expanded', 'true');
+    } else {
+        content.classList.remove('modern-collapsible--expanded');
+        content.classList.add('modern-collapsible--collapsed');
+        toggle.classList.remove('modern-collapse-toggle--expanded');
+        toggle.classList.add('modern-collapse-toggle--collapsed');
+        section.setAttribute('aria-expanded', 'false');
+    }
+}
+
+function initializeScrollAnimations() {
+    // Create intersection observer for scroll-triggered animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('modern-in-view');
+            }
+        });
+    }, observerOptions);
+    
+    // Observe elements with scroll animation classes
+    const scrollElements = document.querySelectorAll('.modern-animate-on-scroll, .modern-stagger-scroll');
+    scrollElements.forEach(element => {
+        observer.observe(element);
+    });
+}
+
+function initializeRippleEffects() {
+    // Add ripple effect to buttons and interactive elements
+    const rippleElements = document.querySelectorAll('.modern-button, .feedback-btn, [data-ripple]');
+    
+    rippleElements.forEach(element => {
+        element.classList.add('modern-ripple-effect');
+        
+        element.addEventListener('click', (e) => {
+            // Create ripple effect
+            createRippleEffect(e.target as HTMLElement, e as MouseEvent);
+        });
+    });
+}
+
+function createRippleEffect(element: HTMLElement, event: MouseEvent) {
+    const rect = element.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    const x = event.clientX - rect.left - size / 2;
+    const y = event.clientY - rect.top - size / 2;
+    
+    const ripple = document.createElement('span');
+    ripple.className = 'modern-ripple';
+    ripple.style.cssText = `
+        position: absolute;
+        width: ${size}px;
+        height: ${size}px;
+        left: ${x}px;
+        top: ${y}px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        transform: scale(0);
+        animation: modernRipple 0.6s ease-out;
+        pointer-events: none;
+        z-index: 1;
+    `;
+    
+    element.style.position = 'relative';
+    element.appendChild(ripple);
+    
+    // Remove ripple after animation
+    setTimeout(() => {
+        if (ripple.parentNode) {
+            ripple.parentNode.removeChild(ripple);
+        }
+    }, 600);
+}
+
+function initializeLoadingStates() {
+    // Initialize skeleton screens for loading content
+    const loadingElements = document.querySelectorAll('[data-loading]');
+    
+    loadingElements.forEach(element => {
+        if (element.getAttribute('data-loading') === 'true') {
+            showLoadingState(element as HTMLElement);
+        }
+    });
+}
+
+function showLoadingState(element: HTMLElement) {
+    const loadingType = element.getAttribute('data-loading-type') || 'skeleton';
+    
+    // Store original content
+    const originalContent = element.innerHTML;
+    element.setAttribute('data-original-content', originalContent);
+    
+    switch (loadingType) {
+        case 'skeleton':
+            element.innerHTML = createSkeletonContent(element);
+            break;
+        case 'spinner':
+            element.innerHTML = '<div class="modern-spinner"></div>';
+            break;
+        case 'dots':
+            element.innerHTML = '<div class="modern-loading-dots"></div>';
+            break;
+        default:
+            element.classList.add('modern-skeleton');
+    }
+    
+    element.classList.add('modern-loading-active');
+}
+
+function hideLoadingState(element: HTMLElement) {
+    const originalContent = element.getAttribute('data-original-content');
+    
+    if (originalContent) {
+        element.innerHTML = originalContent;
+        element.removeAttribute('data-original-content');
+    }
+    
+    element.classList.remove('modern-loading-active', 'modern-skeleton');
+    element.removeAttribute('data-loading');
+    
+    // Add fade-in animation to restored content
+    element.classList.add('modern-content-fade-in');
+}
+
+function createSkeletonContent(element: HTMLElement): string {
+    const elementType = element.tagName.toLowerCase();
+    
+    switch (elementType) {
+        case 'h1':
+        case 'h2':
+        case 'h3':
+            return '<div class="modern-skeleton modern-skeleton--heading"></div>';
+        case 'p':
+            return `
+                <div class="modern-skeleton modern-skeleton--paragraph"></div>
+                <div class="modern-skeleton modern-skeleton--paragraph"></div>
+                <div class="modern-skeleton modern-skeleton--paragraph"></div>
+            `;
+        case 'button':
+            return '<div class="modern-skeleton modern-skeleton--button"></div>';
+        default:
+            return '<div class="modern-skeleton modern-skeleton--card"></div>';
+    }
+}
+
+function applyInitialAnimations() {
+    // Apply initial animations to content that's already visible
+    const visibleContent = document.querySelectorAll('.modern-card:not(.modern-stagger-fade-in)');
+    
+    visibleContent.forEach((element, index) => {
+        // Add entrance animation with delay
+        setTimeout(() => {
+            element.classList.add('modern-content-fade-in');
+        }, index * 100);
+    });
+}
+
+// Animation utility functions
+function animateContentEntry(element: HTMLElement, animationType: string = 'fade-in') {
+    element.classList.add(`modern-content-${animationType}`);
+}
+
+function animateContentExit(element: HTMLElement, callback?: () => void) {
+    element.style.transition = 'opacity 0.25s ease-out, transform 0.25s ease-out';
+    element.style.opacity = '0';
+    element.style.transform = 'translateY(-8px)';
+    
+    setTimeout(() => {
+        if (callback) callback();
+    }, 250);
+}
+
+function createFloatingAnimation(element: HTMLElement) {
+    element.classList.add('modern-float');
+}
+
+function createBounceAnimation(element: HTMLElement) {
+    element.classList.add('modern-bounce');
+    
+    // Remove class after animation completes
+    setTimeout(() => {
+        element.classList.remove('modern-bounce');
+    }, 1000);
+}
+
+function createShakeAnimation(element: HTMLElement) {
+    element.classList.add('modern-shake');
+    
+    // Remove class after animation completes
+    setTimeout(() => {
+        element.classList.remove('modern-shake');
+    }, 500);
+}
+
+function createGlowEffect(element: HTMLElement, duration: number = 2000) {
+    element.classList.add('modern-glow');
+    
+    setTimeout(() => {
+        element.classList.remove('modern-glow');
+    }, duration);
+}
+
+// Performance optimization for animations
+function optimizeAnimationPerformance() {
+    // Add will-change property to elements that will be animated
+    const animatedElements = document.querySelectorAll(`
+        .modern-card,
+        .modern-button,
+        .feedback-btn,
+        .modern-collapsible,
+        .modern-skeleton
+    `);
+    
+    animatedElements.forEach(element => {
+        (element as HTMLElement).style.willChange = 'transform, opacity';
+    });
+    
+    // Remove will-change after animations complete to free up resources
+    setTimeout(() => {
+        animatedElements.forEach(element => {
+            (element as HTMLElement).style.willChange = 'auto';
+        });
+    }, 1000);
+}
+
+// Enhanced content update function with animations
+function updateContentWithAnimation(data: any) {
+    console.log('Updating content with animations:', data);
+    
+    // Show loading state first
+    const contentElement = document.getElementById('explanation');
+    if (contentElement) {
+        showLoadingState(contentElement);
+        
+        // Simulate loading delay for smooth transition
+        setTimeout(() => {
+            // Update content using existing function
+            updateContent(data);
+            
+            // Hide loading state and show content with animation
+            hideLoadingState(contentElement);
+            
+            // Apply entrance animations to new content
+            applyInitialAnimations();
+            
+            // Optimize performance
+            optimizeAnimationPerformance();
+        }, 500); // Short delay for better UX
+    } else {
+        // Fallback to regular update if element not found
+        updateContent(data);
+    }
 }
 
 function handleFeedbackClick(helpful: boolean) {
@@ -358,15 +713,28 @@ function handleFeedbackClick(helpful: boolean) {
 
     const feedbackComment = document.getElementById('feedback-comment');
     if (feedbackComment) {
+        // Add entrance animation to feedback comment section
         feedbackComment.style.display = 'block';
+        animateContentEntry(feedbackComment, 'slide-in');
         
         // Store the feedback choice for later submission
         (feedbackComment as any).helpfulChoice = helpful;
         
-        // Focus on textarea
-        const textarea = document.getElementById('feedback-text') as HTMLTextAreaElement;
-        if (textarea) {
-            textarea.focus();
+        // Focus on textarea with slight delay for smooth animation
+        setTimeout(() => {
+            const textarea = document.getElementById('feedback-text') as HTMLTextAreaElement;
+            if (textarea) {
+                textarea.focus();
+            }
+        }, 150);
+        
+        // Add visual feedback to the clicked button
+        const clickedButton = helpful ? 
+            document.getElementById('helpful-btn') : 
+            document.getElementById('not-helpful-btn');
+        
+        if (clickedButton) {
+            createBounceAnimation(clickedButton);
         }
     }
 }
@@ -382,6 +750,13 @@ function submitFeedback() {
     const helpful = (feedbackComment as any).helpfulChoice;
     const comment = textarea.value.trim();
 
+    // Add loading animation to submit button
+    const submitButton = document.getElementById('submit-feedback-btn');
+    if (submitButton) {
+        submitButton.innerHTML = '<div class="modern-spinner modern-spinner--small"></div> Submitting...';
+        submitButton.setAttribute('disabled', 'true');
+    }
+
     // Send feedback to extension
     vscode.postMessage({
         type: 'feedback',
@@ -391,9 +766,40 @@ function submitFeedback() {
         }
     });
 
-    // Show thanks message
-    showFeedbackThanks();
-    feedbackSubmitted = true;
+    // Show thanks message with animation after short delay
+    setTimeout(() => {
+        showFeedbackThanksWithAnimation();
+        feedbackSubmitted = true;
+    }, 500);
+}
+
+function showFeedbackThanksWithAnimation() {
+    const feedbackComment = document.getElementById('feedback-comment');
+    const feedbackThanks = document.getElementById('feedback-thanks');
+    const feedbackControls = document.querySelector('.feedback-controls');
+    
+    // Animate out the comment section
+    if (feedbackComment) {
+        animateContentExit(feedbackComment, () => {
+            feedbackComment.style.display = 'none';
+        });
+    }
+    
+    // Hide feedback controls
+    if (feedbackControls) {
+        (feedbackControls as HTMLElement).style.display = 'none';
+    }
+    
+    // Animate in the thanks message
+    if (feedbackThanks) {
+        setTimeout(() => {
+            feedbackThanks.style.display = 'block';
+            animateContentEntry(feedbackThanks, 'scale-in');
+            
+            // Add a subtle glow effect
+            createGlowEffect(feedbackThanks, 1500);
+        }, 250);
+    }
 }
 
 function cancelFeedback() {
@@ -401,7 +807,10 @@ function cancelFeedback() {
     const textarea = document.getElementById('feedback-text') as HTMLTextAreaElement;
     
     if (feedbackComment) {
-        feedbackComment.style.display = 'none';
+        // Animate out the feedback comment section
+        animateContentExit(feedbackComment, () => {
+            feedbackComment.style.display = 'none';
+        });
     }
     
     if (textarea) {
@@ -430,36 +839,39 @@ function resetFeedbackSection() {
 }
 
 function showFeedbackThanks() {
-    const feedbackComment = document.getElementById('feedback-comment');
-    const feedbackThanks = document.getElementById('feedback-thanks');
-    const feedbackControls = document.querySelector('.feedback-controls');
-    
-    if (feedbackComment) {
-        feedbackComment.style.display = 'none';
-    }
-    
-    if (feedbackControls) {
-        (feedbackControls as HTMLElement).style.display = 'none';
-    }
-    
-    if (feedbackThanks) {
-        feedbackThanks.style.display = 'block';
-    }
+    showFeedbackThanksWithAnimation();
 }
 
 function showError(error: any) {
     console.error('Error:', error);
     
-    // Show a simple error message in the content area
+    // Show a simple error message in the content area with animation
     const contentElement = document.getElementById('content');
     if (contentElement) {
-        contentElement.innerHTML = `
-            <div class="error-message">
-                <h3>⚠️ Error</h3>
-                <p>${error.message || 'An unexpected error occurred.'}</p>
-                <p><em>Please try again or check your Code Coach configuration.</em></p>
+        // Create error content with animation
+        const errorHtml = `
+            <div class="modern-card modern-card--error modern-content-fade-in">
+                <div class="card-header">
+                    <span class="card-icon">⚠️</span>
+                    <h3 class="card-title">Error</h3>
+                </div>
+                <div class="card-body">
+                    <p>${error.message || 'An unexpected error occurred.'}</p>
+                    <p><em>Please try again or check your Code Coach configuration.</em></p>
+                </div>
             </div>
         `;
+        
+        // Animate out existing content first
+        animateContentExit(contentElement, () => {
+            contentElement.innerHTML = errorHtml;
+            
+            // Add shake animation to draw attention to error
+            const errorCard = contentElement.querySelector('.modern-card--error');
+            if (errorCard) {
+                createShakeAnimation(errorCard as HTMLElement);
+            }
+        });
     }
 }
 
