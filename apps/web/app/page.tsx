@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { Check, ArrowRight, ShieldCheck, GaugeCircle, LineChart, Download, Sparkles, Quote, CreditCard } from "lucide-react"
+import { Check, ShieldCheck, GaugeCircle, LineChart, Sparkles, Quote } from "lucide-react"
 
 function Nav() {
   return (
@@ -25,72 +25,63 @@ function Nav() {
 function Hero() {
   return (
     <section className="hero-gradient border-b">
-      <div className="container py-20 md:py-28">
+      <div className="container py-24">
         <div className="mx-auto max-w-3xl text-center">
-          <div className="mx-auto inline-flex items-center gap-2 rounded-full border bg-secondary px-3 py-1 text-xs font-medium text-primary">
-            <ShieldCheck className="h-3.5 w-3.5" />
-            FOR BEGINNERS & INTERMEDIATES
+          <div className="mx-auto inline-flex items-center gap-2 rounded-full border bg-muted px-3 py-1 text-[11px] font-semibold text-primary">
+            NOW IN BETA
           </div>
-          <h1 className="mt-5 text-4xl font-bold tracking-tight md:text-5xl">
-            Your AI Senior Developer, right inside VS Code.
+          <h1 className="mt-5 text-4xl font-extrabold leading-tight tracking-tight md:text-6xl">
+            Your AI Senior Developer,{" "}
+            <span className="bg-gradient-to-r from-sky-500 to-blue-600 bg-clip-text text-transparent">
+              right inside VS Code.
+            </span>
           </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-            Stop guessing and start learning faster. Get clear explanations, reviews, and fixes without leaving your editor.
+          <p className="mx-auto mt-4 max-w-2xl text-base text-muted-foreground md:text-lg">
+            Stop getting stuck on tutorials. Get instant feedback, refactoring tips, and mentorship directly in your IDE while you code.
           </p>
-          <div className="mt-8 flex items-center justify-center gap-3">
-            <Button size="lg">Start free</Button>
-            <Button variant="secondary" size="lg">
-              Install in VS Code
-            </Button>
+          <div className="mx-auto mt-8 flex max-w-xl items-center justify-between rounded-xl border bg-card p-2 shadow-sm">
+            <input
+              type="text"
+              inputMode="email"
+              placeholder="Enter your email address"
+              className="w-full appearance-none rounded-lg bg-background px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary"
+            />
+            <Button className="ml-2 h-11 px-6">Join Waitlist</Button>
+          </div>
+          <div className="mt-3 text-xs text-muted-foreground">
+            Join 2,000+ developers on the waitlist.
           </div>
         </div>
-        <div className="mx-auto mt-12 max-w-4xl">
-          <div className="rounded-xl border bg-card shadow-2xl">
-            <div className="grid grid-cols-2 overflow-hidden rounded-xl">
-              <div className="bg-[#0B1220] p-6 text-[#D1D6E5]">
-                <div className="mb-4 flex items-center gap-2 text-xs text-[#8A94A6]">
-                  <div className="h-2 w-2 rounded-full bg-green-500"></div>
-                  <div className="h-2 w-2 rounded-full bg-yellow-500"></div>
-                  <div className="h-2 w-2 rounded-full bg-red-500"></div>
-                </div>
-                <pre className="text-sm leading-relaxed">
-{`def bubblesort(arr):
-  n = len(arr)
-  for i in range(n):
-    for j in range(0, n-i-1):
-      if arr[j] > arr[j+1]:
-        arr[j], arr[j+1] = arr[j+1], arr[j]
-  return arr`}
-                </pre>
+        <div className="mx-auto mt-14 w-full max-w-5xl rounded-xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-800 bg-[#0f172a] relative">
+          <div
+            className="w-full aspect-[16/9] bg-cover bg-center bg-no-repeat relative"
+            data-alt="VS Code interface showing code suggestions and AI chat panel"
+            style={{ backgroundImage: "linear-gradient(to bottom right, #1e293b, #0f172a)" }}
+          >
+            <div className="absolute top-0 w-full h-8 bg-[#1e293b] flex items-center px-4 gap-2 border-b border-gray-700">
+              <div className="w-3 h-3 rounded-full bg-red-500"></div>
+              <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+              <div className="w-3 h-3 rounded-full bg-green-500"></div>
+            </div>
+            <div className="absolute inset-0 top-8 flex">
+              <div className="w-16 h-full border-r border-gray-700 bg-[#1e293b] hidden sm:block"></div>
+              <div className="flex-1 p-8 font-mono text-sm text-blue-300 opacity-80 leading-loose">
+                {"import "} <span className="text-purple-400">React</span> {" from "} <span className="text-green-400">'react'</span>;<br />
+                <br />
+                <span className="text-purple-400">const</span> <span className="text-yellow-300">App</span> {" = () => {"}<br />
+                &nbsp;&nbsp;<span className="text-gray-400">// Code Coach Suggestion: Consider memoizing this value</span><br />
+                &nbsp;&nbsp;<span className="text-purple-400">const</span> <span className="text-blue-200">value</span> {" = "}{"expensiveCalculation();"}<br />
+                &nbsp;&nbsp;{"return "} <span className="text-blue-200">&lt;div&gt;</span>{"Hello World"}<span className="text-blue-200">&lt;/div&gt;</span>;<br />
+                {"}"}
               </div>
-              <div className="bg-secondary p-6">
-                <div className="rounded-lg border bg-card p-4">
-                  <div className="text-sm font-semibold">Explanation</div>
-                  <p className="mt-2 text-sm text-muted-foreground">
-                    The outer loop walks the list, the inner loop compares neighbors and swaps when needed. After each pass, the largest item bubbles to the end.
-                  </p>
-                  <div className="mt-4 grid gap-2 text-sm">
-                    <div className="flex items-center gap-2 text-green-600">
-                      <Check className="h-4 w-4" />
-                      Clear variable naming
-                    </div>
-                    <div className="flex items-center gap-2 text-amber-600">
-                      <Sparkles className="h-4 w-4" />
-                      Consider early-exit optimization
-                    </div>
-                  </div>
+              <div className="w-80 h-full border-l border-gray-700 bg-[#1e293b] p-4 hidden md:flex flex-col gap-4">
+                <div className="bg-blue-900/20 border border-blue-500/30 p-3 rounded text-xs text-blue-200">
+                  <strong>Code Coach:</strong> {"You're re-calculating `value` on every render. Use `useMemo` here to improve performance."}
                 </div>
+                <div className="h-2 w-3/4 bg-gray-700 rounded opacity-20"></div>
+                <div className="h-2 w-1/2 bg-gray-700 rounded opacity-20"></div>
               </div>
             </div>
-          </div>
-          <div className="mx-auto mt-6 max-w-3xl text-center text-sm text-muted-foreground">
-            Trusted by learners at bootcamps and universities
-          </div>
-          <div className="mt-3 flex justify-center gap-6 opacity-60">
-            <div className="h-6 w-24 rounded bg-secondary" />
-            <div className="h-6 w-24 rounded bg-secondary" />
-            <div className="h-6 w-24 rounded bg-secondary" />
-            <div className="h-6 w-24 rounded bg-secondary" />
           </div>
         </div>
       </div>
