@@ -1,6 +1,10 @@
 // Main script for the FlowPilot webview panel
 
-// Get VS Code API
+declare function acquireVsCodeApi(): {
+    postMessage: (message: any) => void;
+    getState: () => any;
+    setState: (state: any) => void;
+};
 const vscode = acquireVsCodeApi();
 
 // State management
