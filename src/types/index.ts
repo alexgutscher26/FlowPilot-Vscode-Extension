@@ -26,6 +26,7 @@ export interface ExplainRequest {
     userLevel?: string;
     promptVersion?: string;
     promptId?: string;
+    explanationDepth?: 'short' | 'normal' | 'detailed';
 }
 
 export interface ReviewRequest {

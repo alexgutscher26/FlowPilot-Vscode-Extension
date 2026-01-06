@@ -7,7 +7,7 @@ import * as vscode from 'vscode';
 import { ConfigurationManager } from '../config/ConfigurationManager';
 
 export interface TelemetryEventData {
-    eventType: 'explainSelection' | 'reviewSelection' | 'explainError' | 'feedback' | 'confusion' | 'configuration';
+    eventType: 'explainSelection' | 'reviewSelection' | 'explainError' | 'feedback' | 'confusion' | 'configuration' | 'metrics' | 'session';
     metadata: Record<string, any>;
     sessionId: string;
     extensionVersion: string;
@@ -20,6 +20,7 @@ export interface PrivacyCompliantMetadata {
     languageId?: string;
     fileExtension?: string;
     constructType?: 'function' | 'class' | 'loop' | 'conditional' | 'other';
+    schemaVersion?: string;
     
     // Code structure information (no actual code content)
     codeLength?: number;
@@ -58,6 +59,16 @@ export interface PrivacyCompliantMetadata {
     settingChanged?: string;
     newValue?: string;
     proactiveEnabled?: boolean;
+
+    // Metrics
+    callType?: 'explain' | 'review' | 'error';
+    timeout?: boolean;
+    sessionDurationBucket?: '≤1m' | '≤5m' | '≤15m' | '≤60m' | '>60m';
+    explanationsPerSession?: number;
+    reviewsPerSession?: number;
+    errorsPerSession?: number;
+    timeoutsPerSession?: number;
+    failuresPerSession?: number;
 }
 
 export class Telemetry {
@@ -67,6 +78,15 @@ export class Telemetry {
     private eventQueue: TelemetryEventData[] = [];
     private isProcessingQueue = false;
     private disposables: vscode.Disposable[] = [];
+    private schemaVersion: string = 'v1';
+    private sessionStart: number;
+    private sessionCounters = {
+        explain: 0,
+        review: 0,
+        error: 0,
+        failures: 0,
+        timeouts: 0
+    };
 
     constructor(
         private context: vscode.ExtensionContext,
@@ -75,6 +95,7 @@ export class Telemetry {
         this.sessionId = this.generateSessionId();
         this.extensionVersion = this.getExtensionVersion();
         this.vscodeVersion = vscode.version;
+        this.sessionStart = Date.now();
         
         this.setupEventQueueProcessor();
     }
@@ -100,6 +121,7 @@ export class Telemetry {
         }
 
         const sanitizedMetadata = this.sanitizeMetadata({
+            schemaVersion: this.schemaVersion,
             languageId: metadata.languageId,
             fileExtension: metadata.fileExtension,
             codeLength: metadata.codeLength,
@@ -115,6 +137,10 @@ export class Telemetry {
         });
 
         this.queueEvent('explainSelection', sanitizedMetadata);
+        this.sessionCounters.explain += 1;
+        if (sanitizedMetadata.success === false) {
+            this.sessionCounters.failures += 1;
+        }
     }
 
     /**
@@ -139,6 +165,7 @@ export class Telemetry {
         }
 
         const sanitizedMetadata = this.sanitizeMetadata({
+            schemaVersion: this.schemaVersion,
             languageId: metadata.languageId,
             fileExtension: metadata.fileExtension,
             codeLength: metadata.codeLength,
@@ -155,6 +182,10 @@ export class Telemetry {
         });
 
         this.queueEvent('reviewSelection', sanitizedMetadata);
+        this.sessionCounters.review += 1;
+        if (sanitizedMetadata.success === false) {
+            this.sessionCounters.failures += 1;
+        }
     }
 
     /**
@@ -178,6 +209,7 @@ export class Telemetry {
         }
 
         const sanitizedMetadata = this.sanitizeMetadata({
+            schemaVersion: this.schemaVersion,
             languageId: metadata.languageId,
             fileExtension: metadata.fileExtension,
             errorType: metadata.errorType,
@@ -193,6 +225,10 @@ export class Telemetry {
         });
 
         this.queueEvent('explainError', sanitizedMetadata);
+        this.sessionCounters.error += 1;
+        if (sanitizedMetadata.success === false) {
+            this.sessionCounters.failures += 1;
+        }
     }
 
     /**
@@ -200,7 +236,7 @@ export class Telemetry {
      */
     public trackFeedback(feedback: {
         helpful: boolean;
-        featureUsed: 'explain' | 'review' | 'errorExplanation';
+        featureUsed: 'explain' | 'review' | 'errorExplanation' | 'conceptClick' | 'reflectionView';
         userLevel: string;
         feedbackCommentLength?: number;
         responseTime?: number;
@@ -210,6 +246,7 @@ export class Telemetry {
         }
 
         const sanitizedMetadata = this.sanitizeMetadata({
+            schemaVersion: this.schemaVersion,
             feedbackRating: feedback.helpful,
             featureUsed: feedback.featureUsed,
             userLevel: feedback.userLevel,
@@ -217,6 +254,30 @@ export class Telemetry {
             responseTime: feedback.responseTime
         });
 
+        this.queueEvent('feedback', sanitizedMetadata);
+    }
+
+    public trackConceptClick(data: { concept: string; url?: string; userLevel: string }): void {
+        if (!this.configManager.isTelemetryEnabled()) {
+            return;
+        }
+        const sanitizedMetadata = this.sanitizeMetadata({
+            schemaVersion: this.schemaVersion,
+            featureUsed: 'conceptClick',
+            userLevel: data.userLevel
+        });
+        this.queueEvent('feedback', sanitizedMetadata);
+    }
+
+    public trackReflectionView(userLevel: string): void {
+        if (!this.configManager.isTelemetryEnabled()) {
+            return;
+        }
+        const sanitizedMetadata = this.sanitizeMetadata({
+            schemaVersion: this.schemaVersion,
+            featureUsed: 'reflectionView',
+            userLevel
+        });
         this.queueEvent('feedback', sanitizedMetadata);
     }
 
@@ -236,6 +297,7 @@ export class Telemetry {
         }
 
         const sanitizedMetadata = this.sanitizeMetadata({
+            schemaVersion: this.schemaVersion,
             triggerType: metadata.triggerType,
             dwellTime: metadata.dwellTime,
             errorRepeatCount: metadata.errorRepeatCount,
@@ -246,6 +308,34 @@ export class Telemetry {
         });
 
         this.queueEvent('confusion', sanitizedMetadata);
+    }
+
+    public trackLLMOutcome(metadata: {
+        callType: 'explain' | 'review' | 'error';
+        success: boolean;
+        timeout: boolean;
+        apiResponseTime?: number;
+        userLevel: string;
+    }): void {
+        if (!this.configManager.isTelemetryEnabled()) {
+            return;
+        }
+        if (!metadata.success) {
+            this.sessionCounters.failures += 1;
+        }
+        if (metadata.timeout) {
+            this.sessionCounters.timeouts += 1;
+        }
+        const sanitizedMetadata = this.sanitizeMetadata({
+            schemaVersion: this.schemaVersion,
+            callType: metadata.callType,
+            success: metadata.success,
+            timeout: metadata.timeout,
+            apiResponseTime: metadata.apiResponseTime,
+            featureUsed: 'llmOutcome',
+            userLevel: metadata.userLevel
+        });
+        this.queueEvent('metrics', sanitizedMetadata);
     }
 
     /**
@@ -261,6 +351,7 @@ export class Telemetry {
         }
 
         const sanitizedMetadata = this.sanitizeMetadata({
+            schemaVersion: this.schemaVersion,
             settingChanged: metadata.settingChanged,
             newValue: metadata.newValue,
             userLevel: metadata.userLevel,
@@ -305,10 +396,11 @@ export class Telemetry {
 
         // Allow only specific safe fields
         const allowedFields: (keyof PrivacyCompliantMetadata)[] = [
-            'languageId', 'fileExtension', 'constructType', 'codeLength', 'lineCount', 'selectionLength',
+            'languageId', 'fileExtension', 'constructType', 'codeLength', 'lineCount', 'selectionLength', 'schemaVersion',
             'complexityNestingEstimate', 'errorType', 'diagnosticSeverity', 'requestedHelp', 'responseTime',
             'userLevel', 'feedbackRating', 'feedbackCommentLength', 'apiResponseTime', 'success',
-            'featureUsed', 'triggerMethod'
+            'featureUsed', 'triggerMethod', 'callType', 'timeout', 'sessionDurationBucket',
+            'explanationsPerSession', 'reviewsPerSession', 'errorsPerSession', 'timeoutsPerSession', 'failuresPerSession'
         ];
 
         for (const field of allowedFields) {
@@ -353,6 +445,14 @@ export class Telemetry {
         }
 
         return sanitized;
+    }
+
+    private bucketSessionDuration(ms: number): PrivacyCompliantMetadata['sessionDurationBucket'] {
+        if (ms <= 60_000) return '≤1m';
+        if (ms <= 5 * 60_000) return '≤5m';
+        if (ms <= 15 * 60_000) return '≤15m';
+        if (ms <= 60 * 60_000) return '≤60m';
+        return '>60m';
     }
 
     /**
@@ -527,12 +627,31 @@ export class Telemetry {
         const disposable = vscode.Disposable.from({
             dispose: () => {
                 clearInterval(interval);
+                this.emitSessionMetrics();
                 this.processEventQueue(); // Final flush
             }
         });
 
         this.disposables.push(disposable);
         this.context.subscriptions.push(disposable);
+    }
+
+    private emitSessionMetrics(): void {
+        if (!this.configManager.isTelemetryEnabled()) {
+            return;
+        }
+        const durationMs = Date.now() - this.sessionStart;
+        const sanitized = this.sanitizeMetadata({
+            schemaVersion: this.schemaVersion,
+            sessionDurationBucket: this.bucketSessionDuration(durationMs),
+            explanationsPerSession: Math.min(this.sessionCounters.explain, 1000),
+            reviewsPerSession: Math.min(this.sessionCounters.review, 1000),
+            errorsPerSession: Math.min(this.sessionCounters.error, 1000),
+            timeoutsPerSession: Math.min(this.sessionCounters.timeouts, 1000),
+            failuresPerSession: Math.min(this.sessionCounters.failures, 1000),
+            featureUsed: 'sessionSummary'
+        });
+        this.queueEvent('session', sanitized);
     }
 
     /**
@@ -591,6 +710,7 @@ export class Telemetry {
      * Dispose of resources
      */
     public dispose(): void {
+        this.emitSessionMetrics();
         this.flush(); // Fire-and-forget final flush
         this.disposables.forEach(d => d.dispose());
         this.disposables = [];

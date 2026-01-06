@@ -96,6 +96,7 @@ export class CommandManager {
         // Register code action commands (Requirements: 2.3)
         this.registerCommand('codeCoach.explainErrorAtPosition', this.explainErrorAtPosition.bind(this));
         this.registerCommand('codeCoach.explainAllErrorsAtPosition', this.explainAllErrorsAtPosition.bind(this));
+        this.registerCommand('codeCoach.introWalkthrough', this.introWalkthrough.bind(this));
         
         // Register code action provider for Python files (Requirements: 2.3)
         const pythonSelector: vscode.DocumentSelector = { language: 'python', scheme: 'file' };
@@ -275,6 +276,7 @@ export class CommandManager {
                     })();
                     const relativePath = vscode.workspace.asRelativePath(editor.document.uri);
                     const prompt = PromptTemplates.getExplainTemplate();
+                    const depth = vscode.workspace.getConfiguration('codeCoach').get<'short' | 'normal' | 'detailed'>('explanationDepth', 'normal');
                     const request: ExplainRequest = {
                         code: code,
                         languageId: editor.document.languageId,
@@ -284,17 +286,20 @@ export class CommandManager {
                         surroundingContext: surroundingContext,
                         userLevel: this.configManager.getUserLevel(),
                         promptVersion: prompt.version,
-                        promptId: prompt.id
+                        promptId: prompt.id,
+                        explanationDepth: depth
                     };
 
                     progress.report({ message: "Getting explanation from FlowPilot..." });
 
                     // Call API to get explanation with performance monitoring and timeout
+                    const startMs = Date.now();
                     const explanation = await this.performanceMonitor.withTimeout(
                         'apiExplainSelection',
                         () => this.apiClient!.explainSelection(request),
                         30000 // 30 second timeout
                     );
+                    const apiMs = Date.now() - startMs;
 
                     // Create or show webview panel and display explanation (Requirement 1.4)
                     if (this.viewProvider) {
@@ -314,7 +319,15 @@ export class CommandManager {
                         triggerMethod: 'command',
                         userLevel: this.configManager.getUserLevel(),
                         constructType: this.detectConstructType(code),
-                        success: true
+                        success: true,
+                        apiResponseTime: apiMs
+                    });
+                    this.telemetry.trackLLMOutcome({
+                        callType: 'explain',
+                        success: true,
+                        timeout: false,
+                        apiResponseTime: apiMs,
+                        userLevel: this.configManager.getUserLevel()
                     });
                 });
                 
@@ -331,6 +344,13 @@ export class CommandManager {
                     triggerMethod: 'command',
                     userLevel: this.configManager.getUserLevel(),
                     success: false
+                });
+                const timeout = error instanceof Error && /timed out/i.test(error.message || '');
+                this.telemetry.trackLLMOutcome({
+                    callType: 'explain',
+                    success: false,
+                    timeout,
+                    userLevel: this.configManager.getUserLevel()
                 });
             }
         });
@@ -409,11 +429,13 @@ export class CommandManager {
                     progress.report({ message: "Getting code review from FlowPilot..." });
 
                     // Call API to get code review with performance monitoring and timeout
+                    const startMs = Date.now();
                     const review = await this.performanceMonitor.withTimeout(
                         'apiReviewSelection',
                         () => this.apiClient!.reviewSelection(request),
                         30000 // 30 second timeout
                     );
+                    const apiMs = Date.now() - startMs;
 
                     // Create or show webview panel and display review (Requirements 3.2, 3.3)
                     if (this.viewProvider) {
@@ -440,7 +462,15 @@ export class CommandManager {
                         complexityNestingEstimate: this.estimateNestingLevel(code),
                         triggerMethod: 'command',
                         userLevel: this.configManager.getUserLevel(),
-                        success: true
+                        success: true,
+                        apiResponseTime: apiMs
+                    });
+                    this.telemetry.trackLLMOutcome({
+                        callType: 'review',
+                        success: true,
+                        timeout: false,
+                        apiResponseTime: apiMs,
+                        userLevel: this.configManager.getUserLevel()
                     });
                 });
                 
@@ -458,6 +488,13 @@ export class CommandManager {
                     triggerMethod: 'command',
                     userLevel: this.configManager.getUserLevel(),
                     success: false
+                });
+                const timeout = error instanceof Error && /timed out/i.test(error.message || '');
+                this.telemetry.trackLLMOutcome({
+                    callType: 'review',
+                    success: false,
+                    timeout,
+                    userLevel: this.configManager.getUserLevel()
                 });
             }
         });
@@ -596,11 +633,13 @@ export class CommandManager {
                     progress.report({ message: "Getting error explanation from FlowPilot..." });
 
                     // Call API to get error explanation with performance monitoring and timeout
+                    const startMs = Date.now();
                     const errorExplanation = await this.performanceMonitor.withTimeout(
                         'apiExplainError',
                         () => this.apiClient!.explainError(request),
                         30000 // 30 second timeout
                     );
+                    const apiMs = Date.now() - startMs;
 
                     // Create or show webview panel and display error explanation (Requirement 2.2)
                     if (this.viewProvider) {
@@ -620,7 +659,15 @@ export class CommandManager {
                         triggerMethod: triggerSource,
                         requestedHelp: true,
                         userLevel: this.configManager.getUserLevel(),
-                        success: true
+                        success: true,
+                        apiResponseTime: apiMs
+                    });
+                    this.telemetry.trackLLMOutcome({
+                        callType: 'error',
+                        success: true,
+                        timeout: false,
+                        apiResponseTime: apiMs,
+                        userLevel: this.configManager.getUserLevel()
                     });
                 });
                 
@@ -637,6 +684,13 @@ export class CommandManager {
                     triggerMethod: 'command',
                     userLevel: this.configManager.getUserLevel(),
                     success: false
+                });
+                const timeout = error instanceof Error && /timed out/i.test(error.message || '');
+                this.telemetry.trackLLMOutcome({
+                    callType: 'error',
+                    success: false,
+                    timeout,
+                    userLevel: this.configManager.getUserLevel()
                 });
             }
         });
@@ -779,6 +833,38 @@ export class CommandManager {
         }
     }
 
+    private async introWalkthrough(): Promise<void> {
+        return this.performanceMonitor.ensureNonBlocking('introWalkthrough', async () => {
+            this.safetyGuard.validateOperation('introWalkthrough', { command: 'introWalkthrough' });
+            try {
+                const sample = [
+                    '# FlowPilot Sample: Common Python Mistakes',
+                    'def add_items(items):',
+                    '    total = 0',
+                    '    for i in range(len(items)):',
+                    '        total = total + items[i]',
+                    '    return total',
+                    '',
+                    'class Counter:',
+                    '    def __init__(self):',
+                    '        count = 0  # Bug: should be self.count',
+                    '    def inc(self):',
+                    '        self.count += 1',
+                    '',
+                    'def risky_div(a, b):',
+                    '    return a / b  # No zero-check',
+                    ''
+                ].join('\\n');
+                const doc = await vscode.workspace.openTextDocument({ language: 'python', content: sample });
+                await vscode.window.showTextDocument(doc);
+                if (this.viewProvider) {
+                    this.viewProvider.showIntro();
+                }
+            } catch (error) {
+                vscode.window.showErrorMessage('Unable to start FlowPilot intro walkthrough');
+            }
+        });
+    }
     /**
      * Get current selection or expand to meaningful context
      * Implements automatic selection expansion (Requirement 1.2)

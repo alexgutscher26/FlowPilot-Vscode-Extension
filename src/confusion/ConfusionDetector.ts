@@ -19,6 +19,9 @@ export class ConfusionDetector implements vscode.Disposable {
     private lastCursorPosition: vscode.Position | undefined;
     private lastCursorChangeTime: number = 0;
     private diagnosticHistory: Map<string, { count: number; lastSeen: number }> = new Map();
+    private lastKeystrokeTime: number = 0;
+    private inactivityTimer: NodeJS.Timeout | undefined;
+    private editHistory: Map<string, { count: number; lastSeen: number }> = new Map();
     
     private statusBarNotificationManager: StatusBarNotificationManager;
     private onHelpOffered: ((diagnostic: vscode.Diagnostic, reason: 'dwell' | 'repeat') => void) | undefined;
@@ -60,6 +63,11 @@ export class ConfusionDetector implements vscode.Disposable {
         // Listen for diagnostic changes to detect repeated errors
         this.disposables.push(
             vscode.languages.onDidChangeDiagnostics(this.onDiagnosticsChanged.bind(this))
+        );
+
+        // Listen for text changes to track inactivity and repeated edits
+        this.disposables.push(
+            vscode.workspace.onDidChangeTextDocument(this.onDocumentEdited.bind(this))
         );
 
         // Listen for active editor changes
@@ -147,10 +155,14 @@ export class ConfusionDetector implements vscode.Disposable {
      * Handle configuration changes
      */
     private onConfigurationChanged(event: vscode.ConfigurationChangeEvent): void {
-        if (event.affectsConfiguration('codeCoach.proactiveSuggestions')) {
+        if (event.affectsConfiguration('codeCoach.proactiveSuggestions') || 
+            event.affectsConfiguration('codeCoach.proactive.inactivityMs') ||
+            event.affectsConfiguration('codeCoach.proactive.repeatEditThreshold') ||
+            event.affectsConfiguration('codeCoach.proactive.repeatEditWindowMs')) {
             if (!this.isProactiveSuggestionsEnabled()) {
                 this.clearDwellTimer();
                 this.statusBarNotificationManager.hideNotification();
+                this.clearInactivityTimer();
             }
         }
     }
@@ -173,6 +185,13 @@ export class ConfusionDetector implements vscode.Disposable {
         if (this.dwellTimer) {
             clearTimeout(this.dwellTimer);
             this.dwellTimer = undefined;
+        }
+    }
+
+    private clearInactivityTimer(): void {
+        if (this.inactivityTimer) {
+            clearTimeout(this.inactivityTimer);
+            this.inactivityTimer = undefined;
         }
     }
 
@@ -202,6 +221,87 @@ export class ConfusionDetector implements vscode.Disposable {
         if (primaryDiagnostic) {
             this.offerHelp(primaryDiagnostic, 'dwell');
         }
+    }
+
+    private onDocumentEdited(event: vscode.TextDocumentChangeEvent): void {
+        if (!this.isProactiveSuggestionsEnabled()) return;
+        const document = event.document;
+        if (!this.isPythonFile(document)) return;
+        const now = Date.now();
+        this.lastKeystrokeTime = now;
+        this.restartInactivityTimer(document);
+        // Track repeated edits on same line
+        for (const change of event.contentChanges) {
+            const line = change.range.start.line;
+            const key = `${document.uri.toString()}:${line}`;
+            const history = this.editHistory.get(key);
+            const windowMs = this.getRepeatEditWindowMs();
+            if (history) {
+                if (now - history.lastSeen < windowMs) {
+                    history.count++;
+                    history.lastSeen = now;
+                } else {
+                    history.count = 1;
+                    history.lastSeen = now;
+                }
+            } else {
+                this.editHistory.set(key, { count: 1, lastSeen: now });
+            }
+            const threshold = this.getRepeatEditThreshold();
+            const metrics = this.currentMetrics.get(this.getFileKey(document));
+            if (metrics && history && history.count >= threshold && now - metrics.lastNotificationTime >= this.cooldownPeriod) {
+                metrics.lastNotificationTime = now;
+                metrics.editCycleCount = history.count;
+                this.statusBarNotificationManager.showLearningSuggestion(
+                    'Stuck on this line? FlowPilot can explain your selection.',
+                    { command: 'codeCoach.explainSelection', title: 'Explain Selection' },
+                    12000
+                );
+                if (this.telemetry) {
+                    this.telemetry.trackConfusionDetection({
+                        triggerType: 'editCycle',
+                        errorRepeatCount: history.count,
+                        languageId: 'python',
+                        userLevel: this.configurationManager.getUserLevel(),
+                        proactiveEnabled: this.isProactiveSuggestionsEnabled()
+                    });
+                }
+            }
+        }
+        // Clean old edit history entries
+        const cutoff = now - this.getRepeatEditWindowMs() * 2;
+        for (const [key, h] of this.editHistory.entries()) {
+            if (h.lastSeen < cutoff) {
+                this.editHistory.delete(key);
+            }
+        }
+    }
+
+    private restartInactivityTimer(document: vscode.TextDocument): void {
+        this.clearInactivityTimer();
+        const inactivityMs = this.getInactivityThresholdMs();
+        this.inactivityTimer = setTimeout(() => {
+            const fileKey = this.getFileKey(document);
+            const metrics = this.currentMetrics.get(fileKey);
+            const now = Date.now();
+            if (!metrics) return;
+            if (now - metrics.lastNotificationTime < this.cooldownPeriod) return;
+            metrics.lastNotificationTime = now;
+            this.statusBarNotificationManager.showLearningSuggestion(
+                'Stuck? FlowPilot can help explain selected code.',
+                { command: 'codeCoach.explainSelection', title: 'Explain Selection' },
+                12000
+            );
+            if (this.telemetry) {
+                this.telemetry.trackConfusionDetection({
+                    triggerType: 'dwellTime',
+                    dwellTime: inactivityMs,
+                    languageId: 'python',
+                    userLevel: this.configurationManager.getUserLevel(),
+                    proactiveEnabled: this.isProactiveSuggestionsEnabled()
+                });
+            }
+        }, inactivityMs);
     }
 
     /**
@@ -340,6 +440,21 @@ export class ConfusionDetector implements vscode.Disposable {
     private isProactiveSuggestionsEnabled(): boolean {
         const config = vscode.workspace.getConfiguration('codeCoach');
         return config.get<boolean>('proactiveSuggestions', true);
+    }
+
+    private getInactivityThresholdMs(): number {
+        const config = vscode.workspace.getConfiguration('codeCoach');
+        return config.get<number>('proactive.inactivityMs', 60000);
+    }
+
+    private getRepeatEditThreshold(): number {
+        const config = vscode.workspace.getConfiguration('codeCoach');
+        return config.get<number>('proactive.repeatEditThreshold', 4);
+    }
+
+    private getRepeatEditWindowMs(): number {
+        const config = vscode.workspace.getConfiguration('codeCoach');
+        return config.get<number>('proactive.repeatEditWindowMs', 300000);
     }
 
     /**

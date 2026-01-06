@@ -19,12 +19,14 @@ export class ConfigurationManager {
      */
     public getConfiguration(): CodeCoachConfig {
         const config = vscode.workspace.getConfiguration(ConfigurationManager.SECTION);
+        const vscodeTelemetry = vscode.workspace.getConfiguration('telemetry').get<string>('telemetryLevel', 'on');
+        const telemetryEnabled = config.get<boolean>('telemetryEnabled', true) && vscodeTelemetry === 'on';
         
         return {
             enabled: config.get<boolean>('enabled', true),
             apiBaseUrl: config.get<string>('apiBaseUrl', 'https://api.codecoach.dev'),
             apiKey: config.get<string>('apiKey', ''),
-            telemetryEnabled: config.get<boolean>('telemetryEnabled', true),
+            telemetryEnabled,
             userLevel: config.get<'beginner' | 'intermediate'>('userLevel', 'beginner'),
             proactiveSuggestions: config.get<boolean>('proactiveSuggestions', true),
             demoMode: config.get<boolean>('demoMode', false)
@@ -141,16 +143,17 @@ export class ConfigurationManager {
         if (!cfg.enabled) {
             return false;
         }
-        if (document.languageId === 'python') {
+        const langEnabled = vscode.workspace.getConfiguration(ConfigurationManager.SECTION).get<boolean>('languages.python.enabled', true);
+        if (document.languageId === 'python' && langEnabled) {
             return true;
         }
         const fileName = document.fileName.toLowerCase();
-        if (fileName.endsWith('.py') || fileName.endsWith('.pyw')) {
+        if ((fileName.endsWith('.py') || fileName.endsWith('.pyw')) && langEnabled) {
             return true;
         }
         try {
             const firstLine = document.lineAt(0).text.toLowerCase();
-            if (firstLine.startsWith('#!') && firstLine.includes('python')) {
+            if (firstLine.startsWith('#!') && firstLine.includes('python') && langEnabled) {
                 return true;
             }
         } catch {}
@@ -193,8 +196,9 @@ export class ConfigurationManager {
      * Check if telemetry is enabled
      */
     public isTelemetryEnabled(): boolean {
-        const config = this.getConfiguration();
-        return config.telemetryEnabled;
+        const config = vscode.workspace.getConfiguration(ConfigurationManager.SECTION);
+        const vscodeTelemetry = vscode.workspace.getConfiguration('telemetry').get<string>('telemetryLevel', 'on');
+        return config.get<boolean>('telemetryEnabled', true) && vscodeTelemetry === 'on';
     }
 
     /**

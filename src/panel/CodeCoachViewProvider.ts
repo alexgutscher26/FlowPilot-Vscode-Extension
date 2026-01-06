@@ -17,7 +17,7 @@ import { ConfigurationManager } from '../config/ConfigurationManager';
 import { FileSafetyGuard } from '../safety/FileSafetyGuard';
 
 export interface WebviewMessage {
-    type: 'feedback' | 'ready' | 'error' | 'context' | 'scrollToLine' | 'insertImprovedCode';
+    type: 'feedback' | 'ready' | 'error' | 'context' | 'scrollToLine' | 'insertImprovedCode' | 'conceptClick' | 'settings' | 'intro';
     data?: any;
 }
 
@@ -106,6 +106,7 @@ export class CodeCoachViewProvider implements vscode.WebviewViewProvider {
                     }
                 });
             }
+            this._sendSettingsToWebview();
         }
     }
 
@@ -188,6 +189,7 @@ export class CodeCoachViewProvider implements vscode.WebviewViewProvider {
                             }
                         });
                     }
+                    this._sendSettingsToWebview();
                 }
                 break;
             case 'error':
@@ -208,6 +210,21 @@ export class CodeCoachViewProvider implements vscode.WebviewViewProvider {
                 break;
             case 'insertImprovedCode':
                 vscode.window.showWarningMessage('Review changes; FlowPilot is a tutor, not an auto-fixer');
+                break;
+            case 'conceptClick':
+                if (message.data?.url) {
+                    try {
+                        vscode.env.openExternal(vscode.Uri.parse(message.data.url));
+                    } catch {}
+                }
+                if (this._telemetry) {
+                    const userLevel = this._configManager?.getUserLevel() || 'beginner';
+                    this._telemetry.trackConceptClick({
+                        concept: message.data?.concept || 'unknown',
+                        url: message.data?.url,
+                        userLevel
+                    });
+                }
                 break;
         }
     }
@@ -314,6 +331,31 @@ export class CodeCoachViewProvider implements vscode.WebviewViewProvider {
                     relativePath: this._relativePath
                 }
             });
+            this._sendSettingsToWebview();
+        }
+    }
+
+    private _sendSettingsToWebview(): void {
+        const cfg = vscode.workspace.getConfiguration('codeCoach');
+        const reflectionEnabled = cfg.get<boolean>('reflectionPrompts.enabled', true);
+        const summaryMax = cfg.get<number>('sectionLengths.summaryMaxChars', 600);
+        const lineMax = cfg.get<number>('sectionLengths.lineExplanationMaxChars', 300);
+        const tryItMax = cfg.get<number>('sectionLengths.tryItMaxChars', 400);
+        this._sendMessageToWebview({
+            type: 'settings',
+            data: {
+                reflectionEnabled,
+                summaryMax,
+                lineMax,
+                tryItMax
+            }
+        });
+    }
+
+    public showIntro(): void {
+        if (this._view) {
+            this._view.show?.(true);
+            this._sendMessageToWebview({ type: 'intro' });
         }
     }
 
@@ -525,6 +567,21 @@ export class CodeCoachViewProvider implements vscode.WebviewViewProvider {
                                     </div>
                                     <div class="card-body">
                                         <div class="related-concepts-content" id="related-concepts-content"></div>
+                                    </div>
+                                </section>
+
+                                <section class="modern-card modern-card--info" id="reflection-section" style="display: none;" data-collapsible data-expanded="false">
+                                    <div class="card-header">
+                                        <span class="card-icon">🧠</span>
+                                        <h3 class="card-title">Reflection</h3>
+                                        <button class="modern-button modern-button--secondary" data-collapse-toggle>Toggle</button>
+                                    </div>
+                                    <div class="card-body" data-collapse-content>
+                                        <ol>
+                                            <li>What concept did you practice here?</li>
+                                            <li>How would you explain this to a friend?</li>
+                                            <li>What small change could improve this code?</li>
+                                        </ol>
                                     </div>
                                 </section>
                             </div>

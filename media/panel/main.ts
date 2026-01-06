@@ -42,6 +42,13 @@ window.addEventListener('message', event => {
         case 'reviewContext':
             (window as any).__reviewOriginalSnippet = (message.data && message.data.originalSnippet) || '';
             break;
+        case 'settings':
+            (window as any).__flowpilotSettings = message.data || {};
+            updateReflectionVisibility();
+            break;
+        case 'intro':
+            showIntroOverlay();
+            break;
         case 'error':
             showError(message.data);
             break;
@@ -274,10 +281,13 @@ function renderExplanation(data: any) {
     hideSection('improvements-section');
 
     // Update summary
-    updateElementContent('summary-content', data.summary);
+    updateElementContent('summary-content', applyJuniorTone(enforceMaxLength(data.summary || '', ((window as any).__flowpilotSettings?.summaryMax) || 600)));
 
     // Update line-by-line explanations
-    renderLineByLineExplanations(data.lineByLine || []);
+    renderLineByLineExplanations((data.lineByLine || []).map((l: any) => ({
+        ...l,
+        explanation: applyJuniorTone(enforceMaxLength(l.explanation || '', ((window as any).__flowpilotSettings?.lineMax) || 300))
+    })));
 
     // Update optional sections
     if (data.pitfalls && data.pitfalls.length > 0) {
@@ -289,14 +299,14 @@ function renderExplanation(data: any) {
 
     if (data.tryItYourself) {
         showSection('try-it-section');
-        updateElementContent('try-it-content', data.tryItYourself);
+        updateElementContent('try-it-content', enforceMaxLength(data.tryItYourself || '', ((window as any).__flowpilotSettings?.tryItMax) || 400));
     } else {
         hideSection('try-it-section');
     }
 
     if (data.relatedConcepts && data.relatedConcepts.length > 0) {
         showSection('related-concepts-section');
-        renderList('related-concepts-content', data.relatedConcepts);
+        renderConceptChips('related-concepts-content', data.relatedConcepts);
     } else {
         hideSection('related-concepts-section');
     }
@@ -368,7 +378,7 @@ function renderError(data: any) {
 
     if (data.relatedConcepts && data.relatedConcepts.length > 0) {
         showSection('related-concepts-section');
-        renderList('related-concepts-content', data.relatedConcepts);
+        renderConceptChips('related-concepts-content', data.relatedConcepts);
     } else {
         hideSection('related-concepts-section');
     }
@@ -492,6 +502,76 @@ function renderList(containerId: string, items: string[], itemClass?: string) {
     });
 
     container.appendChild(ul);
+}
+
+function enforceMaxLength(text: string, max: number): string {
+    if (!text) return '';
+    if (text.length <= max) return text;
+    return text.substring(0, Math.max(0, max - 3)) + '...';
+}
+
+function applyJuniorTone(text: string): string {
+    if (!text) return '';
+    const prefix = 'In simpler terms: ';
+    // Avoid double prefix
+    const trimmed = text.trim();
+    if (trimmed.toLowerCase().startsWith('in simpler terms')) return trimmed;
+    return prefix + trimmed;
+}
+
+const conceptLinks: Record<string, string> = {
+    'list comprehension': 'https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions',
+    'dict': 'https://docs.python.org/3/tutorial/datastructures.html#dictionaries',
+    'loop': 'https://docs.python.org/3/tutorial/controlflow.html#for-statements',
+    'class': 'https://docs.python.org/3/tutorial/classes.html',
+    'exception': 'https://docs.python.org/3/tutorial/errors.html'
+};
+
+function renderConceptChips(containerId: string, concepts: string[]) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    container.innerHTML = '';
+    const frag = document.createDocumentFragment();
+    concepts.forEach(name => {
+        const chip = document.createElement('button');
+        chip.className = 'modern-button modern-button--secondary';
+        chip.textContent = name;
+        chip.addEventListener('click', () => {
+            const url = conceptLinks[name.toLowerCase()] || conceptLinks['exception'];
+            vscode.postMessage({ type: 'conceptClick', data: { concept: name, url } });
+        });
+        frag.appendChild(chip);
+    });
+    container.appendChild(frag);
+}
+
+function updateReflectionVisibility() {
+    const enabled = !!((window as any).__flowpilotSettings?.reflectionEnabled);
+    const section = document.getElementById('reflection-section');
+    if (section) section.style.display = enabled ? 'block' : 'none';
+}
+
+function showIntroOverlay() {
+    const content = document.getElementById('content');
+    if (!content) return;
+    const overlay = document.createElement('div');
+    overlay.className = 'modern-card modern-card--info';
+    overlay.innerHTML = `
+        <div class="card-header">
+            <span class="card-icon">🎓</span>
+            <h3 class="card-title">FlowPilot Intro</h3>
+        </div>
+        <div class="card-body">
+            <ol>
+                <li>Open the sample file created.</li>
+                <li>Select code and run Review or Explain.</li>
+                <li>Click concept chips to learn more.</li>
+                <li>Use reflection prompts to solidify learning.</li>
+            </ol>
+        </div>
+    `;
+    content.insertAdjacentElement('afterbegin', overlay);
+    createGlowEffect(overlay as HTMLElement, 2000);
 }
 
 function showSection(sectionId: string) {
