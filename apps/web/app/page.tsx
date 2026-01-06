@@ -1,14 +1,12 @@
 import { Button } from "@/components/ui/button"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { Check, ArrowRight, Cog, MapPin, Type, Globe, ExternalLink } from "lucide-react"
+import { Check, ArrowRight, Cog, MapPin, Type, Globe, ExternalLink, ChevronDown } from "lucide-react"
 
 function Nav() {
   return (
     <div className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="h-6 w-6 rounded-md bg-primary"></div>
-          <span className="text-lg font-semibold">Code Coach</span>
+          <span className="text-lg font-semibold">FlowPilot</span>
         </div>
         <div className="hidden items-center gap-8 md:flex">
           <a className="text-sm text-muted-foreground hover:text-foreground" href="#features">Features</a>
@@ -68,14 +66,14 @@ function Hero() {
                 {"import "} <span className="text-purple-400">React</span> {" from "} <span className="text-green-400">'react'</span>;<br />
                 <br />
                 <span className="text-purple-400">const</span> <span className="text-yellow-300">App</span> {" = () => {"}<br />
-                &nbsp;&nbsp;<span className="text-gray-400">// Code Coach Suggestion: Consider memoizing this value</span><br />
+                &nbsp;&nbsp;<span className="text-gray-400">// FlowPilot Suggestion: Consider memoizing this value</span><br />
                 &nbsp;&nbsp;<span className="text-purple-400">const</span> <span className="text-blue-200">value</span> {" = "}{"expensiveCalculation();"}<br />
                 &nbsp;&nbsp;{"return "} <span className="text-blue-200">&lt;div&gt;</span>{"Hello World"}<span className="text-blue-200">&lt;/div&gt;</span>;<br />
                 {"}"}
               </div>
               <div className="w-80 h-full border-l border-gray-700 bg-[#1e293b] p-4 hidden md:flex flex-col gap-4">
                 <div className="bg-blue-900/20 border border-blue-500/30 p-3 rounded text-xs text-blue-200">
-                  <strong>Code Coach:</strong> {"You're re-calculating `value` on every render. Use `useMemo` here to improve performance."}
+                  <strong>FlowPilot:</strong> {"You're re-calculating `value` on every render. Use `useMemo` here to improve performance."}
                 </div>
                 <div className="h-2 w-3/4 bg-gray-700 rounded opacity-20"></div>
                 <div className="h-2 w-1/2 bg-gray-700 rounded opacity-20"></div>
@@ -99,7 +97,7 @@ function FeatureBlocks() {
             </div>
             <h2 className="text-3xl md:text-4xl font-bold leading-tight">Catch bad habits before they stick.</h2>
             <p className="text-lg leading-relaxed text-muted-foreground">
-              Don't wait for a code review that might never come. Code Coach analyzes your syntax and patterns in real-time, nudging you towards industry best practices as you type.
+              Don't wait for a code review that might never come. FlowPilot analyzes your syntax and patterns in real-time, nudging you towards industry best practices as you type.
             </p>
             <ul className="flex flex-col gap-3 mt-2">
               <li className="flex items-center gap-3">
@@ -170,7 +168,7 @@ function FeatureBlocks() {
             </div>
             <h2 className="text-3xl md:text-4xl font-bold leading-tight">Refactor like a Senior Engineer.</h2>
             <p className="text-lg leading-relaxed text-muted-foreground">
-              Identify "code smells" instantly. Code Coach suggests cleaner, more efficient ways to write your functions, helping you learn design patterns naturally.
+              Identify "code smells" instantly. FlowPilot suggests cleaner, more efficient ways to write your functions, helping you learn design patterns naturally.
             </p>
           </div>
           <div className="w-full md:w-1/2">
@@ -202,7 +200,7 @@ function HowItWorks() {
     <section id="how-it-works" className="py-20">
       <div className="mx-auto max-w-7xl px-4 md:px-10">
         <div className="text-center mb-16 max-w-2xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">How Code Coach works</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">How FlowPilot works</h2>
           <p className="text-muted-foreground">Get setup in less than 2 minutes. No complicated configuration required.</p>
         </div>
         <div className="grid md:grid-cols-3 gap-8 relative">
@@ -213,7 +211,7 @@ function HowItWorks() {
             </div>
             <h3 className="text-xl font-bold mt-2">Install Extension</h3>
             <p className="text-sm leading-relaxed px-4 text-muted-foreground">
-              Find "Code Coach" in the VS Code marketplace and click install. It's lightweight and fast.
+              Find "FlowPilot" in the VS Code marketplace and click install. It's lightweight and fast.
             </p>
           </div>
           <div className="relative z-10 flex flex-col items-center text-center gap-4">
@@ -319,28 +317,39 @@ function Pricing() {
 
 function FAQ() {
   return (
-    <section className="container py-16">
-      <h2 className="text-3xl font-semibold">Frequently Asked Questions</h2>
-      <Accordion type="single" collapsible className="mt-6 w-full">
-        <AccordionItem value="item-1">
-          <AccordionTrigger>Does Code Coach store my code?</AccordionTrigger>
-          <AccordionContent>
-            Explanations are generated with privacy-first processing. Sensitive snippets can be excluded. Telemetry is opt-in.
-          </AccordionContent>
-        </AccordionItem>
-        <AccordionItem value="item-2">
-          <AccordionTrigger>Is there a student discount?</AccordionTrigger>
-          <AccordionContent>
-            Yes. Students and educators can contact support to receive a discount for Pro.
-          </AccordionContent>
-        </AccordionItem>
-        <AccordionItem value="item-3">
-          <AccordionTrigger>How do upgrades work?</AccordionTrigger>
-          <AccordionContent>
-            Upgrade or downgrade anytime. Billing proration is handled automatically.
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
+    <section className="py-20">
+      <div className="mx-auto max-w-3xl px-4 md:px-10">
+        <h2 className="text-2xl md:text-3xl font-bold text-center mb-10">Frequently Asked Questions</h2>
+        <div className="flex flex-col gap-4">
+          <details className="group bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden transition-all duration-300">
+            <summary className="flex items-center justify-between p-5 cursor-pointer list-none font-semibold">
+              <span>Does this replace a human mentor?</span>
+              <ChevronDown className="h-5 w-5 transition-transform duration-300 group-open:rotate-180" />
+            </summary>
+            <div className="px-5 pb-5 leading-relaxed text-sm text-muted-foreground">
+              No, and it's not trying to. FlowPilot is designed to unblock you instantly when a human mentor isn't available (like at 2 AM). It handles the "how" and "what", so you can spend your valuable mentor time discussing high-level architecture and career advice.
+            </div>
+          </details>
+          <details className="group bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden transition-all duration-300">
+            <summary className="flex items-center justify-between p-5 cursor-pointer list-none font-semibold">
+              <span>Which languages do you support?</span>
+              <ChevronDown className="h-5 w-5 transition-transform duration-300 group-open:rotate-180" />
+            </summary>
+            <div className="px-5 pb-5 leading-relaxed text-sm text-muted-foreground">
+              Currently, we are optimized for JavaScript, TypeScript, Python, and React. We are actively working on adding support for Java, Go, and Ruby in the coming months.
+            </div>
+          </details>
+          <details className="group bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden transition-all duration-300">
+            <summary className="flex items-center justify-between p-5 cursor-pointer list-none font-semibold">
+              <span>Is my code safe?</span>
+              <ChevronDown className="h-5 w-5 transition-transform duration-300 group-open:rotate-180" />
+            </summary>
+            <div className="px-5 pb-5 leading-relaxed text-sm text-muted-foreground">
+              Absolutely. We process snippets locally where possible, and any code sent to the cloud for analysis is encrypted in transit and never stored permanently on our servers.
+            </div>
+          </details>
+        </div>
+      </div>
     </section>
   )
 }
@@ -357,7 +366,7 @@ function BuildingInPublic() {
             </div>
             <h3 className="text-2xl font-bold">We're indie devs solving our own problem.</h3>
             <p className="text-muted-foreground">
-              Code Coach was born because we couldn't afford mentorship when we were learning. We share our revenue numbers, roadmap, and challenges openly.
+              FlowPilot was born because we couldn't afford mentorship when we were learning. We share our revenue numbers, roadmap, and challenges openly.
             </p>
           </div>
           <div className="shrink-0">
@@ -382,13 +391,31 @@ export default function Page() {
       <BuildingInPublic />
       <Pricing />
       <FAQ />
-      <footer className="border-t">
-        <div className="container flex items-center justify-between py-8">
-          <div className="text-sm text-muted-foreground">© Code Coach</div>
-          <div className="flex gap-6 text-sm text-muted-foreground">
-            <a href="#privacy">Privacy</a>
-            <a href="#terms">Terms</a>
-            <a href="#status">Status</a>
+      <footer className="bg-card border-t pt-16 pb-8">
+        <div className="mx-auto max-w-7xl px-4 md:px-10">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-8 mb-12">
+            <div className="text-center md:text-left">
+              <div className="flex items-center justify-center md:justify-start gap-2 mb-4">
+                <span className="text-primary text-2xl">›_</span>
+                <span className="text-xl font-bold">FlowPilot</span>
+              </div>
+              <p className="text-sm text-muted-foreground max-w-xs">
+                The AI mentor that helps you write better code, faster.
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row items-center gap-4">
+              <p className="text-lg font-bold">Ready to level up?</p>
+              <Button className="px-6 py-3">Join Waitlist</Button>
+            </div>
+          </div>
+          <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t text-sm text-muted-foreground">
+            <p>© 2026 FlowPilot. All rights reserved.</p>
+            <div className="flex gap-6 mt-4 md:mt-0">
+              <a className="hover:text-primary transition-colors" href="#">Privacy</a>
+              <a className="hover:text-primary transition-colors" href="#">Terms</a>
+              <a className="hover:text-primary transition-colors" href="#">Twitter</a>
+              <a className="hover:text-primary transition-colors" href="#">GitHub</a>
+            </div>
           </div>
         </div>
       </footer>
