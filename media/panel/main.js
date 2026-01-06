@@ -4,6 +4,81 @@ const vscode = acquireVsCodeApi();
 // State management
 let currentExplanation = null;
 let feedbackSubmitted = false;
+let userLevel = 'beginner';
+const conceptLibrary = {
+    'list comprehension': {
+        beginner: {
+            title: 'List Comprehension',
+            examples: [
+                'squares = [x*x for x in range(5)]',
+                'evens = [n for n in nums if n % 2 == 0]'
+            ],
+            gotchas: [
+                'Avoid side effects inside comprehensions',
+                'Use comprehensions for readability, not complex logic'
+            ]
+        },
+        intermediate: {
+            title: 'List Comprehension',
+            examples: [
+                'matrix_flat = [v for row in matrix for v in row]',
+                'pairs = [(i, j) for i in a for j in b if i != j]'
+            ],
+            gotchas: [
+                'Nested loops execute left-to-right',
+                'Comprehensions create new lists; prefer generator for large data'
+            ]
+        }
+    },
+    'generator': {
+        beginner: {
+            title: 'Generator',
+            examples: [
+                'def gen():\n    for i in range(3):\n        yield i',
+                '(x*x for x in range(5))'
+            ],
+            gotchas: [
+                'Generators are single-iteration',
+                'Use next() carefully; may raise StopIteration'
+            ]
+        },
+        intermediate: {
+            title: 'Generator',
+            examples: [
+                'def read_lines(path):\n    with open(path) as f:\n        for line in f:\n            yield line.strip()',
+                'def pipeline(xs):\n    yield from (x for x in xs if x % 2 == 0)'
+            ],
+            gotchas: [
+                'yield from forwards values and exceptions',
+                'Generators are lazy; watch resource lifetimes'
+            ]
+        }
+    },
+    'context manager': {
+        beginner: {
+            title: 'Context Manager',
+            examples: [
+                'with open("file.txt") as f:\n    data = f.read()',
+                'with lock:\n    critical_section()'
+            ],
+            gotchas: [
+                'Resources auto-clean on exit',
+                'Exceptions inside block still close the resource'
+            ]
+        },
+        intermediate: {
+            title: 'Context Manager',
+            examples: [
+                'class Timer:\n    def __enter__(self): start()\n    def __exit__(self, exc_type, exc, tb): stop()',
+                'from contextlib import suppress\nwith suppress(KeyError):\n    del d[key]'
+            ],
+            gotchas: [
+                '__exit__ handles errors; return True to suppress',
+                'Use contextlib for composing managers'
+            ]
+        }
+    }
+};
 // Initialize the webview
 document.addEventListener('DOMContentLoaded', () => {
     console.log('FlowPilot webview loaded');
@@ -13,10 +88,14 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeAnimationSystem();
     // Initialize event listeners
     initializeEventListeners();
+    initializeConceptEvents();
     // Send ready message to extension
     vscode.postMessage({
         type: 'ready'
     });
+    if (window.userLevel) {
+        userLevel = window.userLevel;
+    }
 });
 // Handle messages from the extension
 window.addEventListener('message', event => {
@@ -250,7 +329,7 @@ function renderLineByLineExplanations(lineExplanations) {
         lineCode.textContent = line.code;
         const lineText = document.createElement('div');
         lineText.className = 'line-text';
-        lineText.textContent = line.explanation;
+        lineText.innerHTML = processConcepts(line.explanation);
         lineDiv.appendChild(lineNumber);
         lineDiv.appendChild(lineCode);
         lineDiv.appendChild(lineText);
@@ -295,7 +374,12 @@ function renderList(containerId, items, itemClass) {
         if (itemClass) {
             li.className = itemClass;
         }
-        li.textContent = item;
+        const term = String(item).toLowerCase();
+        if (conceptLibrary[term]) {
+            li.innerHTML = `<span class="concept-term" data-term="${term}">${escapeHtml(item)}</span>`;
+        } else {
+            li.textContent = item;
+        }
         ul.appendChild(li);
     });
     container.appendChild(ul);
@@ -315,8 +399,73 @@ function hideSection(sectionId) {
 function updateElementContent(elementId, content) {
     const element = document.getElementById(elementId);
     if (element) {
-        element.textContent = content;
+        element.innerHTML = processConcepts(content);
     }
+}
+function processConcepts(text) {
+    if (!text || typeof text !== 'string') return text || '';
+    const terms = Object.keys(conceptLibrary);
+    const pattern = new RegExp('\\b(' + terms.map(t => t.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')).join('|') + ')\\b', 'gi');
+    return text.replace(pattern, (match) => {
+        const key = match.toLowerCase();
+        return `<span class="concept-term" data-term="${key}">${match}</span>`;
+    });
+}
+function initializeConceptEvents() {
+    document.body.addEventListener('click', (e) => {
+        const target = e.target;
+        const pop = document.getElementById('concept-popover');
+        if (target && target.classList && target.classList.contains('concept-term')) {
+            const term = target.getAttribute('data-term');
+            const rect = target.getBoundingClientRect();
+            showConceptPopover(term, rect.left + rect.width / 2, rect.bottom + 8);
+            e.stopPropagation();
+            return;
+        }
+        if (pop && pop.style.display === 'block') {
+            pop.style.display = 'none';
+        }
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            const pop = document.getElementById('concept-popover');
+            if (pop) pop.style.display = 'none';
+        }
+    });
+}
+function showConceptPopover(term, x, y) {
+    const data = conceptLibrary[term];
+    const pop = document.getElementById('concept-popover');
+    if (!data || !pop) return;
+    const variant = data[userLevel] || data['beginner'];
+    const examplesHtml = variant.examples.slice(0, 3).map(ex => `<code>${escapeHtml(ex)}</code>`).join('');
+    const gotchasHtml = '<ul>' + variant.gotchas.slice(0, 3).map(g => `<li>${escapeHtml(g)}</li>`).join('') + '</ul>';
+    pop.innerHTML = `
+        <div class="popover-title">${variant.title}</div>
+        <div class="popover-section">
+            <div>Examples</div>
+            ${examplesHtml}
+        </div>
+        <div class="popover-section">
+            <div>Gotchas</div>
+            ${gotchasHtml}
+        </div>
+    `;
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const width = Math.min(420, viewportWidth - 24);
+    const left = Math.min(Math.max(12, x - width / 2), viewportWidth - width - 12);
+    const top = Math.min(y, viewportHeight - 12);
+    pop.style.left = `${left}px`;
+    pop.style.top = `${top}px`;
+    pop.style.width = `${width}px`;
+    pop.style.display = 'block';
+}
+function escapeHtml(s) {
+    return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
 }
 // Animation and Micro-interaction System Functions
 function initializeAnimationSystem() {

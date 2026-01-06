@@ -17,7 +17,7 @@ import { ConfigurationManager } from '../config/ConfigurationManager';
 import { FileSafetyGuard } from '../safety/FileSafetyGuard';
 
 export interface WebviewMessage {
-    type: 'feedback' | 'ready' | 'error';
+    type: 'feedback' | 'ready' | 'error' | 'context' | 'scrollToLine';
     data?: any;
 }
 
@@ -29,6 +29,9 @@ export class CodeCoachViewProvider implements vscode.WebviewViewProvider {
     private _telemetry?: Telemetry;
     private _configManager?: ConfigurationManager;
     private _safetyGuard: FileSafetyGuard;
+    private _selectionStartLine?: number;
+    private _fileName?: string;
+    private _relativePath?: string;
 
     constructor(private readonly _extensionUri: vscode.Uri) {
         this._state = {
@@ -94,6 +97,15 @@ export class CodeCoachViewProvider implements vscode.WebviewViewProvider {
         // Show the FlowPilot view if it's not visible
         if (this._view) {
             this._view.show?.(true);
+            if (this._fileName && this._relativePath) {
+                this._sendMessageToWebview({
+                    type: 'context',
+                    data: {
+                        fileName: this._fileName,
+                        relativePath: this._relativePath
+                    }
+                });
+            }
         }
     }
 
@@ -167,11 +179,32 @@ export class CodeCoachViewProvider implements vscode.WebviewViewProvider {
                         type: 'update',
                         data: this._state.currentExplanation
                     });
+                    if (this._fileName && this._relativePath) {
+                        this._sendMessageToWebview({
+                            type: 'context',
+                            data: {
+                                fileName: this._fileName,
+                                relativePath: this._relativePath
+                            }
+                        });
+                    }
                 }
                 break;
             case 'error':
                 console.error('Webview error:', message.data);
                 vscode.window.showErrorMessage(`FlowPilot webview error: ${message.data?.message || 'Unknown error'}`);
+                break;
+            case 'scrollToLine':
+                if (typeof (message as any).data?.lineOffset === 'number' && typeof this._selectionStartLine === 'number') {
+                    const editor = vscode.window.activeTextEditor;
+                    if (editor) {
+                        const targetLine = Math.max(0, Math.min(editor.document.lineCount - 1, this._selectionStartLine + (message as any).data.lineOffset));
+                        const line = editor.document.lineAt(targetLine);
+                        const range = new vscode.Range(new vscode.Position(targetLine, 0), new vscode.Position(targetLine, line.text.length));
+                        editor.selection = new vscode.Selection(range.start, range.end);
+                        editor.revealRange(range, vscode.TextEditorRevealType.InCenter);
+                    }
+                }
                 break;
         }
     }
@@ -263,6 +296,21 @@ export class CodeCoachViewProvider implements vscode.WebviewViewProvider {
     private _sendMessageToWebview(message: any): void {
         if (this._view) {
             this._view.webview.postMessage(message);
+        }
+    }
+
+    public setSelectionContext(fileName: string, relativePath: string, selectionStartLine: number): void {
+        this._fileName = fileName;
+        this._relativePath = relativePath;
+        this._selectionStartLine = selectionStartLine;
+        if (this._view) {
+            this._sendMessageToWebview({
+                type: 'context',
+                data: {
+                    fileName: this._fileName,
+                    relativePath: this._relativePath
+                }
+            });
         }
     }
 

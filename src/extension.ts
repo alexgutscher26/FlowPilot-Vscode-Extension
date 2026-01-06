@@ -15,6 +15,7 @@ let telemetry: Telemetry | undefined;
 let confusionDetector: ConfusionDetector | undefined;
 let safetyGuard: FileSafetyGuard | undefined;
 let performanceMonitor: PerformanceMonitor | undefined;
+let tutorStatusBarItem: vscode.StatusBarItem | undefined;
 
 /**
  * Extension activation function
@@ -129,6 +130,9 @@ export function activate(context: vscode.ExtensionContext) {
         if (!hasShownWelcome) {
             showWelcomeMessage(context);
         }
+
+        initializeStatusBarItem(configurationManager);
+        vscode.commands.executeCommand('setContext', 'codeCoach.enabled', configurationManager.isEnabled());
 
     } catch (error) {
         console.error('Failed to activate FlowPilot extension:', error);
@@ -435,4 +439,16 @@ function registerDiagnosticHandlers(context: vscode.ExtensionContext): void {
     });
     
     context.subscriptions.push(documentChangeListener);
+}
+
+function initializeStatusBarItem(configManager: ConfigurationManager): void {
+    tutorStatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+    tutorStatusBarItem.text = '$(mortar-board) FlowPilot';
+    tutorStatusBarItem.tooltip = 'Open FlowPilot Tutor';
+    tutorStatusBarItem.command = 'codeCoach.openTutor';
+    if (configManager.isEnabled()) {
+        tutorStatusBarItem.show();
+    } else {
+        tutorStatusBarItem.hide();
+    }
 }

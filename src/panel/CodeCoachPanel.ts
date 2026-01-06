@@ -253,6 +253,7 @@ export class CodeCoachPanel {
         // Map theme kind to CSS class
         const themeClass = this._getThemeClass(themeKind);
         const themeDataAttribute = this._getThemeDataAttribute(themeKind);
+        const userLevel = vscode.workspace.getConfiguration('codeCoach').get<'beginner' | 'intermediate'>('userLevel', 'beginner');
 
         return `<!DOCTYPE html>
             <html lang="en">
@@ -450,6 +451,7 @@ export class CodeCoachPanel {
                                 </div>
                             </div>
                         </div>
+                        <div id="concept-popover" class="concept-popover" style="display: none;"></div>
                     </main>
                 </div>
 
@@ -460,6 +462,7 @@ export class CodeCoachPanel {
                         name: "${themeName}",
                         className: "${themeClass}"
                     };
+                    window.userLevel = "${userLevel}";
                 </script>
                 <script nonce="${nonce}" src="${scriptUri}"></script>
             </body>

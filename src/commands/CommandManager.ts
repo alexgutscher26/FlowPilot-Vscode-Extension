@@ -8,6 +8,7 @@ import { ExplainRequest, ReviewRequest, ErrorRequest } from '../types';
 import { Telemetry } from '../telemetry/Telemetry';
 import { FileSafetyGuard } from '../safety/FileSafetyGuard';
 import { PerformanceMonitor } from '../performance/PerformanceMonitor';
+import { PromptTemplates } from '../prompt/PromptTemplates';
 
 /**
  * Command Manager for FlowPilot extension
@@ -90,6 +91,7 @@ export class CommandManager {
         this.registerCommand('codeCoach.explainSelection', this.explainSelection.bind(this));
         this.registerCommand('codeCoach.reviewSelection', this.reviewSelection.bind(this));
         this.registerCommand('codeCoach.explainError', this.explainError.bind(this));
+        this.registerCommand('codeCoach.openTutor', this.openTutor.bind(this));
         
         // Register code action commands (Requirements: 2.3)
         this.registerCommand('codeCoach.explainErrorAtPosition', this.explainErrorAtPosition.bind(this));
@@ -106,6 +108,14 @@ export class CommandManager {
         );
         this.disposables.push(codeActionProviderDisposable);
         this.context.subscriptions.push(codeActionProviderDisposable);
+    }
+
+    private async openTutor(): Promise<void> {
+        try {
+            await vscode.commands.executeCommand('workbench.view.extension.codeCoach');
+        } catch {
+            vscode.window.showErrorMessage('Unable to open FlowPilot view');
+        }
     }
 
     /**
@@ -185,22 +195,59 @@ export class CommandManager {
 
                     // Get selection or expand to current context (Requirements 1.1, 1.2)
                     const selection = this.getSelectionOrExpand(editor);
-                    const code = editor.document.getText(selection);
+                    let code = editor.document.getText(selection);
 
                     if (!code.trim()) {
                         vscode.window.showWarningMessage('No code selected or found at cursor position');
                         return;
                     }
 
+                    const cfg = vscode.workspace.getConfiguration('codeCoach');
+                    const maxChars = cfg.get<number>('maxSnippetChars', 6000);
+                    if (code.length > maxChars) {
+                        let startLine = selection.start.line;
+                        let endLine = selection.start.line;
+                        let total = 0;
+                        while (endLine < editor.document.lineCount) {
+                            const text = editor.document.lineAt(endLine).text + '\n';
+                            if (total + text.length > maxChars) {
+                                break;
+                            }
+                            total += text.length;
+                            endLine++;
+                            if (endLine > selection.end.line) {
+                                break;
+                            }
+                        }
+                        const trimmedRange = new vscode.Range(
+                            new vscode.Position(startLine, 0),
+                            new vscode.Position(Math.max(startLine, endLine - 1), editor.document.lineAt(Math.max(startLine, endLine - 1)).text.length)
+                        );
+                        code = editor.document.getText(trimmedRange);
+                    }
+
                     // Gather surrounding context for better analysis
                     const surroundingContext = this.getSurroundingContext(editor, selection);
 
                     // Prepare API request
+                    const filePath = editor.document.uri.fsPath;
+                    const fileName = (() => {
+                        const fn = editor.document.fileName;
+                        const idx = Math.max(fn.lastIndexOf('\\'), fn.lastIndexOf('/'));
+                        return idx >= 0 ? fn.substring(idx + 1) : fn;
+                    })();
+                    const relativePath = vscode.workspace.asRelativePath(editor.document.uri);
+                    const prompt = PromptTemplates.getExplainTemplate();
                     const request: ExplainRequest = {
                         code: code,
                         languageId: editor.document.languageId,
-                        filePath: editor.document.uri.fsPath,
-                        surroundingContext: surroundingContext
+                        filePath: filePath,
+                        fileName: fileName,
+                        relativePath: relativePath,
+                        surroundingContext: surroundingContext,
+                        userLevel: this.configManager.getUserLevel(),
+                        promptVersion: prompt.version,
+                        promptId: prompt.id
                     };
 
                     progress.report({ message: "Getting explanation from FlowPilot..." });
@@ -214,6 +261,7 @@ export class CommandManager {
 
                     // Create or show webview panel and display explanation (Requirement 1.4)
                     if (this.viewProvider) {
+                        this.viewProvider.setSelectionContext(fileName, relativePath, selection.start.line);
                         this.viewProvider.showExplanation(explanation);
                     } else {
                         vscode.window.showErrorMessage('FlowPilot view is not available. Please try reloading the window.');
@@ -400,8 +448,12 @@ export class CommandManager {
                 }, async (progress) => {
                     progress.report({ message: "Analyzing error..." });
 
-                    // Get diagnostics for current document (Requirement 2.1)
-                    const diagnostics = vscode.languages.getDiagnostics(editor.document.uri);
+                    let diagnostics = vscode.languages.getDiagnostics(editor.document.uri);
+                    if (diagnostics.length === 0) {
+                        const allDiagnostics = vscode.languages.getDiagnostics();
+                        const entry = allDiagnostics.find(([uri]) => uri.toString() === editor.document.uri.toString());
+                        diagnostics = entry ? entry[1] : [];
+                    }
                     const currentPosition = editor.selection.active;
 
                     // Find diagnostics at current cursor position or within selection if present

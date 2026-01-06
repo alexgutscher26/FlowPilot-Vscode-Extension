@@ -492,6 +492,7 @@ export function createApiClient(): CodeCoachApiClient {
     const config = vscode.workspace.getConfiguration('codeCoach');
     
     const clientConfig: CodeCoachConfig = {
+        enabled: config.get<boolean>('enabled', true),
         apiBaseUrl: config.get<string>('apiBaseUrl', 'https://api.codecoach.dev'),
         apiKey: config.get<string>('apiKey', ''),
         telemetryEnabled: config.get<boolean>('telemetryEnabled', true),

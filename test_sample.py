@@ -13,7 +13,7 @@ def calculate_fibonacci(n):
 numbers = [0, 1, 5, 10]
 for num in numbers:
     result = calculate_fibonacci(num)
-    print(f"Fibonacci({num}) = {result}")
+    print(f"Fibonacci({num}) = {result}")   
 
 # This will cause an error - undefined variable
 print(undefined_variable)

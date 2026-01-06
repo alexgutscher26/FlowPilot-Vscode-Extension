@@ -6,6 +6,7 @@ import * as vscode from 'vscode';
 
 // Configuration interfaces
 export interface CodeCoachConfig {
+    enabled?: boolean;
     apiBaseUrl: string;
     apiKey: string;
     telemetryEnabled: boolean;
@@ -19,8 +20,12 @@ export interface ExplainRequest {
     code: string;
     languageId: string;
     filePath?: string;
+    fileName?: string;
+    relativePath?: string;
     surroundingContext?: string;
     userLevel?: string;
+    promptVersion?: string;
+    promptId?: string;
 }
 
 export interface ReviewRequest {

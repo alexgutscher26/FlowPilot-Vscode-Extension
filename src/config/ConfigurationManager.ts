@@ -21,6 +21,7 @@ export class ConfigurationManager {
         const config = vscode.workspace.getConfiguration(ConfigurationManager.SECTION);
         
         return {
+            enabled: config.get<boolean>('enabled', true),
             apiBaseUrl: config.get<string>('apiBaseUrl', 'https://api.codecoach.dev'),
             apiKey: config.get<string>('apiKey', ''),
             telemetryEnabled: config.get<boolean>('telemetryEnabled', true),
@@ -86,6 +87,9 @@ export class ConfigurationManager {
         }
 
         // Validate boolean settings
+        if (typeof config.enabled !== 'boolean') {
+            errors.push(`Invalid enabled setting: ${config.enabled}. Must be true or false.`);
+        }
         if (typeof config.telemetryEnabled !== 'boolean') {
             errors.push(`Invalid telemetry setting: ${config.telemetryEnabled}. Must be true or false.`);
         }
@@ -133,8 +137,24 @@ export class ConfigurationManager {
      * Check if the extension should activate for the given document
      */
     public shouldActivateForDocument(document: vscode.TextDocument): boolean {
-        // Only activate for Python files initially (Requirement 1.5)
-        return document.languageId === 'python';
+        const cfg = this.getConfiguration();
+        if (!cfg.enabled) {
+            return false;
+        }
+        if (document.languageId === 'python') {
+            return true;
+        }
+        const fileName = document.fileName.toLowerCase();
+        if (fileName.endsWith('.py') || fileName.endsWith('.pyw')) {
+            return true;
+        }
+        try {
+            const firstLine = document.lineAt(0).text.toLowerCase();
+            if (firstLine.startsWith('#!') && firstLine.includes('python')) {
+                return true;
+            }
+        } catch {}
+        return false;
     }
 
     /**
@@ -203,6 +223,11 @@ export class ConfigurationManager {
     public isDemoModeEnabled(): boolean {
         const config = this.getConfiguration();
         return config.demoMode;
+    }
+
+    public isEnabled(): boolean {
+        const config = this.getConfiguration();
+        return config.enabled ?? true;
     }
 
     /**

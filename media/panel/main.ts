@@ -6,6 +6,7 @@ const vscode = acquireVsCodeApi();
 // State management
 let currentExplanation: any = null;
 let feedbackSubmitted = false;
+let currentFileInfo: { fileName: string; relativePath: string } | null = null;
 
 // Initialize the webview
 document.addEventListener('DOMContentLoaded', () => {
@@ -33,6 +34,10 @@ window.addEventListener('message', event => {
     switch (message.type) {
         case 'update':
             updateContentWithAnimation(message.data);
+            break;
+        case 'context':
+            currentFileInfo = message.data || null;
+            updateContextHeader(currentExplanation || {});
             break;
         case 'error':
             showError(message.data);
@@ -169,8 +174,11 @@ function updateContextHeader(data: any) {
     }
 
     if (fileInfoElement) {
-        // This would be populated with actual file info from the extension
-        fileInfoElement.textContent = 'Python file';
+        if (currentFileInfo) {
+            fileInfoElement.textContent = `${currentFileInfo.fileName} — ${currentFileInfo.relativePath}`;
+        } else {
+            fileInfoElement.textContent = '';
+        }
     }
 }
 
@@ -304,6 +312,13 @@ function renderLineByLineExplanations(lineExplanations: any[]) {
         lineDiv.appendChild(lineText);
 
         container.appendChild(lineDiv);
+
+        lineDiv.addEventListener('click', () => {
+            vscode.postMessage({
+                type: 'scrollToLine',
+                data: { lineOffset: line.lineOffset }
+            });
+        });
     });
 }
 
