@@ -33,6 +33,21 @@ export default function DashboardPage() {
       router.replace("/login")
     }
   }, [isPending, session, router])
+  useEffect(() => {
+    if (!isPending && session) {
+      const payload = {
+        id: (session.user as any).id || session.user.email,
+        email: session.user.email,
+        name: session.user.name || null,
+        image: session.user.image || null
+      }
+      fetch("/api/user/ensure", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      }).catch(() => {})
+    }
+  }, [isPending, session])
   if (isPending) {
     return <div className="container py-12">Loading...</div>
   }
