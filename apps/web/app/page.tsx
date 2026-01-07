@@ -13,7 +13,7 @@ function Nav() {
           <a className="text-sm text-muted-foreground hover:text-foreground" href="#how">How it works</a>
           <a className="text-sm text-muted-foreground hover:text-foreground" href="#pricing">Pricing</a>
         </div>
-        <Button>Install Free</Button>
+        <Button asChild><a href="/login">Sign in</a></Button>
       </div>
     </div>
   )
