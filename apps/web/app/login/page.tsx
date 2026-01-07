@@ -25,7 +25,12 @@ export default function LoginPage() {
           })
         } catch (err: any) {
           const msg = err?.message || ""
-          if (msg.toLowerCase().includes("user not found")) {
+          const lower = msg.toLowerCase()
+          if (
+            lower.includes("user not found") ||
+            lower.includes("credential account not found") ||
+            lower.includes("account not found")
+          ) {
             try {
               await authClient.signUp.email({
                 email: normEmail,
