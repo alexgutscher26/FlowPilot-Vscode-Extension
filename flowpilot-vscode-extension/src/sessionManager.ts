@@ -1,85 +1,69 @@
 import * as vscode from 'vscode';
 import fetch from 'node-fetch';
 
-function generateUUID() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-    });
+let apiKey: string | undefined;
+
+export function setApiKey(key: string | undefined) {
+    apiKey = key;
+    console.log('[SessionManager] API Key set:', apiKey ? 'Yes' : 'No');
 }
 
-interface Session {
-    id: string;
-    started: number;
-    explains: number;
-    errors: number;
-    reviews: number;
-    concepts: Set<string>;
+interface InteractionEvent {
+    interactionType: 'Code Review' | 'Explanation' | 'Debugging' | 'Refactoring';
+    language?: string;
+    codeSnippet?: string;
+    explanation?: string;
+    metadata?: any;
+    concepts?: string[];
 }
 
-let session: Session | null = null;
-const SESSION_UPDATE_THRESHOLD = 5;
-
-// Helper to get or create session
-function getSession(): Session {
-    if (!session) {
-        session = {
-            id: generateUUID(),
-            started: Date.now(),
-            explains: 0,
-            errors: 0,
-            reviews: 0,
-            concepts: new Set()
-        };
-        console.log('[SessionManager] New session started:', session.id);
+export async function trackInteraction(event: InteractionEvent) {
+    if (!apiKey) {
+        // If no API key, we can't sync to dashboard, but we might want to log locally or warn once
+        // console.warn('[SessionManager] No API key configured. Session not synced.');
+        return;
     }
-    return session;
-}
 
-export async function trackExplain(type: 'selection' | 'error' | 'review') {
-    const s = getSession();
-
-    if (type === 'selection') s.explains++;
-    if (type === 'error') s.errors++;
-    if (type === 'review') s.reviews++;
-
-    const totalEvents = s.explains + s.errors + s.reviews;
-
-    // Send update every 5 events
-    if (totalEvents > 0 && totalEvents % SESSION_UPDATE_THRESHOLD === 0) {
-        await sendSessionUpdate(s);
-    }
-}
-
-async function sendSessionUpdate(s: Session) {
     try {
-        console.log('[SessionManager] Sending session update:', s);
-        // Convert Set to Array for JSON serialization
-        const payload = {
-            ...s,
-            concepts: Array.from(s.concepts)
-        };
+        console.log('[SessionManager] Sending interaction:', event.interactionType);
 
-        const response = await fetch('http://localhost:3000/api/sessions', { // Assuming this is the endpoint
+        const response = await fetch('http://localhost:3000/api/sessions', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': apiKey
+            },
+            body: JSON.stringify(event)
         });
 
         if (!response.ok) {
-            console.warn('[SessionManager] Failed to update session:', response.status);
+            console.warn('[SessionManager] Failed to record interaction:', response.status);
+            if (response.status === 401) {
+                vscode.window.showWarningMessage('FlowPilot: API Key is invalid or expired. Please reconnect.');
+            }
         } else {
-            console.log('[SessionManager] Session updated successfully');
+            console.log('[SessionManager] Interaction recorded successfully');
         }
     } catch (error) {
-        console.error('[SessionManager] Error sending session update:', error);
+        console.error('[SessionManager] Error sending interaction:', error);
     }
 }
 
-// Optionally export a function to force send (e.g. on deactivate)
-export async function endSession() {
-    if (session) {
-        await sendSessionUpdate(session);
-        session = null;
-    }
+// Helper to extract language from context or active editor
+function getLanguage(context: any): string {
+    return context?.languageId || vscode.window.activeTextEditor?.document.languageId || 'plaintext';
+}
+
+// Wrappers for specific actions
+export async function trackExplain(type: 'selection' | 'error' | 'review', context?: any) {
+    let interactionType: InteractionEvent['interactionType'] = 'Explanation';
+    if (type === 'error') interactionType = 'Debugging';
+    if (type === 'review') interactionType = 'Code Review';
+
+    await trackInteraction({
+        interactionType,
+        language: getLanguage(context),
+        codeSnippet: context?.code, // Assuming context has 'code'
+        // concepts: ... could add concept extraction here
+    });
 }

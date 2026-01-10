@@ -74,7 +74,7 @@ export class FlowPilotProvider implements vscode.WebviewViewProvider {
 
     public async explainCode(context: any) {
         // Track selection explanation
-        trackExplain('selection');
+        trackExplain('selection', context);
 
         if (this._view) {
             // Show loading state
@@ -189,7 +189,7 @@ export class FlowPilotProvider implements vscode.WebviewViewProvider {
 
     public async explainError(context: any) {
         // Track error explanation
-        trackExplain('error');
+        trackExplain('error', context);
 
         if (this._view) {
             // Show loading state
@@ -324,7 +324,7 @@ export class FlowPilotProvider implements vscode.WebviewViewProvider {
 
     public async reviewSnippet(context: any) {
         // Track review
-        trackExplain('review');
+        trackExplain('review', context);
 
         if (this._view) {
             this._view.webview.postMessage({

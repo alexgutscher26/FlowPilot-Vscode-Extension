@@ -19,6 +19,8 @@ model User {
   updatedAt      DateTime  @updatedAt
   sessions       Session[]
   accounts       Account[]
+  apiKeys        ApiKey[]
+  codingSessions CodingSession[]
   @@map("user")
 }
 
@@ -59,4 +61,33 @@ model Verification {
 
   @@unique([identifier, token])
   @@map("verification")
+}
+
+model ApiKey {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  name      String?
+  lastUsed  DateTime?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("api_key")
+}
+
+model CodingSession {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  description     String?
+  interactionType String   // 'Code Review', 'Explanation', 'Debugging', etc.
+  language        String?
+  codeSnippet     String?  @db.Text
+  explanation     String?  @db.Text
+  metadata        Json?    // Flexible field for extra data like line numbers, file paths
+  startedAt       DateTime @default(now())
+  endedAt         DateTime?
+  
+  @@map("coding_session")
 }

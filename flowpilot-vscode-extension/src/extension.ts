@@ -9,6 +9,11 @@ export async function activate(context: vscode.ExtensionContext) {
     try {
         console.log('FlowPilot extension is now active!');
 
+        // Initialize Session Manager with stored API Key
+        const apiKey = await context.secrets.get('flowpilot.apiKey');
+        const { setApiKey } = await import('./sessionManager');
+        setApiKey(apiKey);
+
         // Dynamically import the provider to handle potential load errors (e.g. missing dependencies)
         const { FlowPilotProvider } = await import('./flowPilotProvider');
 
@@ -138,7 +143,42 @@ export async function activate(context: vscode.ExtensionContext) {
                 }
             })
         );
+        context.subscriptions.push(
+            vscode.commands.registerCommand('flowpilot.connect', async () => {
+                const key = await vscode.window.showInputBox({
+                    prompt: 'Enter your FlowPilot API Key',
+                    placeHolder: 'fp_...',
+                    password: true,
+                    ignoreFocusOut: true
+                });
+
+                if (key) {
+                    await context.secrets.store('flowpilot.apiKey', key);
+                    setApiKey(key);
+                    vscode.window.showInformationMessage('FlowPilot: Successfully connected!');
+                    // provider.refreshAuth(); // ref: key is updated via setApiKey
+                }
+            })
+        );
+
         console.log('FlowPilot: Activation completed successfully.');
+
+        // Register URI Handler
+        context.subscriptions.push(
+            vscode.window.registerUriHandler({
+                handleUri(uri: vscode.Uri) {
+                    const query = new URLSearchParams(uri.query);
+                    const key = query.get('key');
+                    if (key) {
+                        context.secrets.store('flowpilot.apiKey', key).then(() => {
+                            vscode.window.showInformationMessage('FlowPilot: Successfully connected to dashboard!');
+                            setApiKey(key); // Update directly
+                        });
+                    }
+                }
+            })
+        );
+
     } catch (error) {
         console.error('FlowPilot: Extension activation failed:', error);
         vscode.window.showErrorMessage(`FlowPilot: Extension activation failed: ${error}`);

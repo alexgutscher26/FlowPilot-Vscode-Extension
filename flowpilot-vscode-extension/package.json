@@ -2,13 +2,19 @@
   "name": "flowpilot",
   "displayName": "FlowPilot - AI Coding Coach",
   "description": "Your AI coding coach that helps you write better code with real-time explanations and suggestions",
-  "version": "0.7.4",
+  "version": "0.7.8",
   "publisher": "flowpilot",
   "icon": "icon.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/flowpilot/flowpilot-vscode-extension.git"
   },
+  "urlHandlers": [
+    {
+      "protocol": "flowpilot.flowpilot",
+      "label": "FlowPilot Authentication"
+    }
+  ],
   "engines": {
     "vscode": "^1.74.0"
   },
@@ -83,6 +89,10 @@
         "command": "flowpilot.reviewSnippet",
         "title": "FlowPilot: Review Snippet",
         "icon": "$(checklist)"
+      },
+      {
+        "command": "flowpilot.connect",
+        "title": "FlowPilot: Connect to Dashboard"
       }
     ],
     "menus": {
