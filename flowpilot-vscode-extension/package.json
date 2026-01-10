@@ -2,9 +2,13 @@
   "name": "flowpilot",
   "displayName": "FlowPilot - AI Coding Coach",
   "description": "Your AI coding coach that helps you write better code with real-time explanations and suggestions",
-  "version": "0.3.1",
+  "version": "0.5.1",
   "publisher": "flowpilot",
   "icon": "icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/flowpilot/flowpilot-vscode-extension.git"
+  },
   "engines": {
     "vscode": "^1.74.0"
   },
@@ -21,8 +25,13 @@
     "learning",
     "code explanation"
   ],
-  "activationEvents": [],
-  "main": "./out/extension.js",
+  "activationEvents": [
+    "onCommand:flowpilot.explainSelection",
+    "onCommand:flowpilot.reviewFile",
+    "onCommand:flowpilot.openPanel",
+    "onView:flowpilotPanel"
+  ],
+  "main": "./dist/extension.js",
   "contributes": {
     "viewsContainers": {
       "activitybar": [
@@ -81,22 +90,47 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
+    "vscode:prepublish": "npm run esbuild-base -- --minify",
+    "esbuild-base": "node esbuild.js",
     "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
+    "watch": "node esbuild.js --watch",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
     "@types/node": "16.x",
+    "@types/node-fetch": "^2.6.13",
     "@types/vscode": "^1.74.0",
     "@typescript-eslint/eslint-plugin": "^5.45.0",
     "@typescript-eslint/parser": "^5.45.0",
+    "esbuild": "^0.27.2",
     "eslint": "^8.28.0",
     "typescript": "^4.9.4"
   },
   "dependencies": {
-    "axios": "^1.6.0"
+    "asynckit": "^0.5.0",
+    "axios": "^1.13.2",
+    "call-bind-apply-helpers": "^1.0.2",
+    "combined-stream": "^1.0.8",
+    "delayed-stream": "^1.0.0",
+    "dunder-proto": "^1.0.1",
+    "es-define-property": "^1.0.1",
+    "es-errors": "^1.3.0",
+    "es-object-atoms": "^1.1.1",
+    "es-set-tostringtag": "^2.1.0",
+    "follow-redirects": "^1.15.11",
+    "form-data": "^4.0.5",
+    "function-bind": "^1.1.2",
+    "get-intrinsic": "^1.3.0",
+    "get-proto": "^1.0.1",
+    "gopd": "^1.2.0",
+    "has-symbols": "^1.1.0",
+    "has-tostringtag": "^1.0.2",
+    "hasown": "^2.0.2",
+    "math-intrinsics": "^1.1.0",
+    "mime-types": "^3.0.2",
+    "node-fetch": "^2.7.0",
+    "proxy-from-env": "^1.1.0"
   }
 }

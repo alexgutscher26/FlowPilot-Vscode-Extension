@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import fetch from 'node-fetch';
 
 export class FlowPilotProvider implements vscode.WebviewViewProvider {
     public static readonly viewType = 'flowpilotPanel';
@@ -6,7 +7,7 @@ export class FlowPilotProvider implements vscode.WebviewViewProvider {
 
     constructor(
         private readonly _extensionUri: vscode.Uri,
-    ) {}
+    ) { }
 
     public resolveWebviewView(
         webviewView: vscode.WebviewView,
@@ -31,7 +32,7 @@ export class FlowPilotProvider implements vscode.WebviewViewProvider {
                     this.handleUserMessage(data.text);
                     break;
                 case 'reviewFile':
-                    this.reviewFile(data.content, data.filename);
+                    this.handleReviewFile();
                     break;
                 case 'optimizeCode':
                     this.optimizeCode();
@@ -43,22 +44,142 @@ export class FlowPilotProvider implements vscode.WebviewViewProvider {
         });
     }
 
-    public reviewFile(content: string, filename: string) {
-        if (this._view) {
-            this._view.webview.postMessage({
-                type: 'reviewFile',
-                content: content,
-                filename: filename
-            });
+    public async handleReviewFile() {
+        const editor = vscode.window.activeTextEditor;
+        if (!editor) {
+            if (this._view) {
+                this._view.webview.postMessage({
+                    type: 'aiResponse',
+                    text: 'No active file to review. Please open a file first.'
+                });
+            }
+            return;
         }
+
+        const document = editor.document;
+        const fullContent = document.getText();
+        const fileName = document.fileName;
+        const languageId = document.languageId;
+
+        const context = {
+            code: fullContent,
+            fileName: fileName,
+            languageId: languageId,
+            surroundingLines: fullContent
+        };
+
+        await this.explainCode(context);
     }
 
-    public explainCode(code: string) {
+    public async explainCode(context: any) {
         if (this._view) {
+            // Show loading state
             this._view.webview.postMessage({
-                type: 'explainCode',
-                code: code
+                type: 'streamingStart'
             });
+
+            try {
+                // Call the backend API with streaming
+                const response = await fetch('http://localhost:3000/api/explain', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(context)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                // node-fetch v2 returns a Node.js stream
+                const body = response.body;
+                if (!body) {
+                    throw new Error('No response body');
+                }
+
+                let buffer = '';
+                let accumulatedContent = '';
+
+                // Process the stream using Node.js stream events
+                body.on('data', (chunk: Buffer) => {
+                    buffer += chunk.toString('utf8');
+
+                    // Process complete SSE messages
+                    const lines = buffer.split('\n');
+                    buffer = lines.pop() || ''; // Keep incomplete line in buffer
+
+                    for (const line of lines) {
+                        if (line.startsWith('data: ')) {
+                            const data = line.slice(6); // Remove 'data: ' prefix
+
+                            try {
+                                const parsed = JSON.parse(data);
+
+                                if (parsed.done) {
+                                    // Final message - parse and display complete explanation
+                                    accumulatedContent = parsed.content;
+
+                                    try {
+                                        const explanation = JSON.parse(accumulatedContent);
+
+                                        // Send the structured explanation to the webview
+                                        if (this._view) {
+                                            this._view.webview.postMessage({
+                                                type: 'showExplanation',
+                                                explanation: explanation
+                                            });
+                                        }
+                                    } catch (parseError) {
+                                        console.error('Failed to parse final JSON:', parseError);
+                                        if (this._view) {
+                                            this._view.webview.postMessage({
+                                                type: 'aiResponse',
+                                                text: 'Sorry, I received an invalid response from the AI. Please try again.'
+                                            });
+                                        }
+                                    }
+                                } else if (parsed.accumulated) {
+                                    // Streaming chunk - send progress update
+                                    accumulatedContent = parsed.accumulated;
+                                    if (this._view) {
+                                        this._view.webview.postMessage({
+                                            type: 'streamingChunk',
+                                            content: parsed.accumulated
+                                        });
+                                    }
+                                }
+                            } catch (e) {
+                                // Ignore malformed JSON chunks
+                                console.warn('Failed to parse SSE data:', e);
+                            }
+                        }
+                    }
+                });
+
+                body.on('error', (error: Error) => {
+                    console.error('Stream error:', error);
+                    if (this._view) {
+                        this._view.webview.postMessage({
+                            type: 'aiResponse',
+                            text: 'Sorry, I encountered an error while streaming the response.'
+                        });
+                    }
+                });
+
+                // Wait for stream to complete
+                await new Promise<void>((resolve, reject) => {
+                    body.on('end', () => resolve());
+                    body.on('error', (error: Error) => reject(error));
+                });
+
+            } catch (error) {
+                console.error('Error explaining code:', error);
+                this._view.webview.postMessage({
+                    type: 'aiResponse',
+                    text: 'Sorry, I encountered an error while communicating with the backend. Please check if the server is running.'
+                });
+            }
         }
     }
 

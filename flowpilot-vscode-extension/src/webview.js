@@ -1,7 +1,7 @@
 // FlowPilot Webview JavaScript
-(function() {
+(function () {
     const vscode = acquireVsCodeApi();
-    
+
     // DOM Elements
     const reviewFileBtn = document.getElementById('review-file-btn');
     const chatInput = document.getElementById('chat-input');
@@ -73,7 +73,7 @@
     function addMessage(text, sender) {
         const messageDiv = document.createElement('div');
         messageDiv.className = `chat-message ${sender}`;
-        
+
         if (sender === 'ai') {
             messageDiv.innerHTML = `
                 <div class="message-avatar">
@@ -90,7 +90,7 @@
                 </div>
             `;
         }
-        
+
         chatMessages.appendChild(messageDiv);
         scrollToBottom();
     }
@@ -103,7 +103,7 @@
     function addExplanation(explanation) {
         const explanationSteps = document.getElementById('explanation-steps');
         explanationSteps.innerHTML = '';
-        
+
         explanation.steps.forEach((step, index) => {
             const stepDiv = document.createElement('div');
             stepDiv.className = 'explanation-step';
@@ -115,7 +115,7 @@
             `;
             explanationSteps.appendChild(stepDiv);
         });
-        
+
         // Show the explanation card
         explanationCard.classList.remove('hidden');
         explanationCard.classList.add('fade-in');
@@ -128,43 +128,64 @@
     // Handle messages from the extension
     window.addEventListener('message', event => {
         const message = event.data;
-        
+
         switch (message.type) {
+            case 'streamingStart':
+                // Show loading indicator
+                addMessage('Analyzing your code...', 'ai');
+                break;
+
+            case 'streamingChunk':
+                // Optional: Show streaming progress (can be disabled for cleaner UX)
+                // For now, we'll just wait for the final result
+                console.log('Streaming chunk received:', message.content.length, 'chars');
+                break;
+
             case 'aiResponse':
                 addMessage(message.text, 'ai');
                 break;
-                
-            case 'reviewFile':
-                // Simulate a code review
-                const mockExplanation = {
-                    steps: [
-                        {
-                            line: '06',
-                            title: 'Function Definition',
-                            description: 'Defines calculate_fib taking a single integer n.'
-                        },
-                        {
-                            line: '07',
-                            title: 'Base Case 1',
-                            description: 'If input n is 0 or negative, it immediately returns 0.'
-                        },
-                        {
-                            line: '09',
-                            title: 'Base Case 2',
-                            description: 'If n is 1, it returns 1. This prevents infinite recursion.'
-                        },
-                        {
-                            line: '11',
-                            title: 'Recursive Step',
-                            description: 'The function calls itself for n-1 and n-2 and adds the results together.'
-                        }
-                    ]
-                };
-                addExplanation(mockExplanation);
+
+            case 'showExplanation':
+                const data = message.explanation;
+
+                // Render Overview
+                addMessage(data.overview, 'ai');
+
+                // Render Line-by-Line
+                if (data.lineByLine && data.lineByLine.length > 0) {
+                    const steps = data.lineByLine.map(item => ({
+                        line: item.line,
+                        title: item.content.trim(), // simple title for now
+                        description: item.explanation
+                    }));
+
+                    const explanationObj = { steps: steps };
+                    addExplanation(explanationObj);
+                }
+
+                // Render Concepts & Suggestions
+                if (data.concepts || data.suggestions) {
+                    const conceptsHtml = data.concepts ?
+                        `<div class="chips-container"><strong>Concepts:</strong> ${data.concepts.map(c => `<span class="chip">${c}</span>`).join('')}</div>` : '';
+
+                    const suggestionsHtml = data.suggestions ?
+                        `<div class="suggestions-container"><strong>Suggestions:</strong><ul>${data.suggestions.map(s => `<li>${s}</li>`).join('')}</ul></div>` : '';
+
+                    const footerDiv = document.createElement('div');
+                    footerDiv.className = 'chat-message ai explanation-footer';
+                    footerDiv.innerHTML = `
+                        <div class="message-content">
+                            ${conceptsHtml}
+                            ${suggestionsHtml}
+                        </div>
+                    `;
+                    chatMessages.appendChild(footerDiv);
+                    scrollToBottom();
+                }
                 break;
-                
+
             case 'explainCode':
-                addMessage(`I'll explain this code: "${message.code}"`, 'ai');
+                addMessage(`I'll explain this code...`, 'ai');
                 break;
         }
     });
