@@ -7293,6 +7293,8 @@ export namespace Prisma {
     id: string | null
     userId: string | null
     content: string | null
+    title: string | null
+    explanation: string | null
     createdAt: Date | null
   }
 
@@ -7300,6 +7302,8 @@ export namespace Prisma {
     id: string | null
     userId: string | null
     content: string | null
+    title: string | null
+    explanation: string | null
     createdAt: Date | null
   }
 
@@ -7307,6 +7311,8 @@ export namespace Prisma {
     id: number
     userId: number
     content: number
+    title: number
+    explanation: number
     createdAt: number
     _all: number
   }
@@ -7316,6 +7322,8 @@ export namespace Prisma {
     id?: true
     userId?: true
     content?: true
+    title?: true
+    explanation?: true
     createdAt?: true
   }
 
@@ -7323,6 +7331,8 @@ export namespace Prisma {
     id?: true
     userId?: true
     content?: true
+    title?: true
+    explanation?: true
     createdAt?: true
   }
 
@@ -7330,6 +7340,8 @@ export namespace Prisma {
     id?: true
     userId?: true
     content?: true
+    title?: true
+    explanation?: true
     createdAt?: true
     _all?: true
   }
@@ -7410,6 +7422,8 @@ export namespace Prisma {
     id: string
     userId: string
     content: string
+    title: string | null
+    explanation: string | null
     createdAt: Date
     _count: TipCountAggregateOutputType | null
     _min: TipMinAggregateOutputType | null
@@ -7434,6 +7448,8 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     content?: boolean
+    title?: boolean
+    explanation?: boolean
     createdAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["tip"]>
@@ -7442,6 +7458,8 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     content?: boolean
+    title?: boolean
+    explanation?: boolean
     createdAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["tip"]>
@@ -7450,6 +7468,8 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     content?: boolean
+    title?: boolean
+    explanation?: boolean
     createdAt?: boolean
   }
 
@@ -7469,6 +7489,8 @@ export namespace Prisma {
       id: string
       userId: string
       content: string
+      title: string | null
+      explanation: string | null
       createdAt: Date
     }, ExtArgs["result"]["tip"]>
     composites: {}
@@ -7867,6 +7889,8 @@ export namespace Prisma {
     readonly id: FieldRef<"Tip", 'String'>
     readonly userId: FieldRef<"Tip", 'String'>
     readonly content: FieldRef<"Tip", 'String'>
+    readonly title: FieldRef<"Tip", 'String'>
+    readonly explanation: FieldRef<"Tip", 'String'>
     readonly createdAt: FieldRef<"Tip", 'DateTime'>
   }
     
@@ -8301,6 +8325,8 @@ export namespace Prisma {
     id: 'id',
     userId: 'userId',
     content: 'content',
+    title: 'title',
+    explanation: 'explanation',
     createdAt: 'createdAt'
   };
 
@@ -8845,6 +8871,8 @@ export namespace Prisma {
     id?: StringFilter<"Tip"> | string
     userId?: StringFilter<"Tip"> | string
     content?: StringFilter<"Tip"> | string
+    title?: StringNullableFilter<"Tip"> | string | null
+    explanation?: StringNullableFilter<"Tip"> | string | null
     createdAt?: DateTimeFilter<"Tip"> | Date | string
     user?: XOR<UserRelationFilter, UserWhereInput>
   }
@@ -8853,6 +8881,8 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     content?: SortOrder
+    title?: SortOrderInput | SortOrder
+    explanation?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     user?: UserOrderByWithRelationInput
   }
@@ -8864,6 +8894,8 @@ export namespace Prisma {
     NOT?: TipWhereInput | TipWhereInput[]
     userId?: StringFilter<"Tip"> | string
     content?: StringFilter<"Tip"> | string
+    title?: StringNullableFilter<"Tip"> | string | null
+    explanation?: StringNullableFilter<"Tip"> | string | null
     createdAt?: DateTimeFilter<"Tip"> | Date | string
     user?: XOR<UserRelationFilter, UserWhereInput>
   }, "id">
@@ -8872,6 +8904,8 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     content?: SortOrder
+    title?: SortOrderInput | SortOrder
+    explanation?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     _count?: TipCountOrderByAggregateInput
     _max?: TipMaxOrderByAggregateInput
@@ -8885,6 +8919,8 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Tip"> | string
     userId?: StringWithAggregatesFilter<"Tip"> | string
     content?: StringWithAggregatesFilter<"Tip"> | string
+    title?: StringNullableWithAggregatesFilter<"Tip"> | string | null
+    explanation?: StringNullableWithAggregatesFilter<"Tip"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Tip"> | Date | string
   }
 
@@ -9362,6 +9398,8 @@ export namespace Prisma {
   export type TipCreateInput = {
     id?: string
     content: string
+    title?: string | null
+    explanation?: string | null
     createdAt?: Date | string
     user: UserCreateNestedOneWithoutTipsInput
   }
@@ -9370,12 +9408,16 @@ export namespace Prisma {
     id?: string
     userId: string
     content: string
+    title?: string | null
+    explanation?: string | null
     createdAt?: Date | string
   }
 
   export type TipUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    explanation?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutTipsNestedInput
   }
@@ -9384,6 +9426,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    explanation?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -9391,12 +9435,16 @@ export namespace Prisma {
     id?: string
     userId: string
     content: string
+    title?: string | null
+    explanation?: string | null
     createdAt?: Date | string
   }
 
   export type TipUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    explanation?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -9404,6 +9452,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    explanation?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -9850,6 +9900,8 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     content?: SortOrder
+    title?: SortOrder
+    explanation?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -9857,6 +9909,8 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     content?: SortOrder
+    title?: SortOrder
+    explanation?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -9864,6 +9918,8 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     content?: SortOrder
+    title?: SortOrder
+    explanation?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -10459,12 +10515,16 @@ export namespace Prisma {
   export type TipCreateWithoutUserInput = {
     id?: string
     content: string
+    title?: string | null
+    explanation?: string | null
     createdAt?: Date | string
   }
 
   export type TipUncheckedCreateWithoutUserInput = {
     id?: string
     content: string
+    title?: string | null
+    explanation?: string | null
     createdAt?: Date | string
   }
 
@@ -10621,6 +10681,8 @@ export namespace Prisma {
     id?: StringFilter<"Tip"> | string
     userId?: StringFilter<"Tip"> | string
     content?: StringFilter<"Tip"> | string
+    title?: StringNullableFilter<"Tip"> | string | null
+    explanation?: StringNullableFilter<"Tip"> | string | null
     createdAt?: DateTimeFilter<"Tip"> | Date | string
   }
 
@@ -11067,6 +11129,8 @@ export namespace Prisma {
   export type TipCreateManyUserInput = {
     id?: string
     content: string
+    title?: string | null
+    explanation?: string | null
     createdAt?: Date | string
   }
 
@@ -11193,18 +11257,24 @@ export namespace Prisma {
   export type TipUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    explanation?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TipUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    explanation?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TipUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    explanation?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

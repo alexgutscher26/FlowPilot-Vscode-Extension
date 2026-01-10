@@ -98,7 +98,9 @@ model Tip {
   id        String   @id @default(cuid())
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  content   String   @db.Text
+  content     String   @db.Text
+  title       String?  @db.Text
+  explanation String?  @db.Text
   createdAt DateTime @default(now())
 
   @@index([userId, createdAt])

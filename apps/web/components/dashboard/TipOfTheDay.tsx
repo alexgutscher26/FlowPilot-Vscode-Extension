@@ -2,9 +2,17 @@
 
 import { useEffect, useState } from "react"
 import { Lightbulb, RefreshCw } from "lucide-react"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
 
 export function TipOfTheDay() {
-    const [tip, setTip] = useState<string | null>(null)
+    const [tip, setTip] = useState<{ content: string, title?: string, explanation?: string } | null>(null)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
@@ -16,7 +24,11 @@ export function TipOfTheDay() {
             })
             .then((data) => {
                 if (data.tip) {
-                    setTip(data.tip)
+                    setTip({
+                        content: data.tip,
+                        title: data.title,
+                        explanation: data.explanation
+                    })
                 }
             })
             .catch((err) => console.error(err))
@@ -43,14 +55,32 @@ export function TipOfTheDay() {
                 <Lightbulb className="text-yellow-300" />
             </div>
             <div className="flex-1 text-center sm:text-left">
-                <h3 className="font-bold text-lg mb-1">Tip of the Day</h3>
+                <h3 className="font-bold text-lg mb-1">{tip.title || "Tip of the Day"}</h3>
                 <p className="text-slate-300 text-sm">
-                    {tip}
+                    {tip.content}
                 </p>
             </div>
-            <button className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm font-semibold transition-colors whitespace-nowrap">
-                Learn More
-            </button>
+            <Dialog>
+                <DialogTrigger asChild>
+                    <button className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm font-semibold transition-colors whitespace-nowrap">
+                        Learn More
+                    </button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[525px] bg-slate-900 text-white border-slate-700">
+                    <DialogHeader>
+                        <DialogTitle className="text-xl font-bold flex items-center gap-2">
+                            <Lightbulb className="text-yellow-300 h-5 w-5" />
+                            {tip.title || "Tip of the Day"}
+                        </DialogTitle>
+                        <DialogDescription className="text-slate-400">
+                            {tip.content}
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="mt-4 text-sm leading-relaxed text-slate-300 whitespace-pre-wrap">
+                        {tip.explanation || "No detailed explanation available."}
+                    </div>
+                </DialogContent>
+            </Dialog>
         </div>
     )
 }

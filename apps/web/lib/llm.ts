@@ -1,8 +1,12 @@
-export async function generateTip(context: string): Promise<string> {
+export async function generateTip(context: string): Promise<{ tip: string; title: string; explanation: string }> {
     const apiKey = process.env.OPENROUTER_API_KEY;
     if (!apiKey) {
         console.warn("OPENROUTER_API_KEY is not set. Returning mock tip.");
-        return "Did you know? You can use `console.table()` to display arrays of objects in a readable tabular format.";
+        return {
+            title: "Console Table",
+            tip: "Did you know? You can use `console.table()` to display arrays of objects in a readable tabular format.",
+            explanation: "The `console.table()` method displays tabular data as a table. This function takes one mandatory argument data, which must be an array or an object, and one additional optional argument columns."
+        };
     }
 
     try {
@@ -11,27 +15,30 @@ export async function generateTip(context: string): Promise<string> {
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${apiKey}`,
-                "HTTP-Referer": "https://flowpilot.dev", // Optional, but good practice
-                "X-Title": "FlowPilot", // Optional
+                "HTTP-Referer": "https://flowpilot.dev",
+                "X-Title": "FlowPilot",
                 "X-API-KEY": apiKey,
             },
             body: JSON.stringify({
-                model: "google/gemini-2.0-flash-lite-preview-02-05:free", // Use a fast, cheap model
+                model: "google/gemini-2.0-flash-lite-preview-02-05:free",
                 messages: [
                     {
                         role: "system",
                         content: `You are a helpful coding mentor for a user named FlowPilot.
-            Generate a short, actionable "Tip of the Day" for a software developer.
-            The tip should be concise (max 2 sentences).
-            Focus on best practices, productivity hacks, or language-specific tricks (TS/JS/React).
-            If context is provided about what the user is working on, TAILOR the tip to that context.
-            Do not include "Tip of the Day:" prefix. Just the tip content.`
+            Generate a unique, advanced "Tip of the Day" for a software developer.
+            Return ONLY a valid JSON object with the following fields:
+            - "title": A short catchy title.
+            - "tip": The clean, concise tip (max 2 sentences).
+            - "explanation": A detailed explanation of why it works or how to use it (markdown supported, code blocks allowed).
+            
+            Focus on best practices, hidden features, or performance tricks in detailed contexts.`
                     },
                     {
                         role: "user",
                         content: `Context: ${context || "General web development"}`
                     }
-                ]
+                ],
+                response_format: { type: "json_object" }
             })
         });
 
@@ -40,9 +47,24 @@ export async function generateTip(context: string): Promise<string> {
         }
 
         const data = await response.json();
-        return data.choices[0]?.message?.content || "Always comment your code!";
+        const content = data.choices[0]?.message?.content;
+
+        try {
+            return JSON.parse(content);
+        } catch (e) {
+            console.error("Failed to parse tip JSON:", content);
+            return {
+                title: "Code Formatting",
+                tip: "Always comment your code and keep it formatted!",
+                explanation: "Proper indentation and comments make your code easier to read and maintain for yourself and others."
+            };
+        }
     } catch (error) {
         console.error("Failed to generate tip:", error);
-        return "Did you know? Consistent code formatting helps reduce bugs and improves readability.";
+        return {
+            title: "Error Handling",
+            tip: "Did you know? Consistent code formatting helps reduce bugs and improves readability.",
+            explanation: "It seems we had trouble generating a new tip. But here's a default one: Try to use try-catch blocks for async operations!"
+        };
     }
 }

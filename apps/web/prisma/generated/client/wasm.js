@@ -191,6 +191,8 @@ exports.Prisma.TipScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   content: 'content',
+  title: 'title',
+  explanation: 'explanation',
   createdAt: 'createdAt'
 };
 

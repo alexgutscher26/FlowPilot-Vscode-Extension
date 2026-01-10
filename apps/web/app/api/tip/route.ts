@@ -30,7 +30,12 @@ export async function GET(req: NextRequest) {
         });
 
         if (recentTip) {
-            return NextResponse.json({ tip: recentTip.content, isNew: false });
+            return NextResponse.json({
+                tip: recentTip.content,
+                title: recentTip.title,
+                explanation: recentTip.explanation,
+                isNew: false
+            });
         }
 
         // 2. If no recent tip, generate a new one
@@ -48,17 +53,24 @@ export async function GET(req: NextRequest) {
             context = `User has been working with ${languages}. Recent activity: ${activity}.`;
         }
 
-        const newTipContent = await generateTip(context);
+        const tipData = await generateTip(context);
 
         // 3. Save the new tip
         const newTip = await db.tip.create({
             data: {
                 userId: userId,
-                content: newTipContent
+                content: tipData.tip,
+                title: tipData.title,
+                explanation: tipData.explanation
             }
         });
 
-        return NextResponse.json({ tip: newTip.content, isNew: true });
+        return NextResponse.json({
+            tip: newTip.content,
+            title: newTip.title,
+            explanation: newTip.explanation,
+            isNew: true
+        });
 
     } catch (error) {
         console.error("Error in /api/tip:", error);
