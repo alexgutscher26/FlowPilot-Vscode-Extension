@@ -102,15 +102,19 @@ function Hero() {
                 <span className="text-blue-200">&lt;/div&gt;</span>;<br />
                 {"}"}
               </div>
-              <div className="w-80 h-full border-l border-gray-700 bg-[#1e293b] p-4 hidden md:flex flex-col gap-4">
-                <div className="bg-blue-900/20 border border-blue-500/30 p-3 rounded text-xs text-blue-200">
-                  <strong>FlowPilot:</strong>{" "}
-                  {
-                    "You're re-calculating `value` on every render. Use `useMemo` here to improve performance."
-                  }
+              <div className="w-80 h-full border-l border-gray-700 bg-[#172033] p-4 hidden md:flex flex-col gap-4">
+                <div className="bg-[#1e293b] border border-[#3b82f6]/20 p-4 rounded-lg shadow-lg relative overflow-hidden group">
+                  <div className="absolute top-0 left-0 w-1 h-full bg-[#3b82f6]"></div>
+                  <div className="text-xs font-bold text-[#60a5fa] mb-1 flex items-center gap-1">
+                    <span className="w-2 h-2 rounded-full bg-[#3b82f6] animate-pulse"></span>
+                    FlowPilot
+                  </div>
+                  <div className="text-xs text-gray-300 leading-relaxed">
+                    You're re-calculating <code className="bg-[#0f172a] px-1 py-0.5 rounded text-[#93c5fd]">value</code> on every render. Use <code className="bg-[#0f172a] px-1 py-0.5 rounded text-[#93c5fd]">useMemo</code> to improve performance.
+                  </div>
                 </div>
-                <div className="h-2 w-3/4 bg-gray-700 rounded opacity-20"></div>
-                <div className="h-2 w-1/2 bg-gray-700 rounded opacity-20"></div>
+                <div className="h-2 w-3/4 bg-gray-700/50 rounded opacity-20"></div>
+                <div className="h-2 w-1/2 bg-gray-700/50 rounded opacity-20"></div>
               </div>
             </div>
           </div>
