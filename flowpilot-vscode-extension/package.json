@@ -2,7 +2,7 @@
   "name": "flowpilot",
   "displayName": "FlowPilot - AI Coding Coach",
   "description": "Your AI coding coach that helps you write better code with real-time explanations and suggestions",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "publisher": "flowpilot",
   "icon": "icon.png",
   "repository": {
@@ -104,27 +104,52 @@
       "editor/context": [
         {
           "command": "flowpilot.explainSelection",
-          "when": "editorHasSelection",
+          "when": "editorHasSelection && config.flowpilot.features.explainSelection",
           "group": "flowpilot"
         },
         {
           "command": "flowpilot.explainError",
-          "when": "editorLangId",
+          "when": "editorLangId && config.flowpilot.features.explainError",
           "group": "flowpilot"
         },
         {
           "command": "flowpilot.reviewSnippet",
-          "when": "editorHasSelection",
+          "when": "editorHasSelection && config.flowpilot.features.explainSelection",
           "group": "flowpilot"
         }
       ],
       "view/title": [
         {
           "command": "flowpilot.reviewFile",
-          "when": "view == flowpilotPanel",
+          "when": "view == flowpilotPanel && config.flowpilot.features.reviewFile",
           "group": "navigation"
         }
       ]
+    },
+    "configuration": {
+      "title": "FlowPilot",
+      "properties": {
+        "flowpilot.features.codeAnalysis": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable/Disable automatic code analysis (linting & security)."
+        },
+        "flowpilot.features.explainSelection": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable/Disable 'Explain Selected Code' feature."
+        },
+        "flowpilot.features.explainError": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable/Disable 'Explain Error' feature."
+        },
+        "flowpilot.features.reviewFile": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable/Disable 'Review Entire File' feature."
+        }
+      }
     }
   },
   "scripts": {

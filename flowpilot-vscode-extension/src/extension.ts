@@ -47,6 +47,12 @@ export async function activate(context: vscode.ExtensionContext) {
                 return;
             }
 
+            // Check if code analysis is enabled
+            const config = vscode.workspace.getConfiguration('flowpilot');
+            if (!config.get<boolean>('features.codeAnalysis', true)) {
+                return;
+            }
+
             // Skip very large files (> 10000 lines)
             if (document.lineCount > 10000) {
                 console.log('[FlowPilot] Skipping analysis for large file:', document.fileName);
@@ -120,6 +126,12 @@ export async function activate(context: vscode.ExtensionContext) {
         // Manual analysis command
         context.subscriptions.push(
             vscode.commands.registerCommand('flowpilot.analyzeCurrent', async () => {
+                const config = vscode.workspace.getConfiguration('flowpilot');
+                if (!config.get<boolean>('features.codeAnalysis', true)) {
+                    vscode.window.showInformationMessage('FlowPilot: Code Analysis is disabled in settings.');
+                    return;
+                }
+
                 const editor = vscode.window.activeTextEditor;
                 if (editor) {
                     await runAnalysis(editor.document);
@@ -187,6 +199,12 @@ export async function activate(context: vscode.ExtensionContext) {
 
         context.subscriptions.push(
             vscode.commands.registerCommand('flowpilot.reviewFile', async () => {
+                const config = vscode.workspace.getConfiguration('flowpilot');
+                if (!config.get<boolean>('features.reviewFile', true)) {
+                    vscode.window.showInformationMessage('FlowPilot: File Review is disabled in settings.');
+                    return;
+                }
+
                 // Open the FlowPilot panel first
                 await vscode.commands.executeCommand('workbench.view.extension.flowpilot');
 
@@ -198,6 +216,12 @@ export async function activate(context: vscode.ExtensionContext) {
         context.subscriptions.push(
             vscode.commands.registerCommand('flowpilot.explainSelection', async () => {
                 try {
+                    const config = vscode.workspace.getConfiguration('flowpilot');
+                    if (!config.get<boolean>('features.explainSelection', true)) {
+                        vscode.window.showInformationMessage('FlowPilot: Explain Selection is disabled in settings.');
+                        return;
+                    }
+
                     console.log('FlowPilot: explainSelection command triggered');
                     const explainContext = getExplainContext();
                     if (explainContext) {
@@ -218,6 +242,12 @@ export async function activate(context: vscode.ExtensionContext) {
         context.subscriptions.push(
             vscode.commands.registerCommand('flowpilot.explainError', async () => {
                 try {
+                    const config = vscode.workspace.getConfiguration('flowpilot');
+                    if (!config.get<boolean>('features.explainError', true)) {
+                        vscode.window.showInformationMessage('FlowPilot: Explain Error is disabled in settings.');
+                        return;
+                    }
+
                     console.log('FlowPilot: explainError command triggered');
                     const editor = vscode.window.activeTextEditor;
 
@@ -250,6 +280,12 @@ export async function activate(context: vscode.ExtensionContext) {
         context.subscriptions.push(
             vscode.commands.registerCommand('flowpilot.reviewSnippet', async () => {
                 try {
+                    const config = vscode.workspace.getConfiguration('flowpilot');
+                    if (!config.get<boolean>('features.explainSelection', true)) {
+                        vscode.window.showInformationMessage('FlowPilot: Review Snippet is disabled in settings.');
+                        return;
+                    }
+
                     console.log('FlowPilot: reviewSnippet command triggered');
                     const explainContext = getExplainContext();
                     if (explainContext && explainContext.code) {
@@ -302,6 +338,24 @@ export async function activate(context: vscode.ExtensionContext) {
                     setApiKey(key);
                     vscode.window.showInformationMessage('FlowPilot: Successfully connected!');
                     // provider.refreshAuth(); // ref: key is updated via setApiKey
+                }
+            })
+        );
+
+        // Listen for configuration changes
+        context.subscriptions.push(
+            vscode.workspace.onDidChangeConfiguration(e => {
+                if (e.affectsConfiguration('flowpilot.features.codeAnalysis')) {
+                    const config = vscode.workspace.getConfiguration('flowpilot');
+                    const enabled = config.get<boolean>('features.codeAnalysis', true);
+
+                    if (enabled) {
+                        // Trigger analysis for all open documents
+                        vscode.workspace.textDocuments.forEach(doc => runAnalysis(doc));
+                    } else {
+                        // Clear diagnostics for all open documents
+                        vscode.workspace.textDocuments.forEach(doc => clearDiagnostics(doc.uri));
+                    }
                 }
             })
         );

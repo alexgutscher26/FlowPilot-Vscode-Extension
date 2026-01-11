@@ -28,6 +28,12 @@ export class FlowPilotCodeActionProvider implements vscode.CodeActionProvider {
         }
 
         // Create "Explain with FlowPilot" action for each diagnostic
+        // Check if explain error feature is enabled
+        const config = vscode.workspace.getConfiguration('flowpilot');
+        if (!config.get<boolean>('features.explainError', true)) {
+            return actions;
+        }
+
         for (const diagnostic of flowPilotDiagnostics) {
             const action = new vscode.CodeAction(
                 'Explain with FlowPilot',

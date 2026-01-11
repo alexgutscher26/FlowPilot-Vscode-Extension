@@ -135,6 +135,15 @@ export async function analyzeCode(
     const languageId = document.languageId;
     const fileName = document.fileName;
 
+    // Check configuration
+    const config = vscode.workspace.getConfiguration('flowpilot');
+    if (!config.get<boolean>('features.codeAnalysis', true)) {
+        return {
+            linting: { issues: [], summary: { errors: 0, warnings: 0, infos: 0 } },
+            security: { findings: [], summary: { critical: 0, high: 0, medium: 0, low: 0 }, overallRisk: 'none' }
+        };
+    }
+
     console.log('[FlowPilot] Analyzing code:', { fileName, languageId, codeLength: code.length });
 
     try {
