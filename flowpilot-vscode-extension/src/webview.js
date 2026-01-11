@@ -235,36 +235,85 @@
                 const reviewDiv = document.createElement('div');
                 reviewDiv.className = 'chat-message ai review-card';
 
-                let reviewHtml = `
-                    <div class="message-content">
-                        <div class="review-header">
-                            <h3>Code Review</h3>
-                            <div class="review-score ${review.score >= 7 ? 'high' : review.score >= 4 ? 'medium' : 'low'}">
-                                ${review.score}/10
-                            </div>
-                        </div>
-                        <div class="review-section">
-                            <strong>✅ Does:</strong>
-                            <p>${review.does}</p>
-                        </div>
-                        <div class="review-section">
-                             <strong>⚠️ Issues:</strong>
-                             <ul>
-                                ${review.issues.map(issue => `<li>${issue}</li>`).join('')}
-                             </ul>
-                        </div>
-                        <div class="review-section">
-                            <strong>✨ Better Version:</strong>
-                            <p>${review.whyBetter}</p>
-                            <pre><code>${review.improvedCode}</code></pre>
-                        </div>
-                    </div>
-                `;
+                // Avatar
+                const avatarDiv = document.createElement('div');
+                avatarDiv.className = 'message-avatar';
+                const avatarSpan = document.createElement('span');
+                avatarSpan.className = 'fp-icon';
+                avatarSpan.textContent = robotIcon;
+                avatarDiv.appendChild(avatarSpan);
 
-                // Add avatar
-                reviewHtml = `<div class="message-avatar"><span class="fp-icon">${robotIcon}</span></div>` + reviewHtml;
+                // Message content container
+                const messageContentDiv = document.createElement('div');
+                messageContentDiv.className = 'message-content';
 
-                reviewDiv.innerHTML = reviewHtml;
+                // Review header
+                const reviewHeaderDiv = document.createElement('div');
+                reviewHeaderDiv.className = 'review-header';
+
+                const headerTitle = document.createElement('h3');
+                headerTitle.textContent = 'Code Review';
+
+                const reviewScoreDiv = document.createElement('div');
+                reviewScoreDiv.className = 'review-score';
+                const scoreClass = review.score >= 7 ? 'high' : review.score >= 4 ? 'medium' : 'low';
+                reviewScoreDiv.classList.add(scoreClass);
+                reviewScoreDiv.textContent = `${review.score}/10`;
+
+                reviewHeaderDiv.appendChild(headerTitle);
+                reviewHeaderDiv.appendChild(reviewScoreDiv);
+
+                // "Does" section
+                const doesSectionDiv = document.createElement('div');
+                doesSectionDiv.className = 'review-section';
+                const doesStrong = document.createElement('strong');
+                doesStrong.textContent = '✅ Does:';
+                const doesParagraph = document.createElement('p');
+                doesParagraph.textContent = review.does;
+                doesSectionDiv.appendChild(doesStrong);
+                doesSectionDiv.appendChild(doesParagraph);
+
+                // "Issues" section
+                const issuesSectionDiv = document.createElement('div');
+                issuesSectionDiv.className = 'review-section';
+                const issuesStrong = document.createElement('strong');
+                issuesStrong.textContent = '⚠️ Issues:';
+                const issuesList = document.createElement('ul');
+                if (Array.isArray(review.issues)) {
+                    review.issues.forEach(issue => {
+                        const li = document.createElement('li');
+                        li.textContent = issue;
+                        issuesList.appendChild(li);
+                    });
+                }
+                issuesSectionDiv.appendChild(issuesStrong);
+                issuesSectionDiv.appendChild(issuesList);
+
+                // "Better Version" section
+                const betterSectionDiv = document.createElement('div');
+                betterSectionDiv.className = 'review-section';
+                const betterStrong = document.createElement('strong');
+                betterStrong.textContent = '✨ Better Version:';
+                const betterParagraph = document.createElement('p');
+                betterParagraph.textContent = review.whyBetter;
+                const pre = document.createElement('pre');
+                const code = document.createElement('code');
+                code.textContent = review.improvedCode;
+                pre.appendChild(code);
+                betterSectionDiv.appendChild(betterStrong);
+                betterSectionDiv.appendChild(betterParagraph);
+                betterSectionDiv.appendChild(pre);
+
+                // Assemble message content
+                messageContentDiv.appendChild(reviewHeaderDiv);
+                messageContentDiv.appendChild(doesSectionDiv);
+                messageContentDiv.appendChild(issuesSectionDiv);
+                messageContentDiv.appendChild(betterSectionDiv);
+
+                // Assemble final review card
+                reviewDiv.appendChild(avatarDiv);
+                reviewDiv.appendChild(messageContentDiv);
+
                 chatMessages.appendChild(reviewDiv);
                 scrollToBottom();
                 break;
