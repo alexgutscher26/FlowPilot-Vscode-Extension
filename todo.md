@@ -264,7 +264,7 @@
 
 ### 8.2 Developer Documentation
 - [x] **Architecture Diagrams**: C4 Model diagrams of how Extension talks to Backend.
-- [ ] **API Reference**: Swagger/OpenAPI spec for the backend.
+- [x] **API Reference**: Swagger/OpenAPI spec for the backend.
 - [x] **Contributing Guide**: Codespaces setup, `pnpm` workspace strictness.
 
 ### 8.3 Legal

@@ -1,25 +1,16 @@
-yangshun:
-  name: Yangshun Tay
-  title: Ex-Meta Staff Engineer, Co-founder GreatFrontEnd
-  url: https://linkedin.com/in/yangshun
-  image_url: https://github.com/yangshun.png
+alexgutscher:
+  name: Alex Gutscher
+  title: Creator of FlowPilot
+  url: https://github.com/alexgutscher26
+  image_url: https://github.com/alexgutscher26.png
   page: true
   socials:
-    x: yangshunz
-    linkedin: yangshun
-    github: yangshun
-    newsletter: https://www.greatfrontend.com
+    github: alexgutscher26
+    x: alexgutscher26
 
-slorber:
-  name: Sébastien Lorber
-  title: Docusaurus maintainer
-  url: https://sebastienlorber.com
-  image_url: https://github.com/slorber.png
-  page:
-    # customize the url of the author page at /blog/authors/<permalink>
-    permalink: '/all-sebastien-lorber-articles'
-  socials:
-    x: sebastienlorber
-    linkedin: sebastienlorber
-    github: slorber
-    newsletter: https://thisweekinreact.com
+flowpilot-team:
+  name: FlowPilot Team
+  title: Core Contributors
+  url: https://github.com/alexgutscher26/FlowPilot-Vscode-Extension
+  image_url: https://github.com/alexgutscher26.png
+  page: false

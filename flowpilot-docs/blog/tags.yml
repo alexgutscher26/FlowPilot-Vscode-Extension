@@ -1,19 +1,29 @@
-facebook:
-  label: Facebook
-  permalink: /facebook
-  description: Facebook tag description
+ai:
+  label: AI
+  permalink: /ai
+  description: Posts about AI and LLM integration
 
-hello:
-  label: Hello
-  permalink: /hello
-  description: Hello tag description
+vscode:
+  label: VS Code
+  permalink: /vscode
+  description: VS Code extension development
 
-docusaurus:
-  label: Docusaurus
-  permalink: /docusaurus
-  description: Docusaurus tag description
+features:
+  label: Features
+  permalink: /features
+  description: New features and updates
 
-hola:
-  label: Hola
-  permalink: /hola
-  description: Hola tag description
+development:
+  label: Development
+  permalink: /development
+  description: Development updates and behind-the-scenes
+
+tutorial:
+  label: Tutorial
+  permalink: /tutorial
+  description: Tutorials and how-to guides
+
+announcement:
+  label: Announcement
+  permalink: /announcement
+  description: Product announcements and releases
