@@ -361,6 +361,15 @@ export class FlowPilotProvider implements vscode.WebviewViewProvider {
         }
     }
 
+    public updateAnalysisResults(result: any) {
+        if (this._view) {
+            this._view.webview.postMessage({
+                type: 'analysisResults',
+                result: result
+            });
+        }
+    }
+
     private _getHtmlForWebview(webview: vscode.Webview) {
         const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'src', 'webview.js'));
         const styleUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'src', 'webview.css'));

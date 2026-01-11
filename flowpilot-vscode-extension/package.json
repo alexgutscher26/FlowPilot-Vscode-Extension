@@ -2,7 +2,7 @@
   "name": "flowpilot",
   "displayName": "FlowPilot - AI Coding Coach",
   "description": "Your AI coding coach that helps you write better code with real-time explanations and suggestions",
-  "version": "0.7.8",
+  "version": "0.8.2",
   "publisher": "flowpilot",
   "icon": "icon.png",
   "repository": {
@@ -89,6 +89,11 @@
         "command": "flowpilot.reviewSnippet",
         "title": "FlowPilot: Review Snippet",
         "icon": "$(checklist)"
+      },
+      {
+        "command": "flowpilot.analyzeCurrent",
+        "title": "FlowPilot: Analyze Current File",
+        "icon": "$(shield)"
       },
       {
         "command": "flowpilot.connect",

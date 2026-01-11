@@ -1,4 +1,3 @@
-
 // This file contains intentional errors for testing FlowPilot
 
 function calculateTotal(price, tax) {
@@ -12,3 +11,4 @@ console.log("Starting calculation";
 // Error 3: TypeError
 const number = 42;
 number.toUpperCase();
+number.to

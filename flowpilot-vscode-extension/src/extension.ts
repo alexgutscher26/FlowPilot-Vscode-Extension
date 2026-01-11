@@ -1,6 +1,9 @@
 import * as vscode from 'vscode';
 import { getExplainContext } from './context';
 import { getErrorContext } from './errorContext';
+import { initializeDiagnostics, analyzeCode, displayDiagnostics, clearDiagnostics } from './codeAnalyzer';
+import type { AnalysisResult } from './codeAnalyzer';
+import { FlowPilotCodeActionProvider } from './codeActionProvider';
 // Dynamic import reference for type usage only if needed, or rely on inference
 import type { FlowPilotProvider as FlowPilotProviderType } from './flowPilotProvider';
 
@@ -14,6 +17,9 @@ export async function activate(context: vscode.ExtensionContext) {
         const { setApiKey } = await import('./sessionManager');
         setApiKey(apiKey);
 
+        // Initialize diagnostic collections for code analysis
+        initializeDiagnostics(context);
+
         // Dynamically import the provider to handle potential load errors (e.g. missing dependencies)
         const { FlowPilotProvider } = await import('./flowPilotProvider');
 
@@ -22,6 +28,145 @@ export async function activate(context: vscode.ExtensionContext) {
 
         context.subscriptions.push(
             vscode.window.registerWebviewViewProvider(FlowPilotProvider.viewType, provider)
+        );
+
+        // Status bar item for analysis feedback
+        const analysisStatusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+        analysisStatusBar.text = '$(loading~spin) FlowPilot analyzing...';
+        context.subscriptions.push(analysisStatusBar);
+
+        // Debounce timer for real-time analysis
+        let analysisTimeout: NodeJS.Timeout | undefined;
+        let lastAnalysisResult: AnalysisResult | undefined;
+
+        // Function to run analysis on a document
+        async function runAnalysis(document: vscode.TextDocument) {
+            // Only analyze supported file types
+            const supportedLanguages = ['javascript', 'typescript', 'python', 'javascriptreact', 'typescriptreact', 'java', 'go', 'ruby', 'php', 'csharp'];
+            if (!supportedLanguages.includes(document.languageId)) {
+                return;
+            }
+
+            // Skip very large files (> 10000 lines)
+            if (document.lineCount > 10000) {
+                console.log('[FlowPilot] Skipping analysis for large file:', document.fileName);
+                return;
+            }
+
+            try {
+                analysisStatusBar.show();
+                console.log('[FlowPilot] Starting analysis for:', document.fileName);
+
+                const result = await analyzeCode(document);
+                lastAnalysisResult = result;
+
+                // Display diagnostics inline
+                displayDiagnostics(document, result);
+
+                // Send results to webview if it's open
+                provider.updateAnalysisResults(result);
+
+                analysisStatusBar.hide();
+
+                // Show notification if critical security issues found
+                if (result.security?.overallRisk === 'critical') {
+                    vscode.window.showWarningMessage(
+                        `FlowPilot: Critical security issues found in ${document.fileName.split('/').pop()}`,
+                        'View Details'
+                    ).then(selection => {
+                        if (selection === 'View Details') {
+                            vscode.commands.executeCommand('workbench.view.extension.flowpilot');
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('[FlowPilot] Analysis failed:', error);
+                analysisStatusBar.hide();
+                // Don't show error to user, just log it
+            }
+        }
+
+        // Real-time analysis on document change (debounced)
+        context.subscriptions.push(
+            vscode.workspace.onDidChangeTextDocument(event => {
+                const document = event.document;
+
+                // Clear existing timeout
+                if (analysisTimeout) {
+                    clearTimeout(analysisTimeout);
+                }
+
+                // Debounce: wait 2 seconds after typing stops
+                analysisTimeout = setTimeout(() => {
+                    runAnalysis(document);
+                }, 2000);
+            })
+        );
+
+        // Analyze when document is opened
+        context.subscriptions.push(
+            vscode.workspace.onDidOpenTextDocument(document => {
+                runAnalysis(document);
+            })
+        );
+
+        // Clear diagnostics when document is closed
+        context.subscriptions.push(
+            vscode.workspace.onDidCloseTextDocument(document => {
+                clearDiagnostics(document.uri);
+            })
+        );
+
+        // Manual analysis command
+        context.subscriptions.push(
+            vscode.commands.registerCommand('flowpilot.analyzeCurrent', async () => {
+                const editor = vscode.window.activeTextEditor;
+                if (editor) {
+                    await runAnalysis(editor.document);
+                    vscode.window.showInformationMessage('FlowPilot analysis complete!');
+                } else {
+                    vscode.window.showWarningMessage('No active editor to analyze.');
+                }
+            })
+        );
+
+        // Register code action provider for FlowPilot diagnostics
+        context.subscriptions.push(
+            vscode.languages.registerCodeActionsProvider(
+                { scheme: 'file' },
+                new FlowPilotCodeActionProvider(),
+                {
+                    providedCodeActionKinds: FlowPilotCodeActionProvider.providedCodeActionKinds
+                }
+            )
+        );
+
+        // Command to explain a diagnostic
+        context.subscriptions.push(
+            vscode.commands.registerCommand('flowpilot.explainDiagnostic', async (document: vscode.TextDocument, diagnostic: vscode.Diagnostic) => {
+                // Open FlowPilot panel
+                await vscode.commands.executeCommand('workbench.view.extension.flowpilot');
+
+                // Get the code around the diagnostic
+                const line = diagnostic.range.start.line;
+                const startLine = Math.max(0, line - 3);
+                const endLine = Math.min(document.lineCount - 1, line + 3);
+                const codeSnippet = document.getText(new vscode.Range(startLine, 0, endLine, document.lineAt(endLine).text.length));
+
+                // Send to FlowPilot for explanation
+                const context = {
+                    code: codeSnippet,
+                    fileName: document.fileName,
+                    languageId: document.languageId,
+                    diagnostic: {
+                        message: diagnostic.message,
+                        line: line + 1,
+                        severity: diagnostic.severity
+                    }
+                };
+
+                provider.explainCode(context);
+            })
         );
 
         // Register commands
