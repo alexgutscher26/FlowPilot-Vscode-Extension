@@ -9,13 +9,13 @@ This site is built using [Docusaurus](https://docusaurus.io/), a modern static w
 ### Installation
 
 ```bash
-npm install
+buninstall
 ```
 
 ### Local Development
 
 ```bash
-npm start
+bunstart
 ```
 
 This command starts a local development server and opens up a browser window at `http://localhost:3000`. Most changes are reflected live without having to restart the server.
@@ -23,7 +23,7 @@ This command starts a local development server and opens up a browser window at 
 ### Build
 
 ```bash
-npm run build
+bunrun build
 ```
 
 This command generates static content into the `build` directory and can be served using any static hosting service (Vercel, Netlify, GitHub Pages, etc.).
@@ -106,7 +106,7 @@ See the [Docusaurus Markdown Features](https://docusaurus.io/docs/markdown-featu
 ### GitHub Pages
 
 ```bash
-GIT_USER=<Your GitHub username> npm run deploy
+GIT_USER=<Your GitHub username> bunrun deploy
 ```
 
 This builds the site and pushes to the `gh-pages` branch.

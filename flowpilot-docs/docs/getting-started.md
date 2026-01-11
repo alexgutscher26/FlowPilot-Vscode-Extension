@@ -43,12 +43,12 @@ This is the core of the product. To build and debug the extension:
 
 2.  **Install dependencies:**
     ```bash
-    npm install
+    buninstall
     ```
 
 3.  **Start the Compiler in Watch Mode:**
     ```bash
-    npm run watch
+    bunrun watch
     ```
     This uses `esbuild` to compile the TypeScript code and watches for changes.
 
@@ -72,12 +72,12 @@ The web dashboard handles authentication, user history, and deeper analytics.
 
 2.  **Install dependencies:**
     ```bash
-    npm install
+    buninstall
     ```
 
 3.  **Start the Development Server:**
     ```bash
-    npm run dev
+    bunrun dev
     ```
     The app will be available at [http://localhost:3000](http://localhost:3000).
 
@@ -94,12 +94,12 @@ To edit or preview these docs:
 
 2.  **Install dependencies:**
     ```bash
-    npm install
+    buninstall
     ```
 
 3.  **Start the Local Server:**
     ```bash
-    npm start
+    bunstart
     ```
     The site will open at [http://localhost:3000](http://localhost:3000) (or 3001 if port is busy).
 

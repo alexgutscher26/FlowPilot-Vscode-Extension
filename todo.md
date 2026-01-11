@@ -220,7 +220,7 @@
     - [ ] Mobile responsiveness checks.
 
 ### 6.3 Security Audits
-- [ ] **Dependency Scan**: Setup `npm audit` or Snyk in CI pipeline.
+- [ ] **Dependency Scan**: Setup `bunaudit` or Snyk in CI pipeline.
 - [ ] **Penetration Testing**: Attempt prompt injection attacks on the LLM.
 
 ---
@@ -265,7 +265,7 @@
 ### 8.2 Developer Documentation
 - [x] **Architecture Diagrams**: C4 Model diagrams of how Extension talks to Backend.
 - [ ] **API Reference**: Swagger/OpenAPI spec for the backend.
-- [ ] **Contributing Guide**: Codespaces setup, `pnpm` workspace strictness.
+- [x] **Contributing Guide**: Codespaces setup, `pnpm` workspace strictness.
 
 ### 8.3 Legal
 - [ ] **Privacy Policy**: Explicit details on code data handling (Does code leave the machine? Is it stored?).

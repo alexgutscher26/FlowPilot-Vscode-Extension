@@ -158,11 +158,11 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "npm run esbuild-base -- --minify",
+    "vscode:prepublish": "bunrun esbuild-base -- --minify",
     "esbuild-base": "node esbuild.js",
     "compile": "tsc -p ./",
     "watch": "node esbuild.js --watch",
-    "pretest": "npm run compile && npm run lint",
+    "pretest": "bunrun compile && bunrun lint",
     "lint": "eslint src --ext ts",
     "test": "node ./out/test/runTest.js"
   },
