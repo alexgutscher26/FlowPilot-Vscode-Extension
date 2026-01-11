@@ -263,7 +263,7 @@
     - [x] VS Code "Welcome Page" with interactive checklist.
 
 ### 8.2 Developer Documentation
-- [ ] **Architecture Diagrams**: C4 Model diagrams of how Extension talks to Backend.
+- [x] **Architecture Diagrams**: C4 Model diagrams of how Extension talks to Backend.
 - [ ] **API Reference**: Swagger/OpenAPI spec for the backend.
 - [ ] **Contributing Guide**: Codespaces setup, `pnpm` workspace strictness.
 

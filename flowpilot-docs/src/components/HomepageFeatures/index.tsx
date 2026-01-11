@@ -1,56 +1,90 @@
-import type {ReactNode} from 'react';
+import type { ReactNode } from 'react';
 import clsx from 'clsx';
 import Heading from '@theme/Heading';
 import styles from './styles.module.css';
 
 type FeatureItem = {
   title: string;
-  Svg: React.ComponentType<React.ComponentProps<'svg'>>;
+  emoji: string;
   description: ReactNode;
 };
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'Easy to Use',
-    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
+    title: 'Explain Selection',
+    emoji: '💡',
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+        Highlight any code snippet and get instant, step-by-step explanations.
+        Perfect for understanding complex algorithms, legacy code, or unfamiliar libraries.
       </>
     ),
   },
   {
-    title: 'Focus on What Matters',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
+    title: 'Debug Faster',
+    emoji: '🐞',
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        Stuck on an error? FlowPilot analyzes stack traces, explains root causes,
+        and suggests fixes—all within VS Code.
       </>
     ),
   },
   {
-    title: 'Powered by React',
-    Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
+    title: 'Code Reviews',
+    emoji: '📝',
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        Get on-demand code reviews that check for bugs, security vulnerabilities,
+        and code quality issues before you commit.
+      </>
+    ),
+  },
+  {
+    title: 'Session Analytics',
+    emoji: '📊',
+    description: (
+      <>
+        Track your coding sessions, visualize language usage, and see your progress
+        over time via the web dashboard.
+      </>
+    ),
+  },
+  {
+    title: 'Privacy First',
+    emoji: '🔒',
+    description: (
+      <>
+        Your code is sent to the LLM only when you explicitly trigger a command.
+        No training on your data, no persistent storage.
+      </>
+    ),
+  },
+  {
+    title: 'Lightning Fast',
+    emoji: '⚡',
+    description: (
+      <>
+        Powered by streaming responses and Tree-sitter AST parsing for near-instant
+        analysis and explanations.
       </>
     ),
   },
 ];
 
-function Feature({title, Svg, description}: FeatureItem) {
+function Feature({ title, emoji, description }: FeatureItem) {
   return (
-    <div className={clsx('col col--4')}>
-      <div className="text--center">
-        <Svg className={styles.featureSvg} role="img" />
-      </div>
-      <div className="text--center padding-horiz--md">
-        <Heading as="h3">{title}</Heading>
-        <p>{description}</p>
+    <div className={clsx('col col--4', styles.featureCol)}>
+      <div className={styles.featureCard}>
+        <div className={styles.featureIcon} role="img" aria-label={`${title} icon`}>
+          {emoji}
+        </div>
+        <div className={styles.featureContent}>
+          <Heading as="h3" className={styles.featureTitle}>
+            {title}
+          </Heading>
+          <p className={styles.featureDescription}>{description}</p>
+        </div>
       </div>
     </div>
   );
@@ -60,6 +94,14 @@ export default function HomepageFeatures(): ReactNode {
   return (
     <section className={styles.features}>
       <div className="container">
+        <div className={styles.featuresHeader}>
+          <Heading as="h2" className={styles.featuresHeading}>
+            Powerful Features for Modern Development
+          </Heading>
+          <p className={styles.featuresSubheading}>
+            Everything you need to code smarter, debug faster, and ship with confidence
+          </p>
+        </div>
         <div className="row">
           {FeatureList.map((props, idx) => (
             <Feature key={idx} {...props} />

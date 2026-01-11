@@ -4,7 +4,7 @@ title: Getting Started
 description: Set up your development environment for FlowPilot.
 ---
 
-# 🚀 Getting Started for Developers
+#  Getting Started for Developers
 
 Welcome to the FlowPilot engineering team! This guide will help you set up your local development environment to contribute to the VS Code extension, the Web Dashboard, and this documentation site.
 

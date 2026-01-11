@@ -1,11 +1,227 @@
+/* Features Section */
 .features {
-  display: flex;
-  align-items: center;
-  padding: 2rem 0;
-  width: 100%;
+  padding: 4rem 0;
+  background: linear-gradient(180deg, 
+    var(--ifm-background-color) 0%, 
+    var(--ifm-color-emphasis-100) 100%
+  );
 }
 
-.featureSvg {
-  height: 200px;
-  width: 200px;
+/* Features Header */
+.featuresHeader {
+  text-align: center;
+  margin-bottom: 3rem;
+  animation: fadeIn 0.8s ease-out;
+}
+
+.featuresHeading {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--ifm-heading-color);
+}
+
+.featuresSubheading {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  color: var(--ifm-color-emphasis-700);
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* Feature Column */
+.featureCol {
+  margin-bottom: 2rem;
+  display: flex;
+}
+
+/* Feature Card */
+.featureCard {
+  background: var(--ifm-background-surface-color);
+  border-radius: 12px;
+  padding: 2rem 1.5rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.featureCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, 
+    var(--ifm-color-primary), 
+    var(--ifm-color-primary-light)
+  );
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.featureCard:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+  border-color: var(--ifm-color-primary-lightest);
+}
+
+.featureCard:hover::before {
+  transform: scaleX(1);
+}
+
+/* Feature Icon */
+.featureIcon {
+  font-size: 3.5rem;
+  margin-bottom: 1.5rem;
+  transition: transform 0.3s ease;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+}
+
+.featureCard:hover .featureIcon {
+  transform: scale(1.1) rotate(5deg);
+}
+
+/* Feature Content */
+.featureContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.featureTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--ifm-heading-color);
+  line-height: 1.3;
+}
+
+.featureDescription {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--ifm-color-emphasis-700);
+  margin: 0;
+  flex: 1;
+}
+
+/* Staggered Animation */
+.featureCol:nth-child(1) .featureCard {
+  animation: fadeInUp 0.6s ease-out 0.1s both;
+}
+
+.featureCol:nth-child(2) .featureCard {
+  animation: fadeInUp 0.6s ease-out 0.2s both;
+}
+
+.featureCol:nth-child(3) .featureCard {
+  animation: fadeInUp 0.6s ease-out 0.3s both;
+}
+
+.featureCol:nth-child(4) .featureCard {
+  animation: fadeInUp 0.6s ease-out 0.4s both;
+}
+
+.featureCol:nth-child(5) .featureCard {
+  animation: fadeInUp 0.6s ease-out 0.5s both;
+}
+
+.featureCol:nth-child(6) .featureCard {
+  animation: fadeInUp 0.6s ease-out 0.6s both;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Dark Mode Adjustments */
+[data-theme='dark'] .featureCard {
+  background: var(--ifm-background-surface-color);
+  border-color: var(--ifm-color-emphasis-300);
+}
+
+[data-theme='dark'] .featureCard:hover {
+  border-color: var(--ifm-color-primary-dark);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 996px) {
+  .featureCol {
+    margin-bottom: 1.5rem;
+  }
+  
+  .featureCard {
+    padding: 1.5rem 1.25rem;
+  }
+  
+  .featureIcon {
+    font-size: 3rem;
+    margin-bottom: 1.25rem;
+  }
+  
+  .featureTitle {
+    font-size: 1.35rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .features {
+    padding: 3rem 0;
+  }
+  
+  .featuresHeader {
+    margin-bottom: 2rem;
+  }
+  
+  .featureCard {
+    padding: 1.5rem;
+  }
+  
+  .featureIcon {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .featureCard {
+    padding: 1.25rem;
+  }
+  
+  .featureIcon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .featureTitle {
+    font-size: 1.25rem;
+  }
+  
+  .featureDescription {
+    font-size: 0.95rem;
+  }
 }
