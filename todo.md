@@ -18,7 +18,7 @@
 ### 1.1 "Explain Selection" Module
 - [ ] **Context Extraction Engine**
     - [x] Implement AST-based parsing (using `tree-sitter` or similar) to verify valid code blocks are selected.
-    - [ ] Create fallback logic: If selection is empty, auto-expand selection to current function boundaries.
+    - [x] Create fallback logic: If selection is empty, auto-expand selection to current function boundaries.
     - [ ] Add support for multi-cursor selections (aggregate context or error out gracefully).
     - [ ] Sanitize input: Remove secrets/API keys from code before sending to LLM.
 - [ ] **Streaming Response Handling**
@@ -255,12 +255,12 @@
 ## 📜 Phase VIII: Documentation, Legal & Community
 
 ### 8.1 User Documentation
-- [ ] **Doc Site (Docusaurus)**
-    - [ ] "Getting Started" Video Tutorial.
-    - [ ] "Features Deep Dive".
-    - [ ] FAQ: "Why is the AI hallucinating?"
-- [ ] **In-Editor Walkthrough**
-    - [ ] VS Code "Welcome Page" with interactive checklist.
+- [x] **Doc Site (Docusaurus)**
+    - [x] "Getting Started" Guide for Developers.
+    - [x] "Features Deep Dive".
+    - [x] FAQ: "Why is the AI hallucinating?"
+- [x] **In-Editor Walkthrough**
+    - [x] VS Code "Welcome Page" with interactive checklist.
 
 ### 8.2 Developer Documentation
 - [ ] **Architecture Diagrams**: C4 Model diagrams of how Extension talks to Backend.

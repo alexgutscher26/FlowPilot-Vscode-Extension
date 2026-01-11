@@ -95,4 +95,45 @@ export class ParserService {
         }
         return false;
     }
+
+    public async findEnclosingFunction(code: string, languageId: string, line: number, character: number): Promise<{ startLine: number, endLine: number } | null> {
+        const parser = await this.getParser(languageId);
+        if (!parser) {
+            return null;
+        }
+
+        try {
+            const tree = parser.parse(code);
+            const root = tree.rootNode;
+            // tree-sitter points are {row, column}, 0-indexed
+            const node = root.descendantForPosition({ row: line, column: character });
+
+            if (!node) return null;
+
+            // Traverse up to find a function-like node
+            let current = node;
+            const functionTypes = [
+                // JS/TS
+                'function_declaration', 'function', 'arrow_function', 'method_definition', 'class_declaration',
+                // Python
+                'function_definition', 'class_definition'
+            ];
+
+            while (current) {
+                if (functionTypes.includes(current.type)) {
+                    // check if this node actually spans multiple lines or contains the selection effectively
+                    return {
+                        startLine: current.startPosition.row,
+                        endLine: current.endPosition.row
+                    };
+                }
+                current = current.parent;
+            }
+
+            return null;
+        } catch (error) {
+            console.error('Error finding enclosing function:', error);
+            return null;
+        }
+    }
 }

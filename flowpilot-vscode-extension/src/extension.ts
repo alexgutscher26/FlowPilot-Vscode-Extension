@@ -4,6 +4,7 @@ import { getErrorContext } from './errorContext';
 import { initializeDiagnostics, analyzeCode, displayDiagnostics, clearDiagnostics } from './codeAnalyzer';
 import type { AnalysisResult } from './codeAnalyzer';
 import { FlowPilotCodeActionProvider } from './codeActionProvider';
+import { WelcomePanel } from './welcomePage';
 // Dynamic import reference for type usage only if needed, or rely on inference
 import type { FlowPilotProvider as FlowPilotProviderType } from './flowPilotProvider';
 
@@ -382,6 +383,20 @@ export async function activate(context: vscode.ExtensionContext) {
                 }
             })
         );
+
+        // Register Welcome Page Command
+        context.subscriptions.push(
+            vscode.commands.registerCommand('flowpilot.showWelcome', () => {
+                WelcomePanel.createOrShow(context.extensionUri);
+            })
+        );
+
+        // Check for first install
+        const isFirstRun = !context.globalState.get('flowpilot.hasShownWelcome');
+        if (isFirstRun) {
+            vscode.commands.executeCommand('flowpilot.showWelcome');
+            context.globalState.update('flowpilot.hasShownWelcome', true);
+        }
 
     } catch (error) {
         console.error('FlowPilot: Extension activation failed:', error);
