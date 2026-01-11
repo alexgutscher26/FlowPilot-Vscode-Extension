@@ -10,5 +10,5 @@ console.log("Starting calculation";
 
 // Error 3: TypeError
 const number = 42;
-number.toUpperCase();
+number.toUpperCase(
 number.to

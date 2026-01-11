@@ -17,6 +17,11 @@ export async function activate(context: vscode.ExtensionContext) {
         const { setApiKey } = await import('./sessionManager');
         setApiKey(apiKey);
 
+        // Initialize Parser Service for AST validation
+        const { ParserService } = await import('./services/parserService');
+        await ParserService.getInstance(context).init();
+
+
         // Initialize diagnostic collections for code analysis
         initializeDiagnostics(context);
 
@@ -223,7 +228,7 @@ export async function activate(context: vscode.ExtensionContext) {
                     }
 
                     console.log('FlowPilot: explainSelection command triggered');
-                    const explainContext = getExplainContext();
+                    const explainContext = await getExplainContext();
                     if (explainContext) {
                         // Send context to webview provider which will call the backend
                         provider.explainCode(explainContext);
@@ -287,7 +292,7 @@ export async function activate(context: vscode.ExtensionContext) {
                     }
 
                     console.log('FlowPilot: reviewSnippet command triggered');
-                    const explainContext = getExplainContext();
+                    const explainContext = await getExplainContext();
                     if (explainContext && explainContext.code) {
                         // Ensure panel is open
                         await vscode.commands.executeCommand('workbench.view.extension.flowpilot');

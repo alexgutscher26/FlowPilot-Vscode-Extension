@@ -1,14 +1,17 @@
 import * as vscode from 'vscode';
 
+import { ParserService } from './services/parserService';
+
 export interface ExplainContext {
     code: string;
     fileName: string;
     languageId: string;
     surroundingLines?: string;
     cursorLine?: number;
+    isSyntaxValid?: boolean;
 }
 
-export function getExplainContext(): ExplainContext | null {
+export async function getExplainContext(): Promise<ExplainContext | null> {
     const editor = vscode.window.activeTextEditor;
     if (!editor) {
         return null;
@@ -40,9 +43,15 @@ export function getExplainContext(): ExplainContext | null {
 
         const range = new vscode.Range(startLine, 0, endLine, document.lineAt(endLine).text.length);
         code = document.getText(range);
-        // In this case, code acts as both the target and context, but we can separate if needed.
-        // For simplicity, we'll set surroundingLines to the same block or just empty if 'code' covers it.
         surroundingLines = code;
+    }
+
+    // AST Verification
+    let isSyntaxValid = true;
+    try {
+        isSyntaxValid = await ParserService.getInstance().validateSelection(code, languageId);
+    } catch (e) {
+        console.error('Failed to validate selection syntax:', e);
     }
 
     return {
@@ -50,6 +59,7 @@ export function getExplainContext(): ExplainContext | null {
         fileName,
         languageId,
         surroundingLines,
-        cursorLine
+        cursorLine,
+        isSyntaxValid
     };
 }

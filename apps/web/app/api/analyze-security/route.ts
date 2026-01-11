@@ -1,50 +1,59 @@
-
-import { NextResponse } from 'next/server';
-import OpenAI from 'openai';
+import { NextResponse } from "next/server"
+import OpenAI from "openai"
 
 const openai = new OpenAI({
-    baseURL: 'https://openrouter.ai/api/v1',
-    apiKey: process.env.OPENROUTER_API_KEY,
-});
+  baseURL: "https://openrouter.ai/api/v1",
+  apiKey: process.env.OPENROUTER_API_KEY,
+})
 
 interface SecurityFinding {
-    line: number;
-    severity: 'critical' | 'high' | 'medium' | 'low';
-    category: string;
-    title: string;
-    description: string;
-    remediation: string;
-    codeSnippet?: string;
+  line: number
+  severity: "critical" | "high" | "medium" | "low"
+  category: string
+  title: string
+  description: string
+  remediation: string
+  codeSnippet?: string
 }
 
 interface SecurityResponse {
-    findings: SecurityFinding[];
-    summary: {
-        critical: number;
-        high: number;
-        medium: number;
-        low: number;
-    };
-    overallRisk: 'critical' | 'high' | 'medium' | 'low' | 'none';
+  findings: SecurityFinding[]
+  summary: {
+    critical: number
+    high: number
+    medium: number
+    low: number
+  }
+  overallRisk: "critical" | "high" | "medium" | "low" | "none"
 }
 
 export async function POST(req: Request) {
-    try {
-        const body = await req.json();
-        const { code, fileName, languageId } = body;
+  try {
+    const body = await req.json()
+    const { code, fileName, languageId } = body
 
-        console.log('[Security Analysis API] Received request:', { fileName, languageId, codeLength: code?.length });
+    console.log("[Security Analysis API] Received request:", {
+      fileName,
+      languageId,
+      codeLength: code?.length,
+    })
 
-        if (!process.env.OPENROUTER_API_KEY) {
-            console.error('[Security Analysis API] Missing OPENROUTER_API_KEY');
-            return NextResponse.json({ error: 'Server misconfiguration: Missing API Key' }, { status: 500 });
-        }
+    if (!process.env.OPENROUTER_API_KEY) {
+      console.error("[Security Analysis API] Missing OPENROUTER_API_KEY")
+      return NextResponse.json(
+        { error: "Server misconfiguration: Missing API Key" },
+        { status: 500 }
+      )
+    }
 
-        if (!code || !languageId) {
-            return NextResponse.json({ error: 'Missing required fields: code, languageId' }, { status: 400 });
-        }
+    if (!code || !languageId) {
+      return NextResponse.json(
+        { error: "Missing required fields: code, languageId" },
+        { status: 400 }
+      )
+    }
 
-        const systemPrompt = `
+    const systemPrompt = `
 You are a security expert specializing in code vulnerability detection.
 Your task is to analyze code for security vulnerabilities and risks.
 
@@ -84,11 +93,11 @@ You must return a valid JSON object with this structure:
 
 Be thorough but avoid false positives. Only report genuine security concerns.
 Do not include markdown formatting (like \`\`\`json) in your response, just the raw JSON object.
-`;
+`
 
-        const userPrompt = `
+    const userPrompt = `
 Language: ${languageId}
-File: ${fileName || 'untitled'}
+File: ${fileName || "untitled"}
 
 Code to analyze for security vulnerabilities:
 \`\`\`${languageId}
@@ -96,104 +105,102 @@ ${code}
 \`\`\`
 
 Please identify all security vulnerabilities and risks in this code.
-`;
+`
 
-        const models = [
-            'openai/gpt-4o-mini',
-            'anthropic/claude-3-5-haiku',
-            'google/gemini-2.0-flash-exp:free'
-        ];
+    const models = [
+      "openai/gpt-4o-mini",
+      "anthropic/claude-3-5-haiku",
+      "google/gemini-2.0-flash-exp:free",
+    ]
 
-        let selectedModel = models[0];
+    let selectedModel = models[0]
 
-        // Try models in sequence
-        for (const model of models) {
-            try {
-                console.log(`[Security Analysis API] Trying model: ${model}`);
-                selectedModel = model;
+    // Try models in sequence
+    for (const model of models) {
+      try {
+        console.log(`[Security Analysis API] Trying model: ${model}`)
+        selectedModel = model
 
-                const response = await openai.chat.completions.create({
-                    model: model,
-                    messages: [
-                        { role: 'system', content: systemPrompt },
-                        { role: 'user', content: userPrompt }
-                    ],
-                    response_format: { type: 'json_object' },
-                    temperature: 0.2, // Very low temperature for consistent security analysis
-                });
+        const response = await openai.chat.completions.create({
+          model: model,
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: userPrompt },
+          ],
+          response_format: { type: "json_object" },
+          temperature: 0.2, // Very low temperature for consistent security analysis
+        })
 
-                const content = response.choices[0]?.message?.content;
-                if (!content) {
-                    throw new Error('No content received from LLM');
-                }
-
-                const jsonResponse = JSON.parse(content);
-
-                // Validate and structure the response
-                const findings: SecurityFinding[] = jsonResponse.findings || [];
-
-                const summary = {
-                    critical: findings.filter(f => f.severity === 'critical').length,
-                    high: findings.filter(f => f.severity === 'high').length,
-                    medium: findings.filter(f => f.severity === 'medium').length,
-                    low: findings.filter(f => f.severity === 'low').length,
-                };
-
-                // Determine overall risk
-                let overallRisk: 'critical' | 'high' | 'medium' | 'low' | 'none' = 'none';
-                if (summary.critical > 0) {
-                    overallRisk = 'critical';
-                } else if (summary.high > 0) {
-                    overallRisk = 'high';
-                } else if (summary.medium > 0) {
-                    overallRisk = 'medium';
-                } else if (summary.low > 0) {
-                    overallRisk = 'low';
-                }
-
-                const securityResponse: SecurityResponse = {
-                    findings,
-                    summary,
-                    overallRisk
-                };
-
-                // Log usage
-                try {
-                    const logEntry = {
-                        timestamp: new Date().toISOString(),
-                        userId: 'anonymous-user',
-                        type: 'security-analysis',
-                        language: languageId,
-                        fileName: fileName,
-                        findingsCount: findings.length,
-                        overallRisk: overallRisk,
-                        model: selectedModel
-                    };
-                    const fs = require('fs');
-                    const path = require('path');
-                    const logDir = path.join(process.cwd(), 'logs');
-                    if (!fs.existsSync(logDir)) {
-                        fs.mkdirSync(logDir);
-                    }
-                    fs.appendFileSync(path.join(logDir, 'usage.jsonl'), JSON.stringify(logEntry) + '\n');
-                } catch (logError) {
-                    console.error('[Security Analysis API] Logging failed:', logError);
-                }
-
-                return NextResponse.json(securityResponse);
-
-            } catch (error: any) {
-                console.warn(`[Security Analysis API] Model ${model} failed:`, error?.message || error);
-                if (model === models[models.length - 1]) {
-                    throw error;
-                }
-            }
+        const content = response.choices[0]?.message?.content
+        if (!content) {
+          throw new Error("No content received from LLM")
         }
 
-        throw new Error('All models failed');
+        const jsonResponse = JSON.parse(content)
 
-    } catch (error) {
-        console.error('[Security Analysis API] Error:', error);
-        return NextResponse.json({ error: 'Failed to process request' }, { status: 500 });
+        // Validate and structure the response
+        const findings: SecurityFinding[] = jsonResponse.findings || []
+
+        const summary = {
+          critical: findings.filter((f) => f.severity === "critical").length,
+          high: findings.filter((f) => f.severity === "high").length,
+          medium: findings.filter((f) => f.severity === "medium").length,
+          low: findings.filter((f) => f.severity === "low").length,
+        }
+
+        // Determine overall risk
+        let overallRisk: "critical" | "high" | "medium" | "low" | "none" = "none"
+        if (summary.critical > 0) {
+          overallRisk = "critical"
+        } else if (summary.high > 0) {
+          overallRisk = "high"
+        } else if (summary.medium > 0) {
+          overallRisk = "medium"
+        } else if (summary.low > 0) {
+          overallRisk = "low"
+        }
+
+        const securityResponse: SecurityResponse = {
+          findings,
+          summary,
+          overallRisk,
+        }
+
+        // Log usage
+        try {
+          const logEntry = {
+            timestamp: new Date().toISOString(),
+            userId: "anonymous-user",
+            type: "security-analysis",
+            language: languageId,
+            fileName: fileName,
+            findingsCount: findings.length,
+            overallRisk: overallRisk,
+            model: selectedModel,
+          }
+          const fs = require("fs")
+          const path = require("path")
+          const logDir = path.join(process.cwd(), "logs")
+          if (!fs.existsSync(logDir)) {
+            fs.mkdirSync(logDir)
+          }
+          fs.appendFileSync(path.join(logDir, "usage.jsonl"), JSON.stringify(logEntry) + "\n")
+        } catch (logError) {
+          console.error("[Security Analysis API] Logging failed:", logError)
+        }
+
+        return NextResponse.json(securityResponse)
+      } catch (error: any) {
+        console.warn(`[Security Analysis API] Model ${model} failed:`, error?.message || error)
+        if (model === models[models.length - 1]) {
+          throw error
+        }
+      }
     }
+
+    throw new Error("All models failed")
+  } catch (error) {
+    console.error("[Security Analysis API] Error:", error)
+    return NextResponse.json({ error: "Failed to process request" }, { status: 500 })
+  }
 }

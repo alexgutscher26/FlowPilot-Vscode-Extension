@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button"
 import {
   Check,
@@ -110,7 +109,11 @@ function Hero() {
                     FlowPilot
                   </div>
                   <div className="text-xs text-gray-300 leading-relaxed">
-                    You're re-calculating <code className="bg-[#0f172a] px-1 py-0.5 rounded text-[#93c5fd]">value</code> on every render. Use <code className="bg-[#0f172a] px-1 py-0.5 rounded text-[#93c5fd]">useMemo</code> to improve performance.
+                    You're re-calculating{" "}
+                    <code className="bg-[#0f172a] px-1 py-0.5 rounded text-[#93c5fd]">value</code>{" "}
+                    on every render. Use{" "}
+                    <code className="bg-[#0f172a] px-1 py-0.5 rounded text-[#93c5fd]">useMemo</code>{" "}
+                    to improve performance.
                   </div>
                 </div>
                 <div className="h-2 w-3/4 bg-gray-700/50 rounded opacity-20"></div>
@@ -123,8 +126,6 @@ function Hero() {
     </section>
   )
 }
-
-
 
 function FeatureBlocks() {
   return (

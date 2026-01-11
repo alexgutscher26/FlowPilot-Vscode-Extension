@@ -25,8 +25,8 @@ import { DashboardHeader } from "@/components/dashboard/DashboardHeader"
 // Server Component
 export default async function DashboardPage() {
   const session = await auth.api.getSession({
-    headers: await headers()
-  });
+    headers: await headers(),
+  })
 
   if (!session) {
     redirect("/login")
@@ -38,7 +38,7 @@ export default async function DashboardPage() {
   // The client-side hook was doing this: fetch("/api/user/ensure")
   // Let's omit the blocking ensure call for speed, as the session implies existence.
 
-  const user = session.user;
+  const user = session.user
 
   return (
     <div className="bg-background min-h-screen text-foreground">
@@ -113,11 +113,13 @@ export default async function DashboardPage() {
           </div>
         </aside>
         <main className="flex-1 flex flex-col min-w-0 overflow-hidden bg-background">
-          <DashboardHeader user={{
-            name: user.name || "",
-            email: user.email,
-            image: user.image
-          }} />
+          <DashboardHeader
+            user={{
+              name: user.name || "",
+              email: user.email,
+              image: user.image,
+            }}
+          />
           <div className="flex-1 overflow-y-auto p-4 md:p-8">
             <div className="max-w-6xl mx-auto flex flex-col gap-6 md:gap-8">
               <div className="bg-card rounded-xl shadow-sm border border-muted/40 overflow-hidden relative">

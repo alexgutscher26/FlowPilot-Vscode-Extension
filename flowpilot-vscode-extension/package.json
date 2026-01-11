@@ -2,7 +2,7 @@
   "name": "flowpilot",
   "displayName": "FlowPilot - AI Coding Coach",
   "description": "Your AI coding coach that helps you write better code with real-time explanations and suggestions",
-  "version": "0.8.3",
+  "version": "0.8.9",
   "publisher": "flowpilot",
   "icon": "icon.png",
   "repository": {
@@ -194,6 +194,10 @@
     "math-intrinsics": "^1.1.0",
     "mime-types": "^3.0.2",
     "node-fetch": "^2.7.0",
-    "proxy-from-env": "^1.1.0"
+    "proxy-from-env": "^1.1.0",
+    "tree-sitter-javascript": "^0.25.0",
+    "tree-sitter-python": "^0.25.0",
+    "tree-sitter-typescript": "^0.23.2",
+    "web-tree-sitter": "^0.26.3"
   }
 }
