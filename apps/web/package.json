@@ -11,6 +11,9 @@
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
+  "prisma": {
+    "seed": "bun run prisma/seed.ts"
+  },
   "dependencies": {
     "@prisma/client": "^5.16.1",
     "@radix-ui/react-accordion": "^1.2.12",
