@@ -270,4 +270,4 @@
 ### 8.3 Legal
 - [x] **Privacy Policy**: Explicit details on code data handling (Does code leave the machine? Is it stored?).
 - [x] **Terms of Service**: Usage limits, liability disclaimers.
-- [ ] **GDPR/CCPA Compliance**: Data export and deletion tools.
+- [x] **GDPR/CCPA Compliance**: Data export and deletion tools.

@@ -23,6 +23,9 @@ import {
   Slack,
   AlertTriangle,
   CheckCircle,
+  Download,
+  Trash2,
+  FileText,
 } from "lucide-react"
 import { UploadButton } from "@uploadthing/react"
 import type { OurFileRouter } from "@/lib/uploadthing"
@@ -81,6 +84,9 @@ export default function SettingsPage() {
   const [theme, setTheme] = useState<"light" | "dark" | "system">("system")
   const email = session?.user?.email || ""
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null)
+  const [exporting, setExporting] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [deleting, setDeleting] = useState(false)
 
   useEffect(() => {
     if (!isPending && !session) {
@@ -101,7 +107,7 @@ export default function SettingsPage() {
           if (user?.bio) setBio(user.bio)
           if (user?.image) setImageUrl(user.image)
           if (user?.theme) setTheme(user.theme as any)
-        } catch {}
+        } catch { }
       }
       run()
     }
@@ -116,7 +122,7 @@ export default function SettingsPage() {
       const root = document.documentElement
       if (effective === "dark") root.classList.add("dark")
       else root.classList.remove("dark")
-    } catch {}
+    } catch { }
   }, [theme])
 
   if (isPending) {
@@ -145,6 +151,52 @@ export default function SettingsPage() {
       setTimeout(() => setToast(null), 4000)
     } finally {
       setSaving(false)
+    }
+  }
+
+  const onExportData = async () => {
+    setExporting(true)
+    try {
+      const res = await fetch("/api/user/export-data")
+      if (!res.ok) {
+        throw new Error("Failed to export data")
+      }
+      const blob = await res.blob()
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement("a")
+      a.href = url
+      a.download = `flowpilot-data-export-${new Date().toISOString().split("T")[0]}.json`
+      document.body.appendChild(a)
+      a.click()
+      window.URL.revokeObjectURL(url)
+      document.body.removeChild(a)
+      setToast({ message: "Data exported successfully", type: "success" })
+      setTimeout(() => setToast(null), 3000)
+    } catch {
+      setToast({ message: "Failed to export data", type: "error" })
+      setTimeout(() => setToast(null), 4000)
+    } finally {
+      setExporting(false)
+    }
+  }
+
+  const onDeleteAccount = async () => {
+    setDeleting(true)
+    try {
+      const res = await fetch("/api/user/delete-account", {
+        method: "DELETE",
+      })
+      if (!res.ok) {
+        throw new Error("Failed to delete account")
+      }
+      setToast({ message: "Account deleted successfully", type: "success" })
+      setTimeout(() => {
+        window.location.href = "/"
+      }, 2000)
+    } catch {
+      setToast({ message: "Failed to delete account", type: "error" })
+      setTimeout(() => setToast(null), 4000)
+      setDeleting(false)
     }
   }
 
@@ -338,10 +390,10 @@ export default function SettingsPage() {
                               method: "PUT",
                               headers: { "Content-Type": "application/json" },
                               body: JSON.stringify({ email, image: url }),
-                            }).catch(() => {})
+                            }).catch(() => { })
                           }
                         }}
-                        onUploadError={() => {}}
+                        onUploadError={() => { }}
                       />
                     </div>
                   </div>
@@ -563,6 +615,57 @@ export default function SettingsPage() {
               <section className="bg-card rounded-xl border border-muted/40 shadow-sm overflow-hidden">
                 <div className="p-6 border-b border-muted/40">
                   <div className="flex items-center gap-2">
+                    <FileText className="text-muted-foreground" size={18} />
+                    <h2 className="text-lg font-semibold">Data & Privacy</h2>
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-1 pl-8">
+                    GDPR/CCPA compliance tools for managing your data.
+                  </p>
+                </div>
+                <div className="p-6 space-y-6">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-muted/40">
+                    <div>
+                      <h3 className="text-sm font-medium flex items-center gap-2">
+                        <Download size={16} className="text-muted-foreground" />
+                        Export Your Data
+                      </h3>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Download all your data in JSON format, including profile, sessions, and
+                        activity.
+                      </p>
+                    </div>
+                    <button
+                      onClick={onExportData}
+                      disabled={exporting}
+                      className="px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg text-sm font-medium shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                    >
+                      {exporting ? "Exporting..." : "Export Data"}
+                    </button>
+                  </div>
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div>
+                      <h3 className="text-sm font-medium flex items-center gap-2 text-red-600 dark:text-red-400">
+                        <Trash2 size={16} />
+                        Delete Your Account
+                      </h3>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Permanently delete your account and all associated data. This action cannot
+                        be undone.
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => setShowDeleteModal(true)}
+                      className="px-4 py-2 bg-red-50 border border-red-200 text-red-600 hover:bg-red-100 rounded-lg text-sm font-medium shadow-sm transition-colors dark:bg-red-900/20 dark:border-red-800 dark:text-red-200 dark:hover:bg-red-900/40 whitespace-nowrap"
+                    >
+                      Delete Account
+                    </button>
+                  </div>
+                </div>
+              </section>
+
+              <section className="bg-card rounded-xl border border-muted/40 shadow-sm overflow-hidden">
+                <div className="p-6 border-b border-muted/40">
+                  <div className="flex items-center gap-2">
                     <Puzzle className="text-muted-foreground" size={18} />
                     <h2 className="text-lg font-semibold">Integrations</h2>
                   </div>
@@ -621,33 +724,73 @@ export default function SettingsPage() {
                   </div>
                 </div>
               </section>
-
-              <section className="bg-red-50 dark:bg-red-900/10 rounded-xl border border-red-200 dark:border-red-900/30 shadow-sm overflow-hidden mb-12">
-                <div className="p-6 border-b border-red-200 dark:border-red-900/30">
-                  <div className="flex items-center gap-2">
-                    <AlertTriangle className="text-red-600 dark:text-red-400" size={18} />
-                    <h2 className="text-lg font-semibold text-red-900 dark:text-red-200">
-                      Danger Zone
-                    </h2>
-                  </div>
-                </div>
-                <div className="p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                  <div>
-                    <h3 className="text-sm font-medium text-red-900 dark:text-red-200">
-                      Delete Account
-                    </h3>
-                    <p className="text-xs text-red-700 dark:text-red-300 mt-1">
-                      Permanently delete your account and all associated data.
-                    </p>
-                  </div>
-                  <button className="px-4 py-2 bg-card border border-red-300 text-red-600 hover:bg-red-50 rounded-lg text-sm font-medium shadow-sm transition-colors dark:bg-red-900/20 dark:border-red-800 dark:text-red-200 dark:hover:bg-red-900/40">
-                    Delete Account
-                  </button>
-                </div>
-              </section>
             </div>
           </div>
         </main>
+
+        {/* Delete Account Confirmation Modal */}
+        {showDeleteModal && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-card rounded-xl border border-muted/40 shadow-2xl max-w-md w-full">
+              <div className="p-6 border-b border-muted/40">
+                <div className="flex items-center gap-3">
+                  <div className="h-12 w-12 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center">
+                    <AlertTriangle className="text-red-600 dark:text-red-400" size={24} />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-semibold">Delete Account</h2>
+                    <p className="text-sm text-muted-foreground">This action cannot be undone</p>
+                  </div>
+                </div>
+              </div>
+              <div className="p-6">
+                <p className="text-sm text-foreground mb-4">
+                  Are you sure you want to permanently delete your account? This will:
+                </p>
+                <ul className="text-sm text-muted-foreground space-y-2 mb-6 ml-4">
+                  <li className="flex items-start gap-2">
+                    <span className="text-red-500 mt-0.5">•</span>
+                    <span>Delete all your profile information</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-red-500 mt-0.5">•</span>
+                    <span>Remove all coding sessions and activity history</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-red-500 mt-0.5">•</span>
+                    <span>Revoke all API keys and integrations</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-red-500 mt-0.5">•</span>
+                    <span>Sign you out immediately</span>
+                  </li>
+                </ul>
+                <div className="bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-900/30 rounded-lg p-4 mb-6">
+                  <p className="text-sm text-red-900 dark:text-red-200 font-medium">
+                    ⚠️ This action is permanent and cannot be reversed
+                  </p>
+                </div>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setShowDeleteModal(false)}
+                    disabled={deleting}
+                    className="flex-1 px-4 py-2 bg-muted hover:bg-muted/80 text-foreground rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={onDeleteAccount}
+                    disabled={deleting}
+                    className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {deleting ? "Deleting..." : "Yes, Delete My Account"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {toast && (
           <div className="fixed bottom-4 right-4 z-50 flex items-center gap-2 rounded-lg border border-muted/40 bg-background px-4 py-2 shadow-lg">
             {toast.type === "success" ? (
