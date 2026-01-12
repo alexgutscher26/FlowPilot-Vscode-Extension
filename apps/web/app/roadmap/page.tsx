@@ -93,12 +93,9 @@ export default function RoadmapPage() {
         if (!prev) return prev
         const updated = { ...prev }
         Object.keys(updated).forEach((status) => {
-          updated[status as keyof RoadmapData] = updated[
-            status as keyof RoadmapData
-          ].map((feature) =>
-            feature.id === featureId
-              ? { ...feature, voteCount, userHasVoted }
-              : feature
+          updated[status as keyof RoadmapData] = updated[status as keyof RoadmapData].map(
+            (feature) =>
+              feature.id === featureId ? { ...feature, voteCount, userHasVoted } : feature
           )
         })
         return updated
@@ -314,10 +311,20 @@ export default function RoadmapPage() {
                     </span>
                   </div>
                   {roadmapData?.now.map((feature) => (
-                    <FeatureCard key={feature.id} {...feature} currentUserId={session?.user?.id} onVote={handleVote} />
+                    <FeatureCard
+                      key={feature.id}
+                      {...feature}
+                      currentUserId={session?.user?.id}
+                      onVote={handleVote}
+                    />
                   ))}
                   {roadmapData?.in_progress.map((feature) => (
-                    <FeatureCard key={feature.id} {...feature} currentUserId={session?.user?.id} onVote={handleVote} />
+                    <FeatureCard
+                      key={feature.id}
+                      {...feature}
+                      currentUserId={session?.user?.id}
+                      onVote={handleVote}
+                    />
                   ))}
                 </div>
 
@@ -333,10 +340,20 @@ export default function RoadmapPage() {
                     </span>
                   </div>
                   {roadmapData?.next.map((feature) => (
-                    <FeatureCard key={feature.id} {...feature} currentUserId={session?.user?.id} onVote={handleVote} />
+                    <FeatureCard
+                      key={feature.id}
+                      {...feature}
+                      currentUserId={session?.user?.id}
+                      onVote={handleVote}
+                    />
                   ))}
                   {roadmapData?.planned.map((feature) => (
-                    <FeatureCard key={feature.id} {...feature} currentUserId={session?.user?.id} onVote={handleVote} />
+                    <FeatureCard
+                      key={feature.id}
+                      {...feature}
+                      currentUserId={session?.user?.id}
+                      onVote={handleVote}
+                    />
                   ))}
                 </div>
 
@@ -352,10 +369,20 @@ export default function RoadmapPage() {
                     </span>
                   </div>
                   {roadmapData?.later.map((feature) => (
-                    <FeatureCard key={feature.id} {...feature} currentUserId={session?.user?.id} onVote={handleVote} />
+                    <FeatureCard
+                      key={feature.id}
+                      {...feature}
+                      currentUserId={session?.user?.id}
+                      onVote={handleVote}
+                    />
                   ))}
                   {roadmapData?.considering.map((feature) => (
-                    <FeatureCard key={feature.id} {...feature} currentUserId={session?.user?.id} onVote={handleVote} />
+                    <FeatureCard
+                      key={feature.id}
+                      {...feature}
+                      currentUserId={session?.user?.id}
+                      onVote={handleVote}
+                    />
                   ))}
                 </div>
               </div>

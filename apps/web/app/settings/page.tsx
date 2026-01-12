@@ -107,7 +107,7 @@ export default function SettingsPage() {
           if (user?.bio) setBio(user.bio)
           if (user?.image) setImageUrl(user.image)
           if (user?.theme) setTheme(user.theme as any)
-        } catch { }
+        } catch {}
       }
       run()
     }
@@ -122,7 +122,7 @@ export default function SettingsPage() {
       const root = document.documentElement
       if (effective === "dark") root.classList.add("dark")
       else root.classList.remove("dark")
-    } catch { }
+    } catch {}
   }, [theme])
 
   if (isPending) {
@@ -390,10 +390,10 @@ export default function SettingsPage() {
                               method: "PUT",
                               headers: { "Content-Type": "application/json" },
                               body: JSON.stringify({ email, image: url }),
-                            }).catch(() => { })
+                            }).catch(() => {})
                           }
                         }}
-                        onUploadError={() => { }}
+                        onUploadError={() => {}}
                       />
                     </div>
                   </div>

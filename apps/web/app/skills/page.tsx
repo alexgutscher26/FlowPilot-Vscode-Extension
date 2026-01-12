@@ -1,5 +1,5 @@
 "use client"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { authClient } from "@/lib/auth-client"
@@ -23,19 +23,229 @@ import {
   Sparkles,
   Database,
 } from "lucide-react"
+import SkillGoalModal from "@/components/SkillGoalModal"
+import GoalsSection from "@/components/GoalsSection"
+
+type DailyActivity = {
+  day: string
+  count: number
+}
+
+type Skill = {
+  id: string
+  concept: string
+  language: string | null
+  totalExplanations: number
+  sessionsCount: number
+  confidence: number
+  lastSeenAt: Date
+}
+
+type SkillsSummary = {
+  learningMomentum: {
+    dailyActivity: DailyActivity[]
+    totalExplanations: number
+    activeSkills: number
+    currentStreak: number
+  }
+  skills: Skill[]
+}
+
+type Recommendation = {
+  concept: string
+  title: string
+  duration?: string
+  snippets?: number
+}
+
+type SkillGoal = {
+  id: string
+  conceptName: string
+  targetConfidence: number
+  currentProgress: number
+  deadline: Date | null
+  status: "active" | "completed" | "abandoned"
+  createdAt: Date
+  updatedAt: Date
+  skill?: {
+    id: string
+    concept: string
+    confidence: number
+    language: string | null
+  }
+}
 
 export default function SkillsPage() {
   const router = useRouter()
   const { data: session, isPending } = authClient.useSession()
+  const [summary, setSummary] = useState<SkillsSummary | null>(null)
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([])
+  const [goals, setGoals] = useState<SkillGoal[]>([])
+  const [loading, setLoading] = useState(true)
+  const [categoryFilter, setCategoryFilter] = useState("all")
+  const [sortBy, setSortBy] = useState("confidence")
+  const [isGoalModalOpen, setIsGoalModalOpen] = useState(false)
+
   useEffect(() => {
     if (!isPending && !session) {
       router.replace("/login")
     }
   }, [isPending, session, router])
-  if (isPending) {
+
+  useEffect(() => {
+    if (session) {
+      // Fetch skills summary
+      fetch("/api/skills/summary")
+        .then((res) => res.json())
+        .then((data) => {
+          setSummary(data)
+        })
+        .catch((err) => console.error("Failed to fetch skills summary:", err))
+
+      // Fetch recommendations
+      fetch("/api/skills/recommendation")
+        .then((res) => res.json())
+        .then((data) => {
+          setRecommendations(data.focus || [])
+        })
+        .catch((err) => console.error("Failed to fetch recommendations:", err))
+
+      // Fetch goals
+      fetch("/api/skills/goals")
+        .then((res) => res.json())
+        .then((data) => {
+          setGoals(data.goals || [])
+        })
+        .catch((err) => console.error("Failed to fetch goals:", err))
+        .finally(() => setLoading(false))
+    }
+  }, [session])
+
+  if (isPending || loading) {
     return <div className="container py-12">Loading...</div>
   }
   if (!session) return null
+
+  // Helper to get intensity class for heatmap
+  const getIntensityClass = (count: number) => {
+    if (count === 0) return "bg-muted"
+    if (count <= 2) return "bg-primary/20"
+    if (count <= 4) return "bg-primary/40"
+    if (count <= 6) return "bg-primary/70"
+    return "bg-primary"
+  }
+
+  // Helper to colorize language badge
+  const getLangColor = (lang: string | null) => {
+    const l = (lang || "").toLowerCase()
+    if (l.includes("type") || l === "ts") return "bg-blue-100 text-blue-600"
+    if (l.includes("java") || l === "js") return "bg-yellow-100 text-yellow-700"
+    if (l.includes("py")) return "bg-green-100 text-green-700"
+    if (l.includes("c#") || l === "cs") return "bg-purple-100 text-purple-700"
+    if (l.includes("react")) return "bg-sky-100 text-sky-500"
+    return "bg-gray-100 text-gray-600"
+  }
+
+  const getLangShort = (lang: string | null) => {
+    const l = (lang || "??").toUpperCase().substring(0, 2)
+    return l
+  }
+
+  const getConfidenceBadge = (confidence: number) => {
+    if (confidence >= 70) return { label: "High Confidence", class: "bg-green-100 text-green-700" }
+    if (confidence >= 40) return { label: "Learning", class: "bg-yellow-100 text-yellow-700" }
+    return { label: "Needs Practice", class: "bg-muted text-foreground" }
+  }
+
+  // Filter and sort skills
+  let filteredSkills = summary?.skills || []
+
+  if (categoryFilter !== "all") {
+    filteredSkills = filteredSkills.filter((skill) => {
+      const lang = (skill.language || "").toLowerCase()
+      if (categoryFilter === "languages") {
+        return ["python", "javascript", "typescript", "java", "c#", "go", "rust"].some((l) =>
+          lang.includes(l)
+        )
+      }
+      if (categoryFilter === "frameworks") {
+        return ["react", "vue", "angular", "next", "express", "django"].some((f) =>
+          lang.includes(f)
+        )
+      }
+      if (categoryFilter === "tools") {
+        return ["git", "docker", "sql", "mongodb"].some((t) => lang.includes(t))
+      }
+      return true
+    })
+  }
+
+  if (sortBy === "confidence") {
+    filteredSkills = [...filteredSkills].sort((a, b) => b.confidence - a.confidence)
+  } else if (sortBy === "active") {
+    filteredSkills = [...filteredSkills].sort((a, b) => b.totalExplanations - a.totalExplanations)
+  } else if (sortBy === "name") {
+    filteredSkills = [...filteredSkills].sort((a, b) => a.concept.localeCompare(b.concept))
+  }
+
+  // Goal handlers
+  const handleCreateGoal = async (goalData: {
+    conceptName: string
+    targetConfidence: number
+    deadline?: string
+  }) => {
+    try {
+      const response = await fetch("/api/skills/goals", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(goalData),
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || "Failed to create goal")
+      }
+
+      const { goal } = await response.json()
+      setGoals([...goals, goal])
+    } catch (error: any) {
+      console.error("Failed to create goal:", error)
+      throw error
+    }
+  }
+
+  const handleCompleteGoal = async (goalId: string) => {
+    try {
+      const response = await fetch(`/api/skills/goals`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ goalId, status: "completed" }),
+      })
+
+      if (!response.ok) throw new Error("Failed to complete goal")
+
+      const { goal } = await response.json()
+      setGoals(goals.map((g) => (g.id === goalId ? goal : g)))
+    } catch (error) {
+      console.error("Failed to complete goal:", error)
+    }
+  }
+
+  const handleDeleteGoal = async (goalId: string) => {
+    try {
+      const response = await fetch(`/api/skills/goals?id=${goalId}`, {
+        method: "DELETE",
+      })
+
+      if (!response.ok) throw new Error("Failed to delete goal")
+
+      setGoals(goals.filter((g) => g.id !== goalId))
+    } catch (error) {
+      console.error("Failed to delete goal:", error)
+    }
+  }
+
+  const existingConcepts = summary?.skills.map((s) => s.concept) || []
 
   return (
     <div className="bg-background min-h-screen text-foreground">
@@ -69,28 +279,28 @@ export default function SkillsPage() {
               <BarChart3 size={18} />
               <span>Skills</span>
             </Link>
-            <a
+            <Link
               className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-              href="#"
+              href="/roadmap"
             >
               <Map size={18} />
               <span>Roadmap</span>
-            </a>
+            </Link>
             <div className="my-4 border-t border-muted/40" />
-            <a
+            <Link
               className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-              href="#"
+              href="/settings"
             >
               <Settings size={18} />
               <span>Settings</span>
-            </a>
-            <a
+            </Link>
+            <Link
               className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-              href="#"
+              href="/help"
             >
               <HelpCircle size={18} />
               <span>Help & Feedback</span>
-            </a>
+            </Link>
           </nav>
           <div className="p-4 border-t border-muted/40">
             <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl p-4 text-white relative overflow-hidden">
@@ -173,7 +383,10 @@ export default function SkillsPage() {
                     <CalendarDays className="h-4 w-4" />
                     History
                   </button>
-                  <button className="inline-flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg text-sm font-medium shadow-sm transition-colors">
+                  <button
+                    onClick={() => setIsGoalModalOpen(true)}
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg text-sm font-medium shadow-sm transition-colors"
+                  >
                     <Plus className="h-4 w-4" />
                     Add Skill Goal
                   </button>
@@ -188,7 +401,9 @@ export default function SkillsPage() {
                         Learning Momentum
                       </h3>
                       <p className="text-xs text-muted-foreground mt-1">
-                        14 active days in the last 30 days
+                        {summary?.learningMomentum.dailyActivity.filter((d) => d.count > 0)
+                          .length || 0}{" "}
+                        active days in the last 30 days
                       </p>
                     </div>
                     <div className="flex items-center gap-2">
@@ -199,230 +414,171 @@ export default function SkillsPage() {
                     </div>
                   </div>
                   <div className="grid gap-2" style={{ gridTemplateColumns: "repeat(14, 1fr)" }}>
-                    {[
-                      "bg-muted",
-                      "bg-muted",
-                      "bg-primary/20",
-                      "bg-primary/40",
-                      "bg-muted",
-                      "bg-primary/70",
-                      "bg-primary/30",
-                      "bg-muted",
-                      "bg-primary",
-                      "bg-primary/50",
-                      "bg-muted",
-                      "bg-muted",
-                      "bg-primary/20",
-                      "bg-primary/40",
-                      "bg-muted",
-                      "bg-primary/30",
-                      "bg-muted",
-                      "bg-primary/70",
-                      "bg-primary", // today (will get border)
-                      "placeholder",
-                      "placeholder",
-                      "placeholder",
-                      "placeholder",
-                      "placeholder",
-                      "placeholder",
-                      "placeholder",
-                      "placeholder",
-                      "placeholder",
-                    ].map((cls, i) => {
-                      const today = i === 18
-                      if (cls === "placeholder") {
-                        return (
-                          <div
-                            key={i}
-                            className="aspect-square rounded bg-transparent opacity-60 border border-dashed border-muted"
-                          />
-                        )
-                      }
+                    {summary?.learningMomentum.dailyActivity.slice(-29).map((activity, i) => {
+                      const isToday = i === 28
                       return (
                         <div
                           key={i}
-                          className={`aspect-square rounded ${cls} ${today ? "border-2 border-muted-foreground" : ""}`}
-                          title={today ? "Today" : undefined}
+                          className={`aspect-square rounded ${getIntensityClass(activity.count)} ${isToday ? "border-2 border-muted-foreground" : ""}`}
+                          title={`${activity.day}: ${activity.count} explanations`}
                         />
                       )
                     })}
+                    {/* Placeholder for future days */}
+                    {Array.from({
+                      length: 29 - (summary?.learningMomentum.dailyActivity.length || 0),
+                    }).map((_, i) => (
+                      <div
+                        key={`placeholder-${i}`}
+                        className="aspect-square rounded bg-transparent opacity-60 border border-dashed border-muted"
+                      />
+                    ))}
                   </div>
                   <div className="mt-4 flex gap-8 border-t border-muted/40 pt-4">
                     <div>
-                      <p className="text-2xl font-bold">124</p>
+                      <p className="text-2xl font-bold">
+                        {summary?.learningMomentum.totalExplanations || 0}
+                      </p>
                       <p className="text-xs text-muted-foreground">Total Explanations</p>
                     </div>
                     <div>
-                      <p className="text-2xl font-bold">8</p>
+                      <p className="text-2xl font-bold">
+                        {summary?.learningMomentum.activeSkills || 0}
+                      </p>
                       <p className="text-xs text-muted-foreground">Active Skills</p>
                     </div>
                     <div>
-                      <p className="text-2xl font-bold text-primary">3 Days</p>
+                      <p className="text-2xl font-bold text-primary">
+                        {summary?.learningMomentum.currentStreak || 0} Days
+                      </p>
                       <p className="text-xs text-muted-foreground">Current Streak</p>
                     </div>
                   </div>
                 </div>
-                <div className="lg:col-span-1 bg-gradient-to-br from-indigo-600 to-purple-700 rounded-xl p-6 text-white shadow-md relative overflow-hidden flex flex-col justify-between">
-                  <div className="absolute top-0 right-0 p-4 opacity-10">
-                    <Lightbulb size={120} />
-                  </div>
-                  <div className="relative z-10">
-                    <div className="flex items-center gap-2 mb-4">
-                      <span className="bg-white/20 p-1.5 rounded-lg">
-                        <Sparkles className="text-white" size={16} />
-                      </span>
-                      <h3 className="font-bold text-lg">Recommended Focus</h3>
+                {recommendations.length > 0 && (
+                  <div className="lg:col-span-1 bg-gradient-to-br from-indigo-600 to-purple-700 rounded-xl p-6 text-white shadow-md relative overflow-hidden flex flex-col justify-between">
+                    <div className="absolute top-0 right-0 p-4 opacity-10">
+                      <Lightbulb size={120} />
                     </div>
-                    <p className="text-indigo-100 text-sm mb-6 leading-relaxed">
-                      We've noticed you're looking up <strong>React Hooks</strong> frequently.
-                      Solidify your knowledge with a quick review.
-                    </p>
-                    <div className="space-y-3">
-                      <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 flex items-start gap-3 border border-white/10 hover:bg-white/20 transition-colors cursor-pointer">
-                        <Star className="text-yellow-300" size={18} />
-                        <div>
-                          <p className="text-sm font-semibold">Master useEffect Dependencies</p>
-                          <p className="text-xs text-indigo-200 mt-0.5">5 min explanation review</p>
-                        </div>
+                    <div className="relative z-10">
+                      <div className="flex items-center gap-2 mb-4">
+                        <span className="bg-white/20 p-1.5 rounded-lg">
+                          <Sparkles className="text-white" size={16} />
+                        </span>
+                        <h3 className="font-bold text-lg">Recommended Focus</h3>
                       </div>
-                      <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 flex items-start gap-3 border border-white/10 hover:bg-white/20 transition-colors cursor-pointer">
-                        <Code2 className="text-green-300" size={18} />
-                        <div>
-                          <p className="text-sm font-semibold">Async/Await Pattern</p>
-                          <p className="text-xs text-indigo-200 mt-0.5">Practice with 2 snippets</p>
-                        </div>
+                      <p className="text-indigo-100 text-sm mb-6 leading-relaxed">
+                        We've noticed you're looking up{" "}
+                        <strong>{recommendations[0]?.concept}</strong> frequently. Solidify your
+                        knowledge with a quick review.
+                      </p>
+                      <div className="space-y-3">
+                        {recommendations.map((rec, i) => (
+                          <div
+                            key={i}
+                            className="bg-white/10 backdrop-blur-sm rounded-lg p-3 flex items-start gap-3 border border-white/10 hover:bg-white/20 transition-colors cursor-pointer"
+                          >
+                            {i === 0 ? (
+                              <Star className="text-yellow-300" size={18} />
+                            ) : (
+                              <Code2 className="text-green-300" size={18} />
+                            )}
+                            <div>
+                              <p className="text-sm font-semibold">{rec.title}</p>
+                              <p className="text-xs text-indigo-200 mt-0.5">
+                                {rec.duration
+                                  ? `${rec.duration} explanation review`
+                                  : `Practice with ${rec.snippets} snippets`}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </div>
+                    <button className="relative z-10 mt-6 w-full py-2 bg-white text-indigo-600 font-semibold rounded-lg text-sm hover:bg-indigo-50 transition-colors shadow-sm">
+                      Start Learning Session
+                    </button>
                   </div>
-                  <button className="relative z-10 mt-6 w-full py-2 bg-white text-indigo-600 font-semibold rounded-lg text-sm hover:bg-indigo-50 transition-colors shadow-sm">
-                    Start Learning Session
-                  </button>
-                </div>
+                )}
               </div>
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mt-2">
+                <h2 className="text-lg font-bold">Learning Goals</h2>
+              </div>
+              <GoalsSection
+                goals={goals}
+                onComplete={handleCompleteGoal}
+                onDelete={handleDeleteGoal}
+              />
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mt-8">
                 <h2 className="text-lg font-bold">Your Skills</h2>
                 <div className="flex items-center gap-3">
-                  <select className="block w-40 pl-3 pr-10 py-2 text-sm border-muted/40 bg-card text-foreground rounded-lg focus:ring-primary/50 shadow-sm">
-                    <option>All Categories</option>
-                    <option>Languages</option>
-                    <option>Frameworks</option>
-                    <option>Tools</option>
+                  <select
+                    className="block w-40 pl-3 pr-10 py-2 text-sm border-muted/40 bg-card text-foreground rounded-lg focus:ring-primary/50 shadow-sm"
+                    value={categoryFilter}
+                    onChange={(e) => setCategoryFilter(e.target.value)}
+                  >
+                    <option value="all">All Categories</option>
+                    <option value="languages">Languages</option>
+                    <option value="frameworks">Frameworks</option>
+                    <option value="tools">Tools</option>
                   </select>
-                  <select className="block w-40 pl-3 pr-10 py-2 text-sm border-muted/40 bg-card text-foreground rounded-lg focus:ring-primary/50 shadow-sm">
-                    <option>Sort by Confidence</option>
-                    <option>Most Active</option>
-                    <option>Name (A-Z)</option>
+                  <select
+                    className="block w-40 pl-3 pr-10 py-2 text-sm border-muted/40 bg-card text-foreground rounded-lg focus:ring-primary/50 shadow-sm"
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                  >
+                    <option value="confidence">Sort by Confidence</option>
+                    <option value="active">Most Active</option>
+                    <option value="name">Name (A-Z)</option>
                   </select>
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pb-6">
-                <div className="bg-card rounded-xl border border-muted/40 p-5 hover:border-primary/50 hover:shadow-md transition-all group cursor-pointer">
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="h-10 w-10 bg-primary/10 rounded-lg flex items-center justify-center text-primary font-bold text-xs border border-primary/20">
-                      TS
-                    </div>
-                    <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-medium bg-green-100 text-green-700">
-                      High Confidence
-                    </span>
+                {filteredSkills.length === 0 ? (
+                  <div className="col-span-full text-center py-12 text-muted-foreground">
+                    No skills tracked yet. Start using FlowPilot in VS Code to build your skill
+                    profile!
                   </div>
-                  <h3 className="font-bold mb-1 group-hover:text-primary transition-colors">
-                    TypeScript
-                  </h3>
-                  <p className="text-xs text-muted-foreground mb-4">
-                    42 explanations • 15 sessions
-                  </p>
-                  <div className="w-full bg-muted h-1.5 rounded-full overflow-hidden">
-                    <div className="bg-primary h-full rounded-full" style={{ width: "85%" }} />
-                  </div>
-                  <div className="flex justify-between mt-2 text-[10px] font-medium text-muted-foreground">
-                    <span>Proficiency</span>
-                    <span className="text-foreground">85%</span>
-                  </div>
-                </div>
-                <div className="bg-card rounded-xl border border-muted/40 p-5 hover:border-primary/50 hover:shadow-md transition-all group cursor-pointer">
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="h-10 w-10 bg-sky-100 rounded-lg flex items-center justify-center text-sky-500 font-bold text-xs border border-sky-200">
-                      <Code2 />
-                    </div>
-                    <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-medium bg-yellow-100 text-yellow-700">
-                      Learning
-                    </span>
-                  </div>
-                  <h3 className="font-bold mb-1 group-hover:text-primary transition-colors">
-                    React
-                  </h3>
-                  <p className="text-xs text-muted-foreground mb-4">28 explanations • 8 sessions</p>
-                  <div className="w-full bg-muted h-1.5 rounded-full overflow-hidden">
-                    <div className="bg-yellow-500 h-full rounded-full" style={{ width: "45%" }} />
-                  </div>
-                  <div className="flex justify-between mt-2 text-[10px] font-medium text-muted-foreground">
-                    <span>Proficiency</span>
-                    <span className="text-foreground">45%</span>
-                  </div>
-                </div>
-                <div className="bg-card rounded-xl border border-muted/40 p-5 hover:border-primary/50 hover:shadow-md transition-all group cursor-pointer">
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="h-10 w-10 bg-yellow-100 rounded-lg flex items-center justify-center text-yellow-600 font-bold text-xs border border-yellow-200">
-                      PY
-                    </div>
-                    <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-medium bg-green-100 text-green-700">
-                      High Confidence
-                    </span>
-                  </div>
-                  <h3 className="font-bold mb-1 group-hover:text-primary transition-colors">
-                    Python
-                  </h3>
-                  <p className="text-xs text-muted-foreground mb-4">
-                    35 explanations • 12 sessions
-                  </p>
-                  <div className="w-full bg-muted h-1.5 rounded-full overflow-hidden">
-                    <div className="bg-primary h-full rounded-full" style={{ width: "78%" }} />
-                  </div>
-                  <div className="flex justify-between mt-2 text-[10px] font-medium text-muted-foreground">
-                    <span>Proficiency</span>
-                    <span className="text-foreground">78%</span>
-                  </div>
-                </div>
-                <div className="bg-card rounded-xl border border-muted/40 p-5 hover:border-primary/50 hover:shadow-md transition-all group cursor-pointer">
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="h-10 w-10 bg-orange-100 rounded-lg flex items-center justify-center text-orange-600 font-bold text-xs border border-orange-200">
-                      JV
-                    </div>
-                    <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-medium bg-muted text-foreground">
-                      Needs Practice
-                    </span>
-                  </div>
-                  <h3 className="font-bold mb-1 group-hover:text-primary transition-colors">
-                    Java
-                  </h3>
-                  <p className="text-xs text-muted-foreground mb-4">12 explanations • 3 sessions</p>
-                  <div className="w-full bg-muted h-1.5 rounded-full overflow-hidden">
-                    <div className="bg-orange-400 h-full rounded-full" style={{ width: "30%" }} />
-                  </div>
-                  <div className="flex justify-between mt-2 text-[10px] font-medium text-muted-foreground">
-                    <span>Proficiency</span>
-                    <span className="text-foreground">30%</span>
-                  </div>
-                </div>
-                <div className="bg-card rounded-xl border border-muted/40 p-5 hover:border-primary/50 hover:shadow-md transition-all group cursor-pointer">
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="h-10 w-10 bg-muted rounded-lg flex items-center justify-center text-muted-foreground font-bold text-xs border border-muted/40">
-                      <Database />
-                    </div>
-                    <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-medium bg-green-100 text-green-700">
-                      High Confidence
-                    </span>
-                  </div>
-                  <h3 className="font-bold mb-1 group-hover:text-primary transition-colors">SQL</h3>
-                  <p className="text-xs text-muted-foreground mb-4">18 explanations • 6 sessions</p>
-                  <div className="w-full bg-muted h-1.5 rounded-full overflow-hidden">
-                    <div className="bg-primary h-full rounded-full" style={{ width: "90%" }} />
-                  </div>
-                  <div className="flex justify-between mt-2 text-[10px] font-medium text-muted-foreground">
-                    <span>Proficiency</span>
-                    <span className="text-foreground">90%</span>
-                  </div>
-                </div>
+                ) : (
+                  filteredSkills.map((skill) => {
+                    const badge = getConfidenceBadge(skill.confidence)
+                    return (
+                      <div
+                        key={skill.id}
+                        className="bg-card rounded-xl border border-muted/40 p-5 hover:border-primary/50 hover:shadow-md transition-all group cursor-pointer"
+                      >
+                        <div className="flex justify-between items-start mb-4">
+                          <div
+                            className={`h-10 w-10 rounded-lg flex items-center justify-center font-bold text-xs border ${getLangColor(skill.language)}`}
+                          >
+                            {getLangShort(skill.language)}
+                          </div>
+                          <span
+                            className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-medium ${badge.class}`}
+                          >
+                            {badge.label}
+                          </span>
+                        </div>
+                        <h3 className="font-bold mb-1 group-hover:text-primary transition-colors">
+                          {skill.concept}
+                        </h3>
+                        <p className="text-xs text-muted-foreground mb-4">
+                          {skill.totalExplanations} explanations • {skill.sessionsCount} sessions
+                        </p>
+                        <div className="w-full bg-muted h-1.5 rounded-full overflow-hidden">
+                          <div
+                            className={`h-full rounded-full ${skill.confidence >= 70 ? "bg-primary" : skill.confidence >= 40 ? "bg-yellow-500" : "bg-orange-400"}`}
+                            style={{ width: `${skill.confidence}%` }}
+                          />
+                        </div>
+                        <div className="flex justify-between mt-2 text-[10px] font-medium text-muted-foreground">
+                          <span>Proficiency</span>
+                          <span className="text-foreground">{skill.confidence}%</span>
+                        </div>
+                      </div>
+                    )
+                  })
+                )}
                 <div className="bg-muted rounded-xl border border-dashed border-muted/40 p-5 flex flex-col items-center justify-center text-center hover:bg-card transition-colors cursor-pointer group">
                   <div className="h-12 w-12 rounded-full bg-card shadow-sm flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                     <Plus className="text-primary" />
@@ -440,6 +596,12 @@ export default function SkillsPage() {
           </div>
         </main>
       </div>
+      <SkillGoalModal
+        isOpen={isGoalModalOpen}
+        onClose={() => setIsGoalModalOpen(false)}
+        onSubmit={handleCreateGoal}
+        existingConcepts={existingConcepts}
+      />
     </div>
   )
 }

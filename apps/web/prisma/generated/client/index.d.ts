@@ -68,6 +68,21 @@ export type FeatureComment = $Result.DefaultSelection<Prisma.$FeatureCommentPayl
  * 
  */
 export type CommentReaction = $Result.DefaultSelection<Prisma.$CommentReactionPayload>
+/**
+ * Model Explanation
+ * 
+ */
+export type Explanation = $Result.DefaultSelection<Prisma.$ExplanationPayload>
+/**
+ * Model Skill
+ * 
+ */
+export type Skill = $Result.DefaultSelection<Prisma.$SkillPayload>
+/**
+ * Model SkillGoal
+ * 
+ */
+export type SkillGoal = $Result.DefaultSelection<Prisma.$SkillGoalPayload>
 
 /**
  * Enums
@@ -96,6 +111,15 @@ export const FeatureTag: {
 
 export type FeatureTag = (typeof FeatureTag)[keyof typeof FeatureTag]
 
+
+export const GoalStatus: {
+  active: 'active',
+  completed: 'completed',
+  abandoned: 'abandoned'
+};
+
+export type GoalStatus = (typeof GoalStatus)[keyof typeof GoalStatus]
+
 }
 
 export type FeatureStatus = $Enums.FeatureStatus
@@ -105,6 +129,10 @@ export const FeatureStatus: typeof $Enums.FeatureStatus
 export type FeatureTag = $Enums.FeatureTag
 
 export const FeatureTag: typeof $Enums.FeatureTag
+
+export type GoalStatus = $Enums.GoalStatus
+
+export const GoalStatus: typeof $Enums.GoalStatus
 
 /**
  * ##  Prisma Client ʲˢ
@@ -338,6 +366,36 @@ export class PrismaClient<
     * ```
     */
   get commentReaction(): Prisma.CommentReactionDelegate<ExtArgs>;
+
+  /**
+   * `prisma.explanation`: Exposes CRUD operations for the **Explanation** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Explanations
+    * const explanations = await prisma.explanation.findMany()
+    * ```
+    */
+  get explanation(): Prisma.ExplanationDelegate<ExtArgs>;
+
+  /**
+   * `prisma.skill`: Exposes CRUD operations for the **Skill** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Skills
+    * const skills = await prisma.skill.findMany()
+    * ```
+    */
+  get skill(): Prisma.SkillDelegate<ExtArgs>;
+
+  /**
+   * `prisma.skillGoal`: Exposes CRUD operations for the **SkillGoal** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SkillGoals
+    * const skillGoals = await prisma.skillGoal.findMany()
+    * ```
+    */
+  get skillGoal(): Prisma.SkillGoalDelegate<ExtArgs>;
 }
 
 export namespace Prisma {
@@ -789,7 +847,10 @@ export namespace Prisma {
     Feature: 'Feature',
     FeatureVote: 'FeatureVote',
     FeatureComment: 'FeatureComment',
-    CommentReaction: 'CommentReaction'
+    CommentReaction: 'CommentReaction',
+    Explanation: 'Explanation',
+    Skill: 'Skill',
+    SkillGoal: 'SkillGoal'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -805,7 +866,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "user" | "session" | "account" | "verification" | "apiKey" | "codingSession" | "tip" | "feature" | "featureVote" | "featureComment" | "commentReaction"
+      modelProps: "user" | "session" | "account" | "verification" | "apiKey" | "codingSession" | "tip" | "feature" | "featureVote" | "featureComment" | "commentReaction" | "explanation" | "skill" | "skillGoal"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1579,6 +1640,216 @@ export namespace Prisma {
           }
         }
       }
+      Explanation: {
+        payload: Prisma.$ExplanationPayload<ExtArgs>
+        fields: Prisma.ExplanationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ExplanationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExplanationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ExplanationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExplanationPayload>
+          }
+          findFirst: {
+            args: Prisma.ExplanationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExplanationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ExplanationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExplanationPayload>
+          }
+          findMany: {
+            args: Prisma.ExplanationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExplanationPayload>[]
+          }
+          create: {
+            args: Prisma.ExplanationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExplanationPayload>
+          }
+          createMany: {
+            args: Prisma.ExplanationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ExplanationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExplanationPayload>[]
+          }
+          delete: {
+            args: Prisma.ExplanationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExplanationPayload>
+          }
+          update: {
+            args: Prisma.ExplanationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExplanationPayload>
+          }
+          deleteMany: {
+            args: Prisma.ExplanationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ExplanationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.ExplanationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExplanationPayload>
+          }
+          aggregate: {
+            args: Prisma.ExplanationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateExplanation>
+          }
+          groupBy: {
+            args: Prisma.ExplanationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ExplanationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ExplanationCountArgs<ExtArgs>
+            result: $Utils.Optional<ExplanationCountAggregateOutputType> | number
+          }
+        }
+      }
+      Skill: {
+        payload: Prisma.$SkillPayload<ExtArgs>
+        fields: Prisma.SkillFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SkillFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SkillFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillPayload>
+          }
+          findFirst: {
+            args: Prisma.SkillFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SkillFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillPayload>
+          }
+          findMany: {
+            args: Prisma.SkillFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillPayload>[]
+          }
+          create: {
+            args: Prisma.SkillCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillPayload>
+          }
+          createMany: {
+            args: Prisma.SkillCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SkillCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillPayload>[]
+          }
+          delete: {
+            args: Prisma.SkillDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillPayload>
+          }
+          update: {
+            args: Prisma.SkillUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillPayload>
+          }
+          deleteMany: {
+            args: Prisma.SkillDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SkillUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.SkillUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillPayload>
+          }
+          aggregate: {
+            args: Prisma.SkillAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSkill>
+          }
+          groupBy: {
+            args: Prisma.SkillGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SkillGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SkillCountArgs<ExtArgs>
+            result: $Utils.Optional<SkillCountAggregateOutputType> | number
+          }
+        }
+      }
+      SkillGoal: {
+        payload: Prisma.$SkillGoalPayload<ExtArgs>
+        fields: Prisma.SkillGoalFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SkillGoalFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillGoalPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SkillGoalFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillGoalPayload>
+          }
+          findFirst: {
+            args: Prisma.SkillGoalFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillGoalPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SkillGoalFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillGoalPayload>
+          }
+          findMany: {
+            args: Prisma.SkillGoalFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillGoalPayload>[]
+          }
+          create: {
+            args: Prisma.SkillGoalCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillGoalPayload>
+          }
+          createMany: {
+            args: Prisma.SkillGoalCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SkillGoalCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillGoalPayload>[]
+          }
+          delete: {
+            args: Prisma.SkillGoalDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillGoalPayload>
+          }
+          update: {
+            args: Prisma.SkillGoalUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillGoalPayload>
+          }
+          deleteMany: {
+            args: Prisma.SkillGoalDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SkillGoalUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.SkillGoalUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillGoalPayload>
+          }
+          aggregate: {
+            args: Prisma.SkillGoalAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSkillGoal>
+          }
+          groupBy: {
+            args: Prisma.SkillGoalGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SkillGoalGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SkillGoalCountArgs<ExtArgs>
+            result: $Utils.Optional<SkillGoalCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1749,6 +2020,9 @@ export namespace Prisma {
     featureVotes: number
     featureComments: number
     commentReactions: number
+    explanations: number
+    skills: number
+    skillGoals: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1761,6 +2035,9 @@ export namespace Prisma {
     featureVotes?: boolean | UserCountOutputTypeCountFeatureVotesArgs
     featureComments?: boolean | UserCountOutputTypeCountFeatureCommentsArgs
     commentReactions?: boolean | UserCountOutputTypeCountCommentReactionsArgs
+    explanations?: boolean | UserCountOutputTypeCountExplanationsArgs
+    skills?: boolean | UserCountOutputTypeCountSkillsArgs
+    skillGoals?: boolean | UserCountOutputTypeCountSkillGoalsArgs
   }
 
   // Custom InputTypes
@@ -1835,6 +2112,27 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountCommentReactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: CommentReactionWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountExplanationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ExplanationWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountSkillsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SkillWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountSkillGoalsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SkillGoalWhereInput
   }
 
 
@@ -1915,6 +2213,37 @@ export namespace Prisma {
    */
   export type FeatureCommentCountOutputTypeCountReactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: CommentReactionWhereInput
+  }
+
+
+  /**
+   * Count Type SkillCountOutputType
+   */
+
+  export type SkillCountOutputType = {
+    goals: number
+  }
+
+  export type SkillCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    goals?: boolean | SkillCountOutputTypeCountGoalsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * SkillCountOutputType without action
+   */
+  export type SkillCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SkillCountOutputType
+     */
+    select?: SkillCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * SkillCountOutputType without action
+   */
+  export type SkillCountOutputTypeCountGoalsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SkillGoalWhereInput
   }
 
 
@@ -2127,6 +2456,9 @@ export namespace Prisma {
     featureVotes?: boolean | User$featureVotesArgs<ExtArgs>
     featureComments?: boolean | User$featureCommentsArgs<ExtArgs>
     commentReactions?: boolean | User$commentReactionsArgs<ExtArgs>
+    explanations?: boolean | User$explanationsArgs<ExtArgs>
+    skills?: boolean | User$skillsArgs<ExtArgs>
+    skillGoals?: boolean | User$skillGoalsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2164,6 +2496,9 @@ export namespace Prisma {
     featureVotes?: boolean | User$featureVotesArgs<ExtArgs>
     featureComments?: boolean | User$featureCommentsArgs<ExtArgs>
     commentReactions?: boolean | User$commentReactionsArgs<ExtArgs>
+    explanations?: boolean | User$explanationsArgs<ExtArgs>
+    skills?: boolean | User$skillsArgs<ExtArgs>
+    skillGoals?: boolean | User$skillGoalsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2180,6 +2515,9 @@ export namespace Prisma {
       featureVotes: Prisma.$FeatureVotePayload<ExtArgs>[]
       featureComments: Prisma.$FeatureCommentPayload<ExtArgs>[]
       commentReactions: Prisma.$CommentReactionPayload<ExtArgs>[]
+      explanations: Prisma.$ExplanationPayload<ExtArgs>[]
+      skills: Prisma.$SkillPayload<ExtArgs>[]
+      skillGoals: Prisma.$SkillGoalPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2564,6 +2902,9 @@ export namespace Prisma {
     featureVotes<T extends User$featureVotesArgs<ExtArgs> = {}>(args?: Subset<T, User$featureVotesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FeatureVotePayload<ExtArgs>, T, "findMany"> | Null>
     featureComments<T extends User$featureCommentsArgs<ExtArgs> = {}>(args?: Subset<T, User$featureCommentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FeatureCommentPayload<ExtArgs>, T, "findMany"> | Null>
     commentReactions<T extends User$commentReactionsArgs<ExtArgs> = {}>(args?: Subset<T, User$commentReactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CommentReactionPayload<ExtArgs>, T, "findMany"> | Null>
+    explanations<T extends User$explanationsArgs<ExtArgs> = {}>(args?: Subset<T, User$explanationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExplanationPayload<ExtArgs>, T, "findMany"> | Null>
+    skills<T extends User$skillsArgs<ExtArgs> = {}>(args?: Subset<T, User$skillsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "findMany"> | Null>
+    skillGoals<T extends User$skillGoalsArgs<ExtArgs> = {}>(args?: Subset<T, User$skillGoalsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SkillGoalPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3093,6 +3434,66 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: CommentReactionScalarFieldEnum | CommentReactionScalarFieldEnum[]
+  }
+
+  /**
+   * User.explanations
+   */
+  export type User$explanationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Explanation
+     */
+    select?: ExplanationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExplanationInclude<ExtArgs> | null
+    where?: ExplanationWhereInput
+    orderBy?: ExplanationOrderByWithRelationInput | ExplanationOrderByWithRelationInput[]
+    cursor?: ExplanationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ExplanationScalarFieldEnum | ExplanationScalarFieldEnum[]
+  }
+
+  /**
+   * User.skills
+   */
+  export type User$skillsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Skill
+     */
+    select?: SkillSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillInclude<ExtArgs> | null
+    where?: SkillWhereInput
+    orderBy?: SkillOrderByWithRelationInput | SkillOrderByWithRelationInput[]
+    cursor?: SkillWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SkillScalarFieldEnum | SkillScalarFieldEnum[]
+  }
+
+  /**
+   * User.skillGoals
+   */
+  export type User$skillGoalsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SkillGoal
+     */
+    select?: SkillGoalSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillGoalInclude<ExtArgs> | null
+    where?: SkillGoalWhereInput
+    orderBy?: SkillGoalOrderByWithRelationInput | SkillGoalOrderByWithRelationInput[]
+    cursor?: SkillGoalWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SkillGoalScalarFieldEnum | SkillGoalScalarFieldEnum[]
   }
 
   /**
@@ -12752,6 +13153,3072 @@ export namespace Prisma {
 
 
   /**
+   * Model Explanation
+   */
+
+  export type AggregateExplanation = {
+    _count: ExplanationCountAggregateOutputType | null
+    _min: ExplanationMinAggregateOutputType | null
+    _max: ExplanationMaxAggregateOutputType | null
+  }
+
+  export type ExplanationMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    sessionId: string | null
+    language: string | null
+    interactionType: string | null
+    createdAt: Date | null
+  }
+
+  export type ExplanationMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    sessionId: string | null
+    language: string | null
+    interactionType: string | null
+    createdAt: Date | null
+  }
+
+  export type ExplanationCountAggregateOutputType = {
+    id: number
+    userId: number
+    sessionId: number
+    language: number
+    concepts: number
+    interactionType: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type ExplanationMinAggregateInputType = {
+    id?: true
+    userId?: true
+    sessionId?: true
+    language?: true
+    interactionType?: true
+    createdAt?: true
+  }
+
+  export type ExplanationMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    sessionId?: true
+    language?: true
+    interactionType?: true
+    createdAt?: true
+  }
+
+  export type ExplanationCountAggregateInputType = {
+    id?: true
+    userId?: true
+    sessionId?: true
+    language?: true
+    concepts?: true
+    interactionType?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type ExplanationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Explanation to aggregate.
+     */
+    where?: ExplanationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Explanations to fetch.
+     */
+    orderBy?: ExplanationOrderByWithRelationInput | ExplanationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ExplanationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Explanations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Explanations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Explanations
+    **/
+    _count?: true | ExplanationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ExplanationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ExplanationMaxAggregateInputType
+  }
+
+  export type GetExplanationAggregateType<T extends ExplanationAggregateArgs> = {
+        [P in keyof T & keyof AggregateExplanation]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateExplanation[P]>
+      : GetScalarType<T[P], AggregateExplanation[P]>
+  }
+
+
+
+
+  export type ExplanationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ExplanationWhereInput
+    orderBy?: ExplanationOrderByWithAggregationInput | ExplanationOrderByWithAggregationInput[]
+    by: ExplanationScalarFieldEnum[] | ExplanationScalarFieldEnum
+    having?: ExplanationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ExplanationCountAggregateInputType | true
+    _min?: ExplanationMinAggregateInputType
+    _max?: ExplanationMaxAggregateInputType
+  }
+
+  export type ExplanationGroupByOutputType = {
+    id: string
+    userId: string
+    sessionId: string | null
+    language: string | null
+    concepts: string[]
+    interactionType: string
+    createdAt: Date
+    _count: ExplanationCountAggregateOutputType | null
+    _min: ExplanationMinAggregateOutputType | null
+    _max: ExplanationMaxAggregateOutputType | null
+  }
+
+  type GetExplanationGroupByPayload<T extends ExplanationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ExplanationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ExplanationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ExplanationGroupByOutputType[P]>
+            : GetScalarType<T[P], ExplanationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ExplanationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    sessionId?: boolean
+    language?: boolean
+    concepts?: boolean
+    interactionType?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["explanation"]>
+
+  export type ExplanationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    sessionId?: boolean
+    language?: boolean
+    concepts?: boolean
+    interactionType?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["explanation"]>
+
+  export type ExplanationSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    sessionId?: boolean
+    language?: boolean
+    concepts?: boolean
+    interactionType?: boolean
+    createdAt?: boolean
+  }
+
+  export type ExplanationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ExplanationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $ExplanationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Explanation"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      sessionId: string | null
+      language: string | null
+      concepts: string[]
+      interactionType: string
+      createdAt: Date
+    }, ExtArgs["result"]["explanation"]>
+    composites: {}
+  }
+
+  type ExplanationGetPayload<S extends boolean | null | undefined | ExplanationDefaultArgs> = $Result.GetResult<Prisma.$ExplanationPayload, S>
+
+  type ExplanationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<ExplanationFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: ExplanationCountAggregateInputType | true
+    }
+
+  export interface ExplanationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Explanation'], meta: { name: 'Explanation' } }
+    /**
+     * Find zero or one Explanation that matches the filter.
+     * @param {ExplanationFindUniqueArgs} args - Arguments to find a Explanation
+     * @example
+     * // Get one Explanation
+     * const explanation = await prisma.explanation.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ExplanationFindUniqueArgs>(args: SelectSubset<T, ExplanationFindUniqueArgs<ExtArgs>>): Prisma__ExplanationClient<$Result.GetResult<Prisma.$ExplanationPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one Explanation that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {ExplanationFindUniqueOrThrowArgs} args - Arguments to find a Explanation
+     * @example
+     * // Get one Explanation
+     * const explanation = await prisma.explanation.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ExplanationFindUniqueOrThrowArgs>(args: SelectSubset<T, ExplanationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ExplanationClient<$Result.GetResult<Prisma.$ExplanationPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first Explanation that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExplanationFindFirstArgs} args - Arguments to find a Explanation
+     * @example
+     * // Get one Explanation
+     * const explanation = await prisma.explanation.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ExplanationFindFirstArgs>(args?: SelectSubset<T, ExplanationFindFirstArgs<ExtArgs>>): Prisma__ExplanationClient<$Result.GetResult<Prisma.$ExplanationPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first Explanation that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExplanationFindFirstOrThrowArgs} args - Arguments to find a Explanation
+     * @example
+     * // Get one Explanation
+     * const explanation = await prisma.explanation.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ExplanationFindFirstOrThrowArgs>(args?: SelectSubset<T, ExplanationFindFirstOrThrowArgs<ExtArgs>>): Prisma__ExplanationClient<$Result.GetResult<Prisma.$ExplanationPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more Explanations that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExplanationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Explanations
+     * const explanations = await prisma.explanation.findMany()
+     * 
+     * // Get first 10 Explanations
+     * const explanations = await prisma.explanation.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const explanationWithIdOnly = await prisma.explanation.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ExplanationFindManyArgs>(args?: SelectSubset<T, ExplanationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExplanationPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a Explanation.
+     * @param {ExplanationCreateArgs} args - Arguments to create a Explanation.
+     * @example
+     * // Create one Explanation
+     * const Explanation = await prisma.explanation.create({
+     *   data: {
+     *     // ... data to create a Explanation
+     *   }
+     * })
+     * 
+     */
+    create<T extends ExplanationCreateArgs>(args: SelectSubset<T, ExplanationCreateArgs<ExtArgs>>): Prisma__ExplanationClient<$Result.GetResult<Prisma.$ExplanationPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many Explanations.
+     * @param {ExplanationCreateManyArgs} args - Arguments to create many Explanations.
+     * @example
+     * // Create many Explanations
+     * const explanation = await prisma.explanation.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ExplanationCreateManyArgs>(args?: SelectSubset<T, ExplanationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Explanations and returns the data saved in the database.
+     * @param {ExplanationCreateManyAndReturnArgs} args - Arguments to create many Explanations.
+     * @example
+     * // Create many Explanations
+     * const explanation = await prisma.explanation.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Explanations and only return the `id`
+     * const explanationWithIdOnly = await prisma.explanation.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ExplanationCreateManyAndReturnArgs>(args?: SelectSubset<T, ExplanationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExplanationPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a Explanation.
+     * @param {ExplanationDeleteArgs} args - Arguments to delete one Explanation.
+     * @example
+     * // Delete one Explanation
+     * const Explanation = await prisma.explanation.delete({
+     *   where: {
+     *     // ... filter to delete one Explanation
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ExplanationDeleteArgs>(args: SelectSubset<T, ExplanationDeleteArgs<ExtArgs>>): Prisma__ExplanationClient<$Result.GetResult<Prisma.$ExplanationPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one Explanation.
+     * @param {ExplanationUpdateArgs} args - Arguments to update one Explanation.
+     * @example
+     * // Update one Explanation
+     * const explanation = await prisma.explanation.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ExplanationUpdateArgs>(args: SelectSubset<T, ExplanationUpdateArgs<ExtArgs>>): Prisma__ExplanationClient<$Result.GetResult<Prisma.$ExplanationPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more Explanations.
+     * @param {ExplanationDeleteManyArgs} args - Arguments to filter Explanations to delete.
+     * @example
+     * // Delete a few Explanations
+     * const { count } = await prisma.explanation.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ExplanationDeleteManyArgs>(args?: SelectSubset<T, ExplanationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Explanations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExplanationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Explanations
+     * const explanation = await prisma.explanation.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ExplanationUpdateManyArgs>(args: SelectSubset<T, ExplanationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Explanation.
+     * @param {ExplanationUpsertArgs} args - Arguments to update or create a Explanation.
+     * @example
+     * // Update or create a Explanation
+     * const explanation = await prisma.explanation.upsert({
+     *   create: {
+     *     // ... data to create a Explanation
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Explanation we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ExplanationUpsertArgs>(args: SelectSubset<T, ExplanationUpsertArgs<ExtArgs>>): Prisma__ExplanationClient<$Result.GetResult<Prisma.$ExplanationPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of Explanations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExplanationCountArgs} args - Arguments to filter Explanations to count.
+     * @example
+     * // Count the number of Explanations
+     * const count = await prisma.explanation.count({
+     *   where: {
+     *     // ... the filter for the Explanations we want to count
+     *   }
+     * })
+    **/
+    count<T extends ExplanationCountArgs>(
+      args?: Subset<T, ExplanationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ExplanationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Explanation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExplanationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ExplanationAggregateArgs>(args: Subset<T, ExplanationAggregateArgs>): Prisma.PrismaPromise<GetExplanationAggregateType<T>>
+
+    /**
+     * Group by Explanation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExplanationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ExplanationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ExplanationGroupByArgs['orderBy'] }
+        : { orderBy?: ExplanationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ExplanationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetExplanationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Explanation model
+   */
+  readonly fields: ExplanationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Explanation.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ExplanationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Explanation model
+   */ 
+  interface ExplanationFieldRefs {
+    readonly id: FieldRef<"Explanation", 'String'>
+    readonly userId: FieldRef<"Explanation", 'String'>
+    readonly sessionId: FieldRef<"Explanation", 'String'>
+    readonly language: FieldRef<"Explanation", 'String'>
+    readonly concepts: FieldRef<"Explanation", 'String[]'>
+    readonly interactionType: FieldRef<"Explanation", 'String'>
+    readonly createdAt: FieldRef<"Explanation", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Explanation findUnique
+   */
+  export type ExplanationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Explanation
+     */
+    select?: ExplanationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExplanationInclude<ExtArgs> | null
+    /**
+     * Filter, which Explanation to fetch.
+     */
+    where: ExplanationWhereUniqueInput
+  }
+
+  /**
+   * Explanation findUniqueOrThrow
+   */
+  export type ExplanationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Explanation
+     */
+    select?: ExplanationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExplanationInclude<ExtArgs> | null
+    /**
+     * Filter, which Explanation to fetch.
+     */
+    where: ExplanationWhereUniqueInput
+  }
+
+  /**
+   * Explanation findFirst
+   */
+  export type ExplanationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Explanation
+     */
+    select?: ExplanationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExplanationInclude<ExtArgs> | null
+    /**
+     * Filter, which Explanation to fetch.
+     */
+    where?: ExplanationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Explanations to fetch.
+     */
+    orderBy?: ExplanationOrderByWithRelationInput | ExplanationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Explanations.
+     */
+    cursor?: ExplanationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Explanations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Explanations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Explanations.
+     */
+    distinct?: ExplanationScalarFieldEnum | ExplanationScalarFieldEnum[]
+  }
+
+  /**
+   * Explanation findFirstOrThrow
+   */
+  export type ExplanationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Explanation
+     */
+    select?: ExplanationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExplanationInclude<ExtArgs> | null
+    /**
+     * Filter, which Explanation to fetch.
+     */
+    where?: ExplanationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Explanations to fetch.
+     */
+    orderBy?: ExplanationOrderByWithRelationInput | ExplanationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Explanations.
+     */
+    cursor?: ExplanationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Explanations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Explanations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Explanations.
+     */
+    distinct?: ExplanationScalarFieldEnum | ExplanationScalarFieldEnum[]
+  }
+
+  /**
+   * Explanation findMany
+   */
+  export type ExplanationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Explanation
+     */
+    select?: ExplanationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExplanationInclude<ExtArgs> | null
+    /**
+     * Filter, which Explanations to fetch.
+     */
+    where?: ExplanationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Explanations to fetch.
+     */
+    orderBy?: ExplanationOrderByWithRelationInput | ExplanationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Explanations.
+     */
+    cursor?: ExplanationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Explanations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Explanations.
+     */
+    skip?: number
+    distinct?: ExplanationScalarFieldEnum | ExplanationScalarFieldEnum[]
+  }
+
+  /**
+   * Explanation create
+   */
+  export type ExplanationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Explanation
+     */
+    select?: ExplanationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExplanationInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Explanation.
+     */
+    data: XOR<ExplanationCreateInput, ExplanationUncheckedCreateInput>
+  }
+
+  /**
+   * Explanation createMany
+   */
+  export type ExplanationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Explanations.
+     */
+    data: ExplanationCreateManyInput | ExplanationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Explanation createManyAndReturn
+   */
+  export type ExplanationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Explanation
+     */
+    select?: ExplanationSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many Explanations.
+     */
+    data: ExplanationCreateManyInput | ExplanationCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExplanationIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Explanation update
+   */
+  export type ExplanationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Explanation
+     */
+    select?: ExplanationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExplanationInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Explanation.
+     */
+    data: XOR<ExplanationUpdateInput, ExplanationUncheckedUpdateInput>
+    /**
+     * Choose, which Explanation to update.
+     */
+    where: ExplanationWhereUniqueInput
+  }
+
+  /**
+   * Explanation updateMany
+   */
+  export type ExplanationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Explanations.
+     */
+    data: XOR<ExplanationUpdateManyMutationInput, ExplanationUncheckedUpdateManyInput>
+    /**
+     * Filter which Explanations to update
+     */
+    where?: ExplanationWhereInput
+  }
+
+  /**
+   * Explanation upsert
+   */
+  export type ExplanationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Explanation
+     */
+    select?: ExplanationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExplanationInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Explanation to update in case it exists.
+     */
+    where: ExplanationWhereUniqueInput
+    /**
+     * In case the Explanation found by the `where` argument doesn't exist, create a new Explanation with this data.
+     */
+    create: XOR<ExplanationCreateInput, ExplanationUncheckedCreateInput>
+    /**
+     * In case the Explanation was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ExplanationUpdateInput, ExplanationUncheckedUpdateInput>
+  }
+
+  /**
+   * Explanation delete
+   */
+  export type ExplanationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Explanation
+     */
+    select?: ExplanationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExplanationInclude<ExtArgs> | null
+    /**
+     * Filter which Explanation to delete.
+     */
+    where: ExplanationWhereUniqueInput
+  }
+
+  /**
+   * Explanation deleteMany
+   */
+  export type ExplanationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Explanations to delete
+     */
+    where?: ExplanationWhereInput
+  }
+
+  /**
+   * Explanation without action
+   */
+  export type ExplanationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Explanation
+     */
+    select?: ExplanationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExplanationInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Skill
+   */
+
+  export type AggregateSkill = {
+    _count: SkillCountAggregateOutputType | null
+    _avg: SkillAvgAggregateOutputType | null
+    _sum: SkillSumAggregateOutputType | null
+    _min: SkillMinAggregateOutputType | null
+    _max: SkillMaxAggregateOutputType | null
+  }
+
+  export type SkillAvgAggregateOutputType = {
+    totalExplanations: number | null
+    sessionsCount: number | null
+    confidence: number | null
+  }
+
+  export type SkillSumAggregateOutputType = {
+    totalExplanations: number | null
+    sessionsCount: number | null
+    confidence: number | null
+  }
+
+  export type SkillMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    concept: string | null
+    language: string | null
+    totalExplanations: number | null
+    sessionsCount: number | null
+    confidence: number | null
+    lastSeenAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SkillMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    concept: string | null
+    language: string | null
+    totalExplanations: number | null
+    sessionsCount: number | null
+    confidence: number | null
+    lastSeenAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SkillCountAggregateOutputType = {
+    id: number
+    userId: number
+    concept: number
+    language: number
+    totalExplanations: number
+    sessionsCount: number
+    confidence: number
+    lastSeenAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type SkillAvgAggregateInputType = {
+    totalExplanations?: true
+    sessionsCount?: true
+    confidence?: true
+  }
+
+  export type SkillSumAggregateInputType = {
+    totalExplanations?: true
+    sessionsCount?: true
+    confidence?: true
+  }
+
+  export type SkillMinAggregateInputType = {
+    id?: true
+    userId?: true
+    concept?: true
+    language?: true
+    totalExplanations?: true
+    sessionsCount?: true
+    confidence?: true
+    lastSeenAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SkillMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    concept?: true
+    language?: true
+    totalExplanations?: true
+    sessionsCount?: true
+    confidence?: true
+    lastSeenAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SkillCountAggregateInputType = {
+    id?: true
+    userId?: true
+    concept?: true
+    language?: true
+    totalExplanations?: true
+    sessionsCount?: true
+    confidence?: true
+    lastSeenAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type SkillAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Skill to aggregate.
+     */
+    where?: SkillWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Skills to fetch.
+     */
+    orderBy?: SkillOrderByWithRelationInput | SkillOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SkillWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Skills from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Skills.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Skills
+    **/
+    _count?: true | SkillCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: SkillAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SkillSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SkillMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SkillMaxAggregateInputType
+  }
+
+  export type GetSkillAggregateType<T extends SkillAggregateArgs> = {
+        [P in keyof T & keyof AggregateSkill]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSkill[P]>
+      : GetScalarType<T[P], AggregateSkill[P]>
+  }
+
+
+
+
+  export type SkillGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SkillWhereInput
+    orderBy?: SkillOrderByWithAggregationInput | SkillOrderByWithAggregationInput[]
+    by: SkillScalarFieldEnum[] | SkillScalarFieldEnum
+    having?: SkillScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SkillCountAggregateInputType | true
+    _avg?: SkillAvgAggregateInputType
+    _sum?: SkillSumAggregateInputType
+    _min?: SkillMinAggregateInputType
+    _max?: SkillMaxAggregateInputType
+  }
+
+  export type SkillGroupByOutputType = {
+    id: string
+    userId: string
+    concept: string
+    language: string | null
+    totalExplanations: number
+    sessionsCount: number
+    confidence: number
+    lastSeenAt: Date
+    createdAt: Date
+    updatedAt: Date
+    _count: SkillCountAggregateOutputType | null
+    _avg: SkillAvgAggregateOutputType | null
+    _sum: SkillSumAggregateOutputType | null
+    _min: SkillMinAggregateOutputType | null
+    _max: SkillMaxAggregateOutputType | null
+  }
+
+  type GetSkillGroupByPayload<T extends SkillGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SkillGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SkillGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SkillGroupByOutputType[P]>
+            : GetScalarType<T[P], SkillGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SkillSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    concept?: boolean
+    language?: boolean
+    totalExplanations?: boolean
+    sessionsCount?: boolean
+    confidence?: boolean
+    lastSeenAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    goals?: boolean | Skill$goalsArgs<ExtArgs>
+    _count?: boolean | SkillCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["skill"]>
+
+  export type SkillSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    concept?: boolean
+    language?: boolean
+    totalExplanations?: boolean
+    sessionsCount?: boolean
+    confidence?: boolean
+    lastSeenAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["skill"]>
+
+  export type SkillSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    concept?: boolean
+    language?: boolean
+    totalExplanations?: boolean
+    sessionsCount?: boolean
+    confidence?: boolean
+    lastSeenAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type SkillInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    goals?: boolean | Skill$goalsArgs<ExtArgs>
+    _count?: boolean | SkillCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type SkillIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $SkillPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Skill"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+      goals: Prisma.$SkillGoalPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      concept: string
+      language: string | null
+      totalExplanations: number
+      sessionsCount: number
+      confidence: number
+      lastSeenAt: Date
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["skill"]>
+    composites: {}
+  }
+
+  type SkillGetPayload<S extends boolean | null | undefined | SkillDefaultArgs> = $Result.GetResult<Prisma.$SkillPayload, S>
+
+  type SkillCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<SkillFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: SkillCountAggregateInputType | true
+    }
+
+  export interface SkillDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Skill'], meta: { name: 'Skill' } }
+    /**
+     * Find zero or one Skill that matches the filter.
+     * @param {SkillFindUniqueArgs} args - Arguments to find a Skill
+     * @example
+     * // Get one Skill
+     * const skill = await prisma.skill.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SkillFindUniqueArgs>(args: SelectSubset<T, SkillFindUniqueArgs<ExtArgs>>): Prisma__SkillClient<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one Skill that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {SkillFindUniqueOrThrowArgs} args - Arguments to find a Skill
+     * @example
+     * // Get one Skill
+     * const skill = await prisma.skill.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SkillFindUniqueOrThrowArgs>(args: SelectSubset<T, SkillFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SkillClient<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first Skill that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SkillFindFirstArgs} args - Arguments to find a Skill
+     * @example
+     * // Get one Skill
+     * const skill = await prisma.skill.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SkillFindFirstArgs>(args?: SelectSubset<T, SkillFindFirstArgs<ExtArgs>>): Prisma__SkillClient<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first Skill that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SkillFindFirstOrThrowArgs} args - Arguments to find a Skill
+     * @example
+     * // Get one Skill
+     * const skill = await prisma.skill.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SkillFindFirstOrThrowArgs>(args?: SelectSubset<T, SkillFindFirstOrThrowArgs<ExtArgs>>): Prisma__SkillClient<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more Skills that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SkillFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Skills
+     * const skills = await prisma.skill.findMany()
+     * 
+     * // Get first 10 Skills
+     * const skills = await prisma.skill.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const skillWithIdOnly = await prisma.skill.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SkillFindManyArgs>(args?: SelectSubset<T, SkillFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a Skill.
+     * @param {SkillCreateArgs} args - Arguments to create a Skill.
+     * @example
+     * // Create one Skill
+     * const Skill = await prisma.skill.create({
+     *   data: {
+     *     // ... data to create a Skill
+     *   }
+     * })
+     * 
+     */
+    create<T extends SkillCreateArgs>(args: SelectSubset<T, SkillCreateArgs<ExtArgs>>): Prisma__SkillClient<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many Skills.
+     * @param {SkillCreateManyArgs} args - Arguments to create many Skills.
+     * @example
+     * // Create many Skills
+     * const skill = await prisma.skill.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SkillCreateManyArgs>(args?: SelectSubset<T, SkillCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Skills and returns the data saved in the database.
+     * @param {SkillCreateManyAndReturnArgs} args - Arguments to create many Skills.
+     * @example
+     * // Create many Skills
+     * const skill = await prisma.skill.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Skills and only return the `id`
+     * const skillWithIdOnly = await prisma.skill.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SkillCreateManyAndReturnArgs>(args?: SelectSubset<T, SkillCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a Skill.
+     * @param {SkillDeleteArgs} args - Arguments to delete one Skill.
+     * @example
+     * // Delete one Skill
+     * const Skill = await prisma.skill.delete({
+     *   where: {
+     *     // ... filter to delete one Skill
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SkillDeleteArgs>(args: SelectSubset<T, SkillDeleteArgs<ExtArgs>>): Prisma__SkillClient<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one Skill.
+     * @param {SkillUpdateArgs} args - Arguments to update one Skill.
+     * @example
+     * // Update one Skill
+     * const skill = await prisma.skill.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SkillUpdateArgs>(args: SelectSubset<T, SkillUpdateArgs<ExtArgs>>): Prisma__SkillClient<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more Skills.
+     * @param {SkillDeleteManyArgs} args - Arguments to filter Skills to delete.
+     * @example
+     * // Delete a few Skills
+     * const { count } = await prisma.skill.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SkillDeleteManyArgs>(args?: SelectSubset<T, SkillDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Skills.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SkillUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Skills
+     * const skill = await prisma.skill.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SkillUpdateManyArgs>(args: SelectSubset<T, SkillUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Skill.
+     * @param {SkillUpsertArgs} args - Arguments to update or create a Skill.
+     * @example
+     * // Update or create a Skill
+     * const skill = await prisma.skill.upsert({
+     *   create: {
+     *     // ... data to create a Skill
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Skill we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SkillUpsertArgs>(args: SelectSubset<T, SkillUpsertArgs<ExtArgs>>): Prisma__SkillClient<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of Skills.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SkillCountArgs} args - Arguments to filter Skills to count.
+     * @example
+     * // Count the number of Skills
+     * const count = await prisma.skill.count({
+     *   where: {
+     *     // ... the filter for the Skills we want to count
+     *   }
+     * })
+    **/
+    count<T extends SkillCountArgs>(
+      args?: Subset<T, SkillCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SkillCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Skill.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SkillAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SkillAggregateArgs>(args: Subset<T, SkillAggregateArgs>): Prisma.PrismaPromise<GetSkillAggregateType<T>>
+
+    /**
+     * Group by Skill.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SkillGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SkillGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SkillGroupByArgs['orderBy'] }
+        : { orderBy?: SkillGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SkillGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSkillGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Skill model
+   */
+  readonly fields: SkillFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Skill.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SkillClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    goals<T extends Skill$goalsArgs<ExtArgs> = {}>(args?: Subset<T, Skill$goalsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SkillGoalPayload<ExtArgs>, T, "findMany"> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Skill model
+   */ 
+  interface SkillFieldRefs {
+    readonly id: FieldRef<"Skill", 'String'>
+    readonly userId: FieldRef<"Skill", 'String'>
+    readonly concept: FieldRef<"Skill", 'String'>
+    readonly language: FieldRef<"Skill", 'String'>
+    readonly totalExplanations: FieldRef<"Skill", 'Int'>
+    readonly sessionsCount: FieldRef<"Skill", 'Int'>
+    readonly confidence: FieldRef<"Skill", 'Int'>
+    readonly lastSeenAt: FieldRef<"Skill", 'DateTime'>
+    readonly createdAt: FieldRef<"Skill", 'DateTime'>
+    readonly updatedAt: FieldRef<"Skill", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Skill findUnique
+   */
+  export type SkillFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Skill
+     */
+    select?: SkillSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillInclude<ExtArgs> | null
+    /**
+     * Filter, which Skill to fetch.
+     */
+    where: SkillWhereUniqueInput
+  }
+
+  /**
+   * Skill findUniqueOrThrow
+   */
+  export type SkillFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Skill
+     */
+    select?: SkillSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillInclude<ExtArgs> | null
+    /**
+     * Filter, which Skill to fetch.
+     */
+    where: SkillWhereUniqueInput
+  }
+
+  /**
+   * Skill findFirst
+   */
+  export type SkillFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Skill
+     */
+    select?: SkillSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillInclude<ExtArgs> | null
+    /**
+     * Filter, which Skill to fetch.
+     */
+    where?: SkillWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Skills to fetch.
+     */
+    orderBy?: SkillOrderByWithRelationInput | SkillOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Skills.
+     */
+    cursor?: SkillWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Skills from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Skills.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Skills.
+     */
+    distinct?: SkillScalarFieldEnum | SkillScalarFieldEnum[]
+  }
+
+  /**
+   * Skill findFirstOrThrow
+   */
+  export type SkillFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Skill
+     */
+    select?: SkillSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillInclude<ExtArgs> | null
+    /**
+     * Filter, which Skill to fetch.
+     */
+    where?: SkillWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Skills to fetch.
+     */
+    orderBy?: SkillOrderByWithRelationInput | SkillOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Skills.
+     */
+    cursor?: SkillWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Skills from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Skills.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Skills.
+     */
+    distinct?: SkillScalarFieldEnum | SkillScalarFieldEnum[]
+  }
+
+  /**
+   * Skill findMany
+   */
+  export type SkillFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Skill
+     */
+    select?: SkillSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillInclude<ExtArgs> | null
+    /**
+     * Filter, which Skills to fetch.
+     */
+    where?: SkillWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Skills to fetch.
+     */
+    orderBy?: SkillOrderByWithRelationInput | SkillOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Skills.
+     */
+    cursor?: SkillWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Skills from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Skills.
+     */
+    skip?: number
+    distinct?: SkillScalarFieldEnum | SkillScalarFieldEnum[]
+  }
+
+  /**
+   * Skill create
+   */
+  export type SkillCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Skill
+     */
+    select?: SkillSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Skill.
+     */
+    data: XOR<SkillCreateInput, SkillUncheckedCreateInput>
+  }
+
+  /**
+   * Skill createMany
+   */
+  export type SkillCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Skills.
+     */
+    data: SkillCreateManyInput | SkillCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Skill createManyAndReturn
+   */
+  export type SkillCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Skill
+     */
+    select?: SkillSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many Skills.
+     */
+    data: SkillCreateManyInput | SkillCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Skill update
+   */
+  export type SkillUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Skill
+     */
+    select?: SkillSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Skill.
+     */
+    data: XOR<SkillUpdateInput, SkillUncheckedUpdateInput>
+    /**
+     * Choose, which Skill to update.
+     */
+    where: SkillWhereUniqueInput
+  }
+
+  /**
+   * Skill updateMany
+   */
+  export type SkillUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Skills.
+     */
+    data: XOR<SkillUpdateManyMutationInput, SkillUncheckedUpdateManyInput>
+    /**
+     * Filter which Skills to update
+     */
+    where?: SkillWhereInput
+  }
+
+  /**
+   * Skill upsert
+   */
+  export type SkillUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Skill
+     */
+    select?: SkillSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Skill to update in case it exists.
+     */
+    where: SkillWhereUniqueInput
+    /**
+     * In case the Skill found by the `where` argument doesn't exist, create a new Skill with this data.
+     */
+    create: XOR<SkillCreateInput, SkillUncheckedCreateInput>
+    /**
+     * In case the Skill was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SkillUpdateInput, SkillUncheckedUpdateInput>
+  }
+
+  /**
+   * Skill delete
+   */
+  export type SkillDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Skill
+     */
+    select?: SkillSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillInclude<ExtArgs> | null
+    /**
+     * Filter which Skill to delete.
+     */
+    where: SkillWhereUniqueInput
+  }
+
+  /**
+   * Skill deleteMany
+   */
+  export type SkillDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Skills to delete
+     */
+    where?: SkillWhereInput
+  }
+
+  /**
+   * Skill.goals
+   */
+  export type Skill$goalsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SkillGoal
+     */
+    select?: SkillGoalSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillGoalInclude<ExtArgs> | null
+    where?: SkillGoalWhereInput
+    orderBy?: SkillGoalOrderByWithRelationInput | SkillGoalOrderByWithRelationInput[]
+    cursor?: SkillGoalWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SkillGoalScalarFieldEnum | SkillGoalScalarFieldEnum[]
+  }
+
+  /**
+   * Skill without action
+   */
+  export type SkillDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Skill
+     */
+    select?: SkillSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model SkillGoal
+   */
+
+  export type AggregateSkillGoal = {
+    _count: SkillGoalCountAggregateOutputType | null
+    _avg: SkillGoalAvgAggregateOutputType | null
+    _sum: SkillGoalSumAggregateOutputType | null
+    _min: SkillGoalMinAggregateOutputType | null
+    _max: SkillGoalMaxAggregateOutputType | null
+  }
+
+  export type SkillGoalAvgAggregateOutputType = {
+    targetConfidence: number | null
+    currentProgress: number | null
+  }
+
+  export type SkillGoalSumAggregateOutputType = {
+    targetConfidence: number | null
+    currentProgress: number | null
+  }
+
+  export type SkillGoalMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    skillId: string | null
+    conceptName: string | null
+    targetConfidence: number | null
+    currentProgress: number | null
+    deadline: Date | null
+    status: $Enums.GoalStatus | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SkillGoalMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    skillId: string | null
+    conceptName: string | null
+    targetConfidence: number | null
+    currentProgress: number | null
+    deadline: Date | null
+    status: $Enums.GoalStatus | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SkillGoalCountAggregateOutputType = {
+    id: number
+    userId: number
+    skillId: number
+    conceptName: number
+    targetConfidence: number
+    currentProgress: number
+    deadline: number
+    status: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type SkillGoalAvgAggregateInputType = {
+    targetConfidence?: true
+    currentProgress?: true
+  }
+
+  export type SkillGoalSumAggregateInputType = {
+    targetConfidence?: true
+    currentProgress?: true
+  }
+
+  export type SkillGoalMinAggregateInputType = {
+    id?: true
+    userId?: true
+    skillId?: true
+    conceptName?: true
+    targetConfidence?: true
+    currentProgress?: true
+    deadline?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SkillGoalMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    skillId?: true
+    conceptName?: true
+    targetConfidence?: true
+    currentProgress?: true
+    deadline?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SkillGoalCountAggregateInputType = {
+    id?: true
+    userId?: true
+    skillId?: true
+    conceptName?: true
+    targetConfidence?: true
+    currentProgress?: true
+    deadline?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type SkillGoalAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SkillGoal to aggregate.
+     */
+    where?: SkillGoalWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SkillGoals to fetch.
+     */
+    orderBy?: SkillGoalOrderByWithRelationInput | SkillGoalOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SkillGoalWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SkillGoals from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SkillGoals.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SkillGoals
+    **/
+    _count?: true | SkillGoalCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: SkillGoalAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SkillGoalSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SkillGoalMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SkillGoalMaxAggregateInputType
+  }
+
+  export type GetSkillGoalAggregateType<T extends SkillGoalAggregateArgs> = {
+        [P in keyof T & keyof AggregateSkillGoal]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSkillGoal[P]>
+      : GetScalarType<T[P], AggregateSkillGoal[P]>
+  }
+
+
+
+
+  export type SkillGoalGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SkillGoalWhereInput
+    orderBy?: SkillGoalOrderByWithAggregationInput | SkillGoalOrderByWithAggregationInput[]
+    by: SkillGoalScalarFieldEnum[] | SkillGoalScalarFieldEnum
+    having?: SkillGoalScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SkillGoalCountAggregateInputType | true
+    _avg?: SkillGoalAvgAggregateInputType
+    _sum?: SkillGoalSumAggregateInputType
+    _min?: SkillGoalMinAggregateInputType
+    _max?: SkillGoalMaxAggregateInputType
+  }
+
+  export type SkillGoalGroupByOutputType = {
+    id: string
+    userId: string
+    skillId: string | null
+    conceptName: string
+    targetConfidence: number
+    currentProgress: number
+    deadline: Date | null
+    status: $Enums.GoalStatus
+    createdAt: Date
+    updatedAt: Date
+    _count: SkillGoalCountAggregateOutputType | null
+    _avg: SkillGoalAvgAggregateOutputType | null
+    _sum: SkillGoalSumAggregateOutputType | null
+    _min: SkillGoalMinAggregateOutputType | null
+    _max: SkillGoalMaxAggregateOutputType | null
+  }
+
+  type GetSkillGoalGroupByPayload<T extends SkillGoalGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SkillGoalGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SkillGoalGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SkillGoalGroupByOutputType[P]>
+            : GetScalarType<T[P], SkillGoalGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SkillGoalSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    skillId?: boolean
+    conceptName?: boolean
+    targetConfidence?: boolean
+    currentProgress?: boolean
+    deadline?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    skill?: boolean | SkillGoal$skillArgs<ExtArgs>
+  }, ExtArgs["result"]["skillGoal"]>
+
+  export type SkillGoalSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    skillId?: boolean
+    conceptName?: boolean
+    targetConfidence?: boolean
+    currentProgress?: boolean
+    deadline?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    skill?: boolean | SkillGoal$skillArgs<ExtArgs>
+  }, ExtArgs["result"]["skillGoal"]>
+
+  export type SkillGoalSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    skillId?: boolean
+    conceptName?: boolean
+    targetConfidence?: boolean
+    currentProgress?: boolean
+    deadline?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type SkillGoalInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    skill?: boolean | SkillGoal$skillArgs<ExtArgs>
+  }
+  export type SkillGoalIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    skill?: boolean | SkillGoal$skillArgs<ExtArgs>
+  }
+
+  export type $SkillGoalPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SkillGoal"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+      skill: Prisma.$SkillPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      skillId: string | null
+      conceptName: string
+      targetConfidence: number
+      currentProgress: number
+      deadline: Date | null
+      status: $Enums.GoalStatus
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["skillGoal"]>
+    composites: {}
+  }
+
+  type SkillGoalGetPayload<S extends boolean | null | undefined | SkillGoalDefaultArgs> = $Result.GetResult<Prisma.$SkillGoalPayload, S>
+
+  type SkillGoalCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<SkillGoalFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: SkillGoalCountAggregateInputType | true
+    }
+
+  export interface SkillGoalDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SkillGoal'], meta: { name: 'SkillGoal' } }
+    /**
+     * Find zero or one SkillGoal that matches the filter.
+     * @param {SkillGoalFindUniqueArgs} args - Arguments to find a SkillGoal
+     * @example
+     * // Get one SkillGoal
+     * const skillGoal = await prisma.skillGoal.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SkillGoalFindUniqueArgs>(args: SelectSubset<T, SkillGoalFindUniqueArgs<ExtArgs>>): Prisma__SkillGoalClient<$Result.GetResult<Prisma.$SkillGoalPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one SkillGoal that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {SkillGoalFindUniqueOrThrowArgs} args - Arguments to find a SkillGoal
+     * @example
+     * // Get one SkillGoal
+     * const skillGoal = await prisma.skillGoal.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SkillGoalFindUniqueOrThrowArgs>(args: SelectSubset<T, SkillGoalFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SkillGoalClient<$Result.GetResult<Prisma.$SkillGoalPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first SkillGoal that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SkillGoalFindFirstArgs} args - Arguments to find a SkillGoal
+     * @example
+     * // Get one SkillGoal
+     * const skillGoal = await prisma.skillGoal.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SkillGoalFindFirstArgs>(args?: SelectSubset<T, SkillGoalFindFirstArgs<ExtArgs>>): Prisma__SkillGoalClient<$Result.GetResult<Prisma.$SkillGoalPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first SkillGoal that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SkillGoalFindFirstOrThrowArgs} args - Arguments to find a SkillGoal
+     * @example
+     * // Get one SkillGoal
+     * const skillGoal = await prisma.skillGoal.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SkillGoalFindFirstOrThrowArgs>(args?: SelectSubset<T, SkillGoalFindFirstOrThrowArgs<ExtArgs>>): Prisma__SkillGoalClient<$Result.GetResult<Prisma.$SkillGoalPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more SkillGoals that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SkillGoalFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SkillGoals
+     * const skillGoals = await prisma.skillGoal.findMany()
+     * 
+     * // Get first 10 SkillGoals
+     * const skillGoals = await prisma.skillGoal.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const skillGoalWithIdOnly = await prisma.skillGoal.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SkillGoalFindManyArgs>(args?: SelectSubset<T, SkillGoalFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SkillGoalPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a SkillGoal.
+     * @param {SkillGoalCreateArgs} args - Arguments to create a SkillGoal.
+     * @example
+     * // Create one SkillGoal
+     * const SkillGoal = await prisma.skillGoal.create({
+     *   data: {
+     *     // ... data to create a SkillGoal
+     *   }
+     * })
+     * 
+     */
+    create<T extends SkillGoalCreateArgs>(args: SelectSubset<T, SkillGoalCreateArgs<ExtArgs>>): Prisma__SkillGoalClient<$Result.GetResult<Prisma.$SkillGoalPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many SkillGoals.
+     * @param {SkillGoalCreateManyArgs} args - Arguments to create many SkillGoals.
+     * @example
+     * // Create many SkillGoals
+     * const skillGoal = await prisma.skillGoal.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SkillGoalCreateManyArgs>(args?: SelectSubset<T, SkillGoalCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SkillGoals and returns the data saved in the database.
+     * @param {SkillGoalCreateManyAndReturnArgs} args - Arguments to create many SkillGoals.
+     * @example
+     * // Create many SkillGoals
+     * const skillGoal = await prisma.skillGoal.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SkillGoals and only return the `id`
+     * const skillGoalWithIdOnly = await prisma.skillGoal.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SkillGoalCreateManyAndReturnArgs>(args?: SelectSubset<T, SkillGoalCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SkillGoalPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a SkillGoal.
+     * @param {SkillGoalDeleteArgs} args - Arguments to delete one SkillGoal.
+     * @example
+     * // Delete one SkillGoal
+     * const SkillGoal = await prisma.skillGoal.delete({
+     *   where: {
+     *     // ... filter to delete one SkillGoal
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SkillGoalDeleteArgs>(args: SelectSubset<T, SkillGoalDeleteArgs<ExtArgs>>): Prisma__SkillGoalClient<$Result.GetResult<Prisma.$SkillGoalPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one SkillGoal.
+     * @param {SkillGoalUpdateArgs} args - Arguments to update one SkillGoal.
+     * @example
+     * // Update one SkillGoal
+     * const skillGoal = await prisma.skillGoal.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SkillGoalUpdateArgs>(args: SelectSubset<T, SkillGoalUpdateArgs<ExtArgs>>): Prisma__SkillGoalClient<$Result.GetResult<Prisma.$SkillGoalPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more SkillGoals.
+     * @param {SkillGoalDeleteManyArgs} args - Arguments to filter SkillGoals to delete.
+     * @example
+     * // Delete a few SkillGoals
+     * const { count } = await prisma.skillGoal.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SkillGoalDeleteManyArgs>(args?: SelectSubset<T, SkillGoalDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SkillGoals.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SkillGoalUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SkillGoals
+     * const skillGoal = await prisma.skillGoal.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SkillGoalUpdateManyArgs>(args: SelectSubset<T, SkillGoalUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one SkillGoal.
+     * @param {SkillGoalUpsertArgs} args - Arguments to update or create a SkillGoal.
+     * @example
+     * // Update or create a SkillGoal
+     * const skillGoal = await prisma.skillGoal.upsert({
+     *   create: {
+     *     // ... data to create a SkillGoal
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SkillGoal we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SkillGoalUpsertArgs>(args: SelectSubset<T, SkillGoalUpsertArgs<ExtArgs>>): Prisma__SkillGoalClient<$Result.GetResult<Prisma.$SkillGoalPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of SkillGoals.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SkillGoalCountArgs} args - Arguments to filter SkillGoals to count.
+     * @example
+     * // Count the number of SkillGoals
+     * const count = await prisma.skillGoal.count({
+     *   where: {
+     *     // ... the filter for the SkillGoals we want to count
+     *   }
+     * })
+    **/
+    count<T extends SkillGoalCountArgs>(
+      args?: Subset<T, SkillGoalCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SkillGoalCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SkillGoal.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SkillGoalAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SkillGoalAggregateArgs>(args: Subset<T, SkillGoalAggregateArgs>): Prisma.PrismaPromise<GetSkillGoalAggregateType<T>>
+
+    /**
+     * Group by SkillGoal.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SkillGoalGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SkillGoalGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SkillGoalGroupByArgs['orderBy'] }
+        : { orderBy?: SkillGoalGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SkillGoalGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSkillGoalGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SkillGoal model
+   */
+  readonly fields: SkillGoalFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SkillGoal.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SkillGoalClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    skill<T extends SkillGoal$skillArgs<ExtArgs> = {}>(args?: Subset<T, SkillGoal$skillArgs<ExtArgs>>): Prisma__SkillClient<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SkillGoal model
+   */ 
+  interface SkillGoalFieldRefs {
+    readonly id: FieldRef<"SkillGoal", 'String'>
+    readonly userId: FieldRef<"SkillGoal", 'String'>
+    readonly skillId: FieldRef<"SkillGoal", 'String'>
+    readonly conceptName: FieldRef<"SkillGoal", 'String'>
+    readonly targetConfidence: FieldRef<"SkillGoal", 'Int'>
+    readonly currentProgress: FieldRef<"SkillGoal", 'Int'>
+    readonly deadline: FieldRef<"SkillGoal", 'DateTime'>
+    readonly status: FieldRef<"SkillGoal", 'GoalStatus'>
+    readonly createdAt: FieldRef<"SkillGoal", 'DateTime'>
+    readonly updatedAt: FieldRef<"SkillGoal", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SkillGoal findUnique
+   */
+  export type SkillGoalFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SkillGoal
+     */
+    select?: SkillGoalSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillGoalInclude<ExtArgs> | null
+    /**
+     * Filter, which SkillGoal to fetch.
+     */
+    where: SkillGoalWhereUniqueInput
+  }
+
+  /**
+   * SkillGoal findUniqueOrThrow
+   */
+  export type SkillGoalFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SkillGoal
+     */
+    select?: SkillGoalSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillGoalInclude<ExtArgs> | null
+    /**
+     * Filter, which SkillGoal to fetch.
+     */
+    where: SkillGoalWhereUniqueInput
+  }
+
+  /**
+   * SkillGoal findFirst
+   */
+  export type SkillGoalFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SkillGoal
+     */
+    select?: SkillGoalSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillGoalInclude<ExtArgs> | null
+    /**
+     * Filter, which SkillGoal to fetch.
+     */
+    where?: SkillGoalWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SkillGoals to fetch.
+     */
+    orderBy?: SkillGoalOrderByWithRelationInput | SkillGoalOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SkillGoals.
+     */
+    cursor?: SkillGoalWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SkillGoals from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SkillGoals.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SkillGoals.
+     */
+    distinct?: SkillGoalScalarFieldEnum | SkillGoalScalarFieldEnum[]
+  }
+
+  /**
+   * SkillGoal findFirstOrThrow
+   */
+  export type SkillGoalFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SkillGoal
+     */
+    select?: SkillGoalSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillGoalInclude<ExtArgs> | null
+    /**
+     * Filter, which SkillGoal to fetch.
+     */
+    where?: SkillGoalWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SkillGoals to fetch.
+     */
+    orderBy?: SkillGoalOrderByWithRelationInput | SkillGoalOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SkillGoals.
+     */
+    cursor?: SkillGoalWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SkillGoals from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SkillGoals.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SkillGoals.
+     */
+    distinct?: SkillGoalScalarFieldEnum | SkillGoalScalarFieldEnum[]
+  }
+
+  /**
+   * SkillGoal findMany
+   */
+  export type SkillGoalFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SkillGoal
+     */
+    select?: SkillGoalSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillGoalInclude<ExtArgs> | null
+    /**
+     * Filter, which SkillGoals to fetch.
+     */
+    where?: SkillGoalWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SkillGoals to fetch.
+     */
+    orderBy?: SkillGoalOrderByWithRelationInput | SkillGoalOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SkillGoals.
+     */
+    cursor?: SkillGoalWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SkillGoals from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SkillGoals.
+     */
+    skip?: number
+    distinct?: SkillGoalScalarFieldEnum | SkillGoalScalarFieldEnum[]
+  }
+
+  /**
+   * SkillGoal create
+   */
+  export type SkillGoalCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SkillGoal
+     */
+    select?: SkillGoalSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillGoalInclude<ExtArgs> | null
+    /**
+     * The data needed to create a SkillGoal.
+     */
+    data: XOR<SkillGoalCreateInput, SkillGoalUncheckedCreateInput>
+  }
+
+  /**
+   * SkillGoal createMany
+   */
+  export type SkillGoalCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SkillGoals.
+     */
+    data: SkillGoalCreateManyInput | SkillGoalCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SkillGoal createManyAndReturn
+   */
+  export type SkillGoalCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SkillGoal
+     */
+    select?: SkillGoalSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many SkillGoals.
+     */
+    data: SkillGoalCreateManyInput | SkillGoalCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillGoalIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SkillGoal update
+   */
+  export type SkillGoalUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SkillGoal
+     */
+    select?: SkillGoalSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillGoalInclude<ExtArgs> | null
+    /**
+     * The data needed to update a SkillGoal.
+     */
+    data: XOR<SkillGoalUpdateInput, SkillGoalUncheckedUpdateInput>
+    /**
+     * Choose, which SkillGoal to update.
+     */
+    where: SkillGoalWhereUniqueInput
+  }
+
+  /**
+   * SkillGoal updateMany
+   */
+  export type SkillGoalUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SkillGoals.
+     */
+    data: XOR<SkillGoalUpdateManyMutationInput, SkillGoalUncheckedUpdateManyInput>
+    /**
+     * Filter which SkillGoals to update
+     */
+    where?: SkillGoalWhereInput
+  }
+
+  /**
+   * SkillGoal upsert
+   */
+  export type SkillGoalUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SkillGoal
+     */
+    select?: SkillGoalSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillGoalInclude<ExtArgs> | null
+    /**
+     * The filter to search for the SkillGoal to update in case it exists.
+     */
+    where: SkillGoalWhereUniqueInput
+    /**
+     * In case the SkillGoal found by the `where` argument doesn't exist, create a new SkillGoal with this data.
+     */
+    create: XOR<SkillGoalCreateInput, SkillGoalUncheckedCreateInput>
+    /**
+     * In case the SkillGoal was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SkillGoalUpdateInput, SkillGoalUncheckedUpdateInput>
+  }
+
+  /**
+   * SkillGoal delete
+   */
+  export type SkillGoalDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SkillGoal
+     */
+    select?: SkillGoalSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillGoalInclude<ExtArgs> | null
+    /**
+     * Filter which SkillGoal to delete.
+     */
+    where: SkillGoalWhereUniqueInput
+  }
+
+  /**
+   * SkillGoal deleteMany
+   */
+  export type SkillGoalDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SkillGoals to delete
+     */
+    where?: SkillGoalWhereInput
+  }
+
+  /**
+   * SkillGoal.skill
+   */
+  export type SkillGoal$skillArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Skill
+     */
+    select?: SkillSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillInclude<ExtArgs> | null
+    where?: SkillWhereInput
+  }
+
+  /**
+   * SkillGoal without action
+   */
+  export type SkillGoalDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SkillGoal
+     */
+    select?: SkillGoalSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillGoalInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -12908,6 +16375,51 @@ export namespace Prisma {
   export type CommentReactionScalarFieldEnum = (typeof CommentReactionScalarFieldEnum)[keyof typeof CommentReactionScalarFieldEnum]
 
 
+  export const ExplanationScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    sessionId: 'sessionId',
+    language: 'language',
+    concepts: 'concepts',
+    interactionType: 'interactionType',
+    createdAt: 'createdAt'
+  };
+
+  export type ExplanationScalarFieldEnum = (typeof ExplanationScalarFieldEnum)[keyof typeof ExplanationScalarFieldEnum]
+
+
+  export const SkillScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    concept: 'concept',
+    language: 'language',
+    totalExplanations: 'totalExplanations',
+    sessionsCount: 'sessionsCount',
+    confidence: 'confidence',
+    lastSeenAt: 'lastSeenAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type SkillScalarFieldEnum = (typeof SkillScalarFieldEnum)[keyof typeof SkillScalarFieldEnum]
+
+
+  export const SkillGoalScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    skillId: 'skillId',
+    conceptName: 'conceptName',
+    targetConfidence: 'targetConfidence',
+    currentProgress: 'currentProgress',
+    deadline: 'deadline',
+    status: 'status',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type SkillGoalScalarFieldEnum = (typeof SkillGoalScalarFieldEnum)[keyof typeof SkillGoalScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -13036,6 +16548,34 @@ export namespace Prisma {
    */
   export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
+
+
+  /**
+   * Reference to a field of type 'GoalStatus'
+   */
+  export type EnumGoalStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GoalStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'GoalStatus[]'
+   */
+  export type ListEnumGoalStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GoalStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float[]'
+   */
+  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
   /**
    * Deep Input Types
    */
@@ -13063,6 +16603,9 @@ export namespace Prisma {
     featureVotes?: FeatureVoteListRelationFilter
     featureComments?: FeatureCommentListRelationFilter
     commentReactions?: CommentReactionListRelationFilter
+    explanations?: ExplanationListRelationFilter
+    skills?: SkillListRelationFilter
+    skillGoals?: SkillGoalListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -13084,6 +16627,9 @@ export namespace Prisma {
     featureVotes?: FeatureVoteOrderByRelationAggregateInput
     featureComments?: FeatureCommentOrderByRelationAggregateInput
     commentReactions?: CommentReactionOrderByRelationAggregateInput
+    explanations?: ExplanationOrderByRelationAggregateInput
+    skills?: SkillOrderByRelationAggregateInput
+    skillGoals?: SkillGoalOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -13108,6 +16654,9 @@ export namespace Prisma {
     featureVotes?: FeatureVoteListRelationFilter
     featureComments?: FeatureCommentListRelationFilter
     commentReactions?: CommentReactionListRelationFilter
+    explanations?: ExplanationListRelationFilter
+    skills?: SkillListRelationFilter
+    skillGoals?: SkillGoalListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -13805,6 +17354,242 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"CommentReaction"> | Date | string
   }
 
+  export type ExplanationWhereInput = {
+    AND?: ExplanationWhereInput | ExplanationWhereInput[]
+    OR?: ExplanationWhereInput[]
+    NOT?: ExplanationWhereInput | ExplanationWhereInput[]
+    id?: StringFilter<"Explanation"> | string
+    userId?: StringFilter<"Explanation"> | string
+    sessionId?: StringNullableFilter<"Explanation"> | string | null
+    language?: StringNullableFilter<"Explanation"> | string | null
+    concepts?: StringNullableListFilter<"Explanation">
+    interactionType?: StringFilter<"Explanation"> | string
+    createdAt?: DateTimeFilter<"Explanation"> | Date | string
+    user?: XOR<UserRelationFilter, UserWhereInput>
+  }
+
+  export type ExplanationOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    sessionId?: SortOrderInput | SortOrder
+    language?: SortOrderInput | SortOrder
+    concepts?: SortOrder
+    interactionType?: SortOrder
+    createdAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type ExplanationWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ExplanationWhereInput | ExplanationWhereInput[]
+    OR?: ExplanationWhereInput[]
+    NOT?: ExplanationWhereInput | ExplanationWhereInput[]
+    userId?: StringFilter<"Explanation"> | string
+    sessionId?: StringNullableFilter<"Explanation"> | string | null
+    language?: StringNullableFilter<"Explanation"> | string | null
+    concepts?: StringNullableListFilter<"Explanation">
+    interactionType?: StringFilter<"Explanation"> | string
+    createdAt?: DateTimeFilter<"Explanation"> | Date | string
+    user?: XOR<UserRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type ExplanationOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    sessionId?: SortOrderInput | SortOrder
+    language?: SortOrderInput | SortOrder
+    concepts?: SortOrder
+    interactionType?: SortOrder
+    createdAt?: SortOrder
+    _count?: ExplanationCountOrderByAggregateInput
+    _max?: ExplanationMaxOrderByAggregateInput
+    _min?: ExplanationMinOrderByAggregateInput
+  }
+
+  export type ExplanationScalarWhereWithAggregatesInput = {
+    AND?: ExplanationScalarWhereWithAggregatesInput | ExplanationScalarWhereWithAggregatesInput[]
+    OR?: ExplanationScalarWhereWithAggregatesInput[]
+    NOT?: ExplanationScalarWhereWithAggregatesInput | ExplanationScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Explanation"> | string
+    userId?: StringWithAggregatesFilter<"Explanation"> | string
+    sessionId?: StringNullableWithAggregatesFilter<"Explanation"> | string | null
+    language?: StringNullableWithAggregatesFilter<"Explanation"> | string | null
+    concepts?: StringNullableListFilter<"Explanation">
+    interactionType?: StringWithAggregatesFilter<"Explanation"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Explanation"> | Date | string
+  }
+
+  export type SkillWhereInput = {
+    AND?: SkillWhereInput | SkillWhereInput[]
+    OR?: SkillWhereInput[]
+    NOT?: SkillWhereInput | SkillWhereInput[]
+    id?: StringFilter<"Skill"> | string
+    userId?: StringFilter<"Skill"> | string
+    concept?: StringFilter<"Skill"> | string
+    language?: StringNullableFilter<"Skill"> | string | null
+    totalExplanations?: IntFilter<"Skill"> | number
+    sessionsCount?: IntFilter<"Skill"> | number
+    confidence?: IntFilter<"Skill"> | number
+    lastSeenAt?: DateTimeFilter<"Skill"> | Date | string
+    createdAt?: DateTimeFilter<"Skill"> | Date | string
+    updatedAt?: DateTimeFilter<"Skill"> | Date | string
+    user?: XOR<UserRelationFilter, UserWhereInput>
+    goals?: SkillGoalListRelationFilter
+  }
+
+  export type SkillOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    concept?: SortOrder
+    language?: SortOrderInput | SortOrder
+    totalExplanations?: SortOrder
+    sessionsCount?: SortOrder
+    confidence?: SortOrder
+    lastSeenAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+    goals?: SkillGoalOrderByRelationAggregateInput
+  }
+
+  export type SkillWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    userId_concept?: SkillUserIdConceptCompoundUniqueInput
+    AND?: SkillWhereInput | SkillWhereInput[]
+    OR?: SkillWhereInput[]
+    NOT?: SkillWhereInput | SkillWhereInput[]
+    userId?: StringFilter<"Skill"> | string
+    concept?: StringFilter<"Skill"> | string
+    language?: StringNullableFilter<"Skill"> | string | null
+    totalExplanations?: IntFilter<"Skill"> | number
+    sessionsCount?: IntFilter<"Skill"> | number
+    confidence?: IntFilter<"Skill"> | number
+    lastSeenAt?: DateTimeFilter<"Skill"> | Date | string
+    createdAt?: DateTimeFilter<"Skill"> | Date | string
+    updatedAt?: DateTimeFilter<"Skill"> | Date | string
+    user?: XOR<UserRelationFilter, UserWhereInput>
+    goals?: SkillGoalListRelationFilter
+  }, "id" | "userId_concept">
+
+  export type SkillOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    concept?: SortOrder
+    language?: SortOrderInput | SortOrder
+    totalExplanations?: SortOrder
+    sessionsCount?: SortOrder
+    confidence?: SortOrder
+    lastSeenAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: SkillCountOrderByAggregateInput
+    _avg?: SkillAvgOrderByAggregateInput
+    _max?: SkillMaxOrderByAggregateInput
+    _min?: SkillMinOrderByAggregateInput
+    _sum?: SkillSumOrderByAggregateInput
+  }
+
+  export type SkillScalarWhereWithAggregatesInput = {
+    AND?: SkillScalarWhereWithAggregatesInput | SkillScalarWhereWithAggregatesInput[]
+    OR?: SkillScalarWhereWithAggregatesInput[]
+    NOT?: SkillScalarWhereWithAggregatesInput | SkillScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Skill"> | string
+    userId?: StringWithAggregatesFilter<"Skill"> | string
+    concept?: StringWithAggregatesFilter<"Skill"> | string
+    language?: StringNullableWithAggregatesFilter<"Skill"> | string | null
+    totalExplanations?: IntWithAggregatesFilter<"Skill"> | number
+    sessionsCount?: IntWithAggregatesFilter<"Skill"> | number
+    confidence?: IntWithAggregatesFilter<"Skill"> | number
+    lastSeenAt?: DateTimeWithAggregatesFilter<"Skill"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"Skill"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Skill"> | Date | string
+  }
+
+  export type SkillGoalWhereInput = {
+    AND?: SkillGoalWhereInput | SkillGoalWhereInput[]
+    OR?: SkillGoalWhereInput[]
+    NOT?: SkillGoalWhereInput | SkillGoalWhereInput[]
+    id?: StringFilter<"SkillGoal"> | string
+    userId?: StringFilter<"SkillGoal"> | string
+    skillId?: StringNullableFilter<"SkillGoal"> | string | null
+    conceptName?: StringFilter<"SkillGoal"> | string
+    targetConfidence?: IntFilter<"SkillGoal"> | number
+    currentProgress?: IntFilter<"SkillGoal"> | number
+    deadline?: DateTimeNullableFilter<"SkillGoal"> | Date | string | null
+    status?: EnumGoalStatusFilter<"SkillGoal"> | $Enums.GoalStatus
+    createdAt?: DateTimeFilter<"SkillGoal"> | Date | string
+    updatedAt?: DateTimeFilter<"SkillGoal"> | Date | string
+    user?: XOR<UserRelationFilter, UserWhereInput>
+    skill?: XOR<SkillNullableRelationFilter, SkillWhereInput> | null
+  }
+
+  export type SkillGoalOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    skillId?: SortOrderInput | SortOrder
+    conceptName?: SortOrder
+    targetConfidence?: SortOrder
+    currentProgress?: SortOrder
+    deadline?: SortOrderInput | SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+    skill?: SkillOrderByWithRelationInput
+  }
+
+  export type SkillGoalWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: SkillGoalWhereInput | SkillGoalWhereInput[]
+    OR?: SkillGoalWhereInput[]
+    NOT?: SkillGoalWhereInput | SkillGoalWhereInput[]
+    userId?: StringFilter<"SkillGoal"> | string
+    skillId?: StringNullableFilter<"SkillGoal"> | string | null
+    conceptName?: StringFilter<"SkillGoal"> | string
+    targetConfidence?: IntFilter<"SkillGoal"> | number
+    currentProgress?: IntFilter<"SkillGoal"> | number
+    deadline?: DateTimeNullableFilter<"SkillGoal"> | Date | string | null
+    status?: EnumGoalStatusFilter<"SkillGoal"> | $Enums.GoalStatus
+    createdAt?: DateTimeFilter<"SkillGoal"> | Date | string
+    updatedAt?: DateTimeFilter<"SkillGoal"> | Date | string
+    user?: XOR<UserRelationFilter, UserWhereInput>
+    skill?: XOR<SkillNullableRelationFilter, SkillWhereInput> | null
+  }, "id">
+
+  export type SkillGoalOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    skillId?: SortOrderInput | SortOrder
+    conceptName?: SortOrder
+    targetConfidence?: SortOrder
+    currentProgress?: SortOrder
+    deadline?: SortOrderInput | SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: SkillGoalCountOrderByAggregateInput
+    _avg?: SkillGoalAvgOrderByAggregateInput
+    _max?: SkillGoalMaxOrderByAggregateInput
+    _min?: SkillGoalMinOrderByAggregateInput
+    _sum?: SkillGoalSumOrderByAggregateInput
+  }
+
+  export type SkillGoalScalarWhereWithAggregatesInput = {
+    AND?: SkillGoalScalarWhereWithAggregatesInput | SkillGoalScalarWhereWithAggregatesInput[]
+    OR?: SkillGoalScalarWhereWithAggregatesInput[]
+    NOT?: SkillGoalScalarWhereWithAggregatesInput | SkillGoalScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"SkillGoal"> | string
+    userId?: StringWithAggregatesFilter<"SkillGoal"> | string
+    skillId?: StringNullableWithAggregatesFilter<"SkillGoal"> | string | null
+    conceptName?: StringWithAggregatesFilter<"SkillGoal"> | string
+    targetConfidence?: IntWithAggregatesFilter<"SkillGoal"> | number
+    currentProgress?: IntWithAggregatesFilter<"SkillGoal"> | number
+    deadline?: DateTimeNullableWithAggregatesFilter<"SkillGoal"> | Date | string | null
+    status?: EnumGoalStatusWithAggregatesFilter<"SkillGoal"> | $Enums.GoalStatus
+    createdAt?: DateTimeWithAggregatesFilter<"SkillGoal"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"SkillGoal"> | Date | string
+  }
+
   export type UserCreateInput = {
     id?: string
     email: string
@@ -13824,6 +17609,9 @@ export namespace Prisma {
     featureVotes?: FeatureVoteCreateNestedManyWithoutUserInput
     featureComments?: FeatureCommentCreateNestedManyWithoutUserInput
     commentReactions?: CommentReactionCreateNestedManyWithoutUserInput
+    explanations?: ExplanationCreateNestedManyWithoutUserInput
+    skills?: SkillCreateNestedManyWithoutUserInput
+    skillGoals?: SkillGoalCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -13845,6 +17633,9 @@ export namespace Prisma {
     featureVotes?: FeatureVoteUncheckedCreateNestedManyWithoutUserInput
     featureComments?: FeatureCommentUncheckedCreateNestedManyWithoutUserInput
     commentReactions?: CommentReactionUncheckedCreateNestedManyWithoutUserInput
+    explanations?: ExplanationUncheckedCreateNestedManyWithoutUserInput
+    skills?: SkillUncheckedCreateNestedManyWithoutUserInput
+    skillGoals?: SkillGoalUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -13866,6 +17657,9 @@ export namespace Prisma {
     featureVotes?: FeatureVoteUpdateManyWithoutUserNestedInput
     featureComments?: FeatureCommentUpdateManyWithoutUserNestedInput
     commentReactions?: CommentReactionUpdateManyWithoutUserNestedInput
+    explanations?: ExplanationUpdateManyWithoutUserNestedInput
+    skills?: SkillUpdateManyWithoutUserNestedInput
+    skillGoals?: SkillGoalUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -13887,6 +17681,9 @@ export namespace Prisma {
     featureVotes?: FeatureVoteUncheckedUpdateManyWithoutUserNestedInput
     featureComments?: FeatureCommentUncheckedUpdateManyWithoutUserNestedInput
     commentReactions?: CommentReactionUncheckedUpdateManyWithoutUserNestedInput
+    explanations?: ExplanationUncheckedUpdateManyWithoutUserNestedInput
+    skills?: SkillUncheckedUpdateManyWithoutUserNestedInput
+    skillGoals?: SkillGoalUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -14614,6 +18411,258 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ExplanationCreateInput = {
+    id?: string
+    sessionId?: string | null
+    language?: string | null
+    concepts?: ExplanationCreateconceptsInput | string[]
+    interactionType: string
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutExplanationsInput
+  }
+
+  export type ExplanationUncheckedCreateInput = {
+    id?: string
+    userId: string
+    sessionId?: string | null
+    language?: string | null
+    concepts?: ExplanationCreateconceptsInput | string[]
+    interactionType: string
+    createdAt?: Date | string
+  }
+
+  export type ExplanationUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: NullableStringFieldUpdateOperationsInput | string | null
+    concepts?: ExplanationUpdateconceptsInput | string[]
+    interactionType?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutExplanationsNestedInput
+  }
+
+  export type ExplanationUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: NullableStringFieldUpdateOperationsInput | string | null
+    concepts?: ExplanationUpdateconceptsInput | string[]
+    interactionType?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExplanationCreateManyInput = {
+    id?: string
+    userId: string
+    sessionId?: string | null
+    language?: string | null
+    concepts?: ExplanationCreateconceptsInput | string[]
+    interactionType: string
+    createdAt?: Date | string
+  }
+
+  export type ExplanationUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: NullableStringFieldUpdateOperationsInput | string | null
+    concepts?: ExplanationUpdateconceptsInput | string[]
+    interactionType?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExplanationUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: NullableStringFieldUpdateOperationsInput | string | null
+    concepts?: ExplanationUpdateconceptsInput | string[]
+    interactionType?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SkillCreateInput = {
+    id?: string
+    concept: string
+    language?: string | null
+    totalExplanations?: number
+    sessionsCount?: number
+    confidence?: number
+    lastSeenAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutSkillsInput
+    goals?: SkillGoalCreateNestedManyWithoutSkillInput
+  }
+
+  export type SkillUncheckedCreateInput = {
+    id?: string
+    userId: string
+    concept: string
+    language?: string | null
+    totalExplanations?: number
+    sessionsCount?: number
+    confidence?: number
+    lastSeenAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    goals?: SkillGoalUncheckedCreateNestedManyWithoutSkillInput
+  }
+
+  export type SkillUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    concept?: StringFieldUpdateOperationsInput | string
+    language?: NullableStringFieldUpdateOperationsInput | string | null
+    totalExplanations?: IntFieldUpdateOperationsInput | number
+    sessionsCount?: IntFieldUpdateOperationsInput | number
+    confidence?: IntFieldUpdateOperationsInput | number
+    lastSeenAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutSkillsNestedInput
+    goals?: SkillGoalUpdateManyWithoutSkillNestedInput
+  }
+
+  export type SkillUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    concept?: StringFieldUpdateOperationsInput | string
+    language?: NullableStringFieldUpdateOperationsInput | string | null
+    totalExplanations?: IntFieldUpdateOperationsInput | number
+    sessionsCount?: IntFieldUpdateOperationsInput | number
+    confidence?: IntFieldUpdateOperationsInput | number
+    lastSeenAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    goals?: SkillGoalUncheckedUpdateManyWithoutSkillNestedInput
+  }
+
+  export type SkillCreateManyInput = {
+    id?: string
+    userId: string
+    concept: string
+    language?: string | null
+    totalExplanations?: number
+    sessionsCount?: number
+    confidence?: number
+    lastSeenAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SkillUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    concept?: StringFieldUpdateOperationsInput | string
+    language?: NullableStringFieldUpdateOperationsInput | string | null
+    totalExplanations?: IntFieldUpdateOperationsInput | number
+    sessionsCount?: IntFieldUpdateOperationsInput | number
+    confidence?: IntFieldUpdateOperationsInput | number
+    lastSeenAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SkillUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    concept?: StringFieldUpdateOperationsInput | string
+    language?: NullableStringFieldUpdateOperationsInput | string | null
+    totalExplanations?: IntFieldUpdateOperationsInput | number
+    sessionsCount?: IntFieldUpdateOperationsInput | number
+    confidence?: IntFieldUpdateOperationsInput | number
+    lastSeenAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SkillGoalCreateInput = {
+    id?: string
+    conceptName: string
+    targetConfidence?: number
+    currentProgress?: number
+    deadline?: Date | string | null
+    status?: $Enums.GoalStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutSkillGoalsInput
+    skill?: SkillCreateNestedOneWithoutGoalsInput
+  }
+
+  export type SkillGoalUncheckedCreateInput = {
+    id?: string
+    userId: string
+    skillId?: string | null
+    conceptName: string
+    targetConfidence?: number
+    currentProgress?: number
+    deadline?: Date | string | null
+    status?: $Enums.GoalStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SkillGoalUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conceptName?: StringFieldUpdateOperationsInput | string
+    targetConfidence?: IntFieldUpdateOperationsInput | number
+    currentProgress?: IntFieldUpdateOperationsInput | number
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumGoalStatusFieldUpdateOperationsInput | $Enums.GoalStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutSkillGoalsNestedInput
+    skill?: SkillUpdateOneWithoutGoalsNestedInput
+  }
+
+  export type SkillGoalUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    skillId?: NullableStringFieldUpdateOperationsInput | string | null
+    conceptName?: StringFieldUpdateOperationsInput | string
+    targetConfidence?: IntFieldUpdateOperationsInput | number
+    currentProgress?: IntFieldUpdateOperationsInput | number
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumGoalStatusFieldUpdateOperationsInput | $Enums.GoalStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SkillGoalCreateManyInput = {
+    id?: string
+    userId: string
+    skillId?: string | null
+    conceptName: string
+    targetConfidence?: number
+    currentProgress?: number
+    deadline?: Date | string | null
+    status?: $Enums.GoalStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SkillGoalUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conceptName?: StringFieldUpdateOperationsInput | string
+    targetConfidence?: IntFieldUpdateOperationsInput | number
+    currentProgress?: IntFieldUpdateOperationsInput | number
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumGoalStatusFieldUpdateOperationsInput | $Enums.GoalStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SkillGoalUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    skillId?: NullableStringFieldUpdateOperationsInput | string | null
+    conceptName?: StringFieldUpdateOperationsInput | string
+    targetConfidence?: IntFieldUpdateOperationsInput | number
+    currentProgress?: IntFieldUpdateOperationsInput | number
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumGoalStatusFieldUpdateOperationsInput | $Enums.GoalStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -14714,6 +18763,24 @@ export namespace Prisma {
     none?: CommentReactionWhereInput
   }
 
+  export type ExplanationListRelationFilter = {
+    every?: ExplanationWhereInput
+    some?: ExplanationWhereInput
+    none?: ExplanationWhereInput
+  }
+
+  export type SkillListRelationFilter = {
+    every?: SkillWhereInput
+    some?: SkillWhereInput
+    none?: SkillWhereInput
+  }
+
+  export type SkillGoalListRelationFilter = {
+    every?: SkillGoalWhereInput
+    some?: SkillGoalWhereInput
+    none?: SkillGoalWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -14752,6 +18819,18 @@ export namespace Prisma {
   }
 
   export type CommentReactionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ExplanationOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type SkillOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type SkillGoalOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -15293,6 +19372,196 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
+  export type StringNullableListFilter<$PrismaModel = never> = {
+    equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    has?: string | StringFieldRefInput<$PrismaModel> | null
+    hasEvery?: string[] | ListStringFieldRefInput<$PrismaModel>
+    hasSome?: string[] | ListStringFieldRefInput<$PrismaModel>
+    isEmpty?: boolean
+  }
+
+  export type ExplanationCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    sessionId?: SortOrder
+    language?: SortOrder
+    concepts?: SortOrder
+    interactionType?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ExplanationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    sessionId?: SortOrder
+    language?: SortOrder
+    interactionType?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ExplanationMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    sessionId?: SortOrder
+    language?: SortOrder
+    interactionType?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type SkillUserIdConceptCompoundUniqueInput = {
+    userId: string
+    concept: string
+  }
+
+  export type SkillCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    concept?: SortOrder
+    language?: SortOrder
+    totalExplanations?: SortOrder
+    sessionsCount?: SortOrder
+    confidence?: SortOrder
+    lastSeenAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SkillAvgOrderByAggregateInput = {
+    totalExplanations?: SortOrder
+    sessionsCount?: SortOrder
+    confidence?: SortOrder
+  }
+
+  export type SkillMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    concept?: SortOrder
+    language?: SortOrder
+    totalExplanations?: SortOrder
+    sessionsCount?: SortOrder
+    confidence?: SortOrder
+    lastSeenAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SkillMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    concept?: SortOrder
+    language?: SortOrder
+    totalExplanations?: SortOrder
+    sessionsCount?: SortOrder
+    confidence?: SortOrder
+    lastSeenAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SkillSumOrderByAggregateInput = {
+    totalExplanations?: SortOrder
+    sessionsCount?: SortOrder
+    confidence?: SortOrder
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type EnumGoalStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.GoalStatus | EnumGoalStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.GoalStatus[] | ListEnumGoalStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.GoalStatus[] | ListEnumGoalStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumGoalStatusFilter<$PrismaModel> | $Enums.GoalStatus
+  }
+
+  export type SkillNullableRelationFilter = {
+    is?: SkillWhereInput | null
+    isNot?: SkillWhereInput | null
+  }
+
+  export type SkillGoalCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    skillId?: SortOrder
+    conceptName?: SortOrder
+    targetConfidence?: SortOrder
+    currentProgress?: SortOrder
+    deadline?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SkillGoalAvgOrderByAggregateInput = {
+    targetConfidence?: SortOrder
+    currentProgress?: SortOrder
+  }
+
+  export type SkillGoalMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    skillId?: SortOrder
+    conceptName?: SortOrder
+    targetConfidence?: SortOrder
+    currentProgress?: SortOrder
+    deadline?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SkillGoalMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    skillId?: SortOrder
+    conceptName?: SortOrder
+    targetConfidence?: SortOrder
+    currentProgress?: SortOrder
+    deadline?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SkillGoalSumOrderByAggregateInput = {
+    targetConfidence?: SortOrder
+    currentProgress?: SortOrder
+  }
+
+  export type EnumGoalStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.GoalStatus | EnumGoalStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.GoalStatus[] | ListEnumGoalStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.GoalStatus[] | ListEnumGoalStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumGoalStatusWithAggregatesFilter<$PrismaModel> | $Enums.GoalStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumGoalStatusFilter<$PrismaModel>
+    _max?: NestedEnumGoalStatusFilter<$PrismaModel>
+  }
+
   export type SessionCreateNestedManyWithoutUserInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -15356,6 +19625,27 @@ export namespace Prisma {
     connect?: CommentReactionWhereUniqueInput | CommentReactionWhereUniqueInput[]
   }
 
+  export type ExplanationCreateNestedManyWithoutUserInput = {
+    create?: XOR<ExplanationCreateWithoutUserInput, ExplanationUncheckedCreateWithoutUserInput> | ExplanationCreateWithoutUserInput[] | ExplanationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ExplanationCreateOrConnectWithoutUserInput | ExplanationCreateOrConnectWithoutUserInput[]
+    createMany?: ExplanationCreateManyUserInputEnvelope
+    connect?: ExplanationWhereUniqueInput | ExplanationWhereUniqueInput[]
+  }
+
+  export type SkillCreateNestedManyWithoutUserInput = {
+    create?: XOR<SkillCreateWithoutUserInput, SkillUncheckedCreateWithoutUserInput> | SkillCreateWithoutUserInput[] | SkillUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SkillCreateOrConnectWithoutUserInput | SkillCreateOrConnectWithoutUserInput[]
+    createMany?: SkillCreateManyUserInputEnvelope
+    connect?: SkillWhereUniqueInput | SkillWhereUniqueInput[]
+  }
+
+  export type SkillGoalCreateNestedManyWithoutUserInput = {
+    create?: XOR<SkillGoalCreateWithoutUserInput, SkillGoalUncheckedCreateWithoutUserInput> | SkillGoalCreateWithoutUserInput[] | SkillGoalUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SkillGoalCreateOrConnectWithoutUserInput | SkillGoalCreateOrConnectWithoutUserInput[]
+    createMany?: SkillGoalCreateManyUserInputEnvelope
+    connect?: SkillGoalWhereUniqueInput | SkillGoalWhereUniqueInput[]
+  }
+
   export type SessionUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -15417,6 +19707,27 @@ export namespace Prisma {
     connectOrCreate?: CommentReactionCreateOrConnectWithoutUserInput | CommentReactionCreateOrConnectWithoutUserInput[]
     createMany?: CommentReactionCreateManyUserInputEnvelope
     connect?: CommentReactionWhereUniqueInput | CommentReactionWhereUniqueInput[]
+  }
+
+  export type ExplanationUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<ExplanationCreateWithoutUserInput, ExplanationUncheckedCreateWithoutUserInput> | ExplanationCreateWithoutUserInput[] | ExplanationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ExplanationCreateOrConnectWithoutUserInput | ExplanationCreateOrConnectWithoutUserInput[]
+    createMany?: ExplanationCreateManyUserInputEnvelope
+    connect?: ExplanationWhereUniqueInput | ExplanationWhereUniqueInput[]
+  }
+
+  export type SkillUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<SkillCreateWithoutUserInput, SkillUncheckedCreateWithoutUserInput> | SkillCreateWithoutUserInput[] | SkillUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SkillCreateOrConnectWithoutUserInput | SkillCreateOrConnectWithoutUserInput[]
+    createMany?: SkillCreateManyUserInputEnvelope
+    connect?: SkillWhereUniqueInput | SkillWhereUniqueInput[]
+  }
+
+  export type SkillGoalUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<SkillGoalCreateWithoutUserInput, SkillGoalUncheckedCreateWithoutUserInput> | SkillGoalCreateWithoutUserInput[] | SkillGoalUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SkillGoalCreateOrConnectWithoutUserInput | SkillGoalCreateOrConnectWithoutUserInput[]
+    createMany?: SkillGoalCreateManyUserInputEnvelope
+    connect?: SkillGoalWhereUniqueInput | SkillGoalWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -15561,6 +19872,48 @@ export namespace Prisma {
     deleteMany?: CommentReactionScalarWhereInput | CommentReactionScalarWhereInput[]
   }
 
+  export type ExplanationUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ExplanationCreateWithoutUserInput, ExplanationUncheckedCreateWithoutUserInput> | ExplanationCreateWithoutUserInput[] | ExplanationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ExplanationCreateOrConnectWithoutUserInput | ExplanationCreateOrConnectWithoutUserInput[]
+    upsert?: ExplanationUpsertWithWhereUniqueWithoutUserInput | ExplanationUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ExplanationCreateManyUserInputEnvelope
+    set?: ExplanationWhereUniqueInput | ExplanationWhereUniqueInput[]
+    disconnect?: ExplanationWhereUniqueInput | ExplanationWhereUniqueInput[]
+    delete?: ExplanationWhereUniqueInput | ExplanationWhereUniqueInput[]
+    connect?: ExplanationWhereUniqueInput | ExplanationWhereUniqueInput[]
+    update?: ExplanationUpdateWithWhereUniqueWithoutUserInput | ExplanationUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ExplanationUpdateManyWithWhereWithoutUserInput | ExplanationUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ExplanationScalarWhereInput | ExplanationScalarWhereInput[]
+  }
+
+  export type SkillUpdateManyWithoutUserNestedInput = {
+    create?: XOR<SkillCreateWithoutUserInput, SkillUncheckedCreateWithoutUserInput> | SkillCreateWithoutUserInput[] | SkillUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SkillCreateOrConnectWithoutUserInput | SkillCreateOrConnectWithoutUserInput[]
+    upsert?: SkillUpsertWithWhereUniqueWithoutUserInput | SkillUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: SkillCreateManyUserInputEnvelope
+    set?: SkillWhereUniqueInput | SkillWhereUniqueInput[]
+    disconnect?: SkillWhereUniqueInput | SkillWhereUniqueInput[]
+    delete?: SkillWhereUniqueInput | SkillWhereUniqueInput[]
+    connect?: SkillWhereUniqueInput | SkillWhereUniqueInput[]
+    update?: SkillUpdateWithWhereUniqueWithoutUserInput | SkillUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: SkillUpdateManyWithWhereWithoutUserInput | SkillUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: SkillScalarWhereInput | SkillScalarWhereInput[]
+  }
+
+  export type SkillGoalUpdateManyWithoutUserNestedInput = {
+    create?: XOR<SkillGoalCreateWithoutUserInput, SkillGoalUncheckedCreateWithoutUserInput> | SkillGoalCreateWithoutUserInput[] | SkillGoalUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SkillGoalCreateOrConnectWithoutUserInput | SkillGoalCreateOrConnectWithoutUserInput[]
+    upsert?: SkillGoalUpsertWithWhereUniqueWithoutUserInput | SkillGoalUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: SkillGoalCreateManyUserInputEnvelope
+    set?: SkillGoalWhereUniqueInput | SkillGoalWhereUniqueInput[]
+    disconnect?: SkillGoalWhereUniqueInput | SkillGoalWhereUniqueInput[]
+    delete?: SkillGoalWhereUniqueInput | SkillGoalWhereUniqueInput[]
+    connect?: SkillGoalWhereUniqueInput | SkillGoalWhereUniqueInput[]
+    update?: SkillGoalUpdateWithWhereUniqueWithoutUserInput | SkillGoalUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: SkillGoalUpdateManyWithWhereWithoutUserInput | SkillGoalUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: SkillGoalScalarWhereInput | SkillGoalScalarWhereInput[]
+  }
+
   export type SessionUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -15685,6 +20038,48 @@ export namespace Prisma {
     update?: CommentReactionUpdateWithWhereUniqueWithoutUserInput | CommentReactionUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: CommentReactionUpdateManyWithWhereWithoutUserInput | CommentReactionUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: CommentReactionScalarWhereInput | CommentReactionScalarWhereInput[]
+  }
+
+  export type ExplanationUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ExplanationCreateWithoutUserInput, ExplanationUncheckedCreateWithoutUserInput> | ExplanationCreateWithoutUserInput[] | ExplanationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ExplanationCreateOrConnectWithoutUserInput | ExplanationCreateOrConnectWithoutUserInput[]
+    upsert?: ExplanationUpsertWithWhereUniqueWithoutUserInput | ExplanationUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ExplanationCreateManyUserInputEnvelope
+    set?: ExplanationWhereUniqueInput | ExplanationWhereUniqueInput[]
+    disconnect?: ExplanationWhereUniqueInput | ExplanationWhereUniqueInput[]
+    delete?: ExplanationWhereUniqueInput | ExplanationWhereUniqueInput[]
+    connect?: ExplanationWhereUniqueInput | ExplanationWhereUniqueInput[]
+    update?: ExplanationUpdateWithWhereUniqueWithoutUserInput | ExplanationUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ExplanationUpdateManyWithWhereWithoutUserInput | ExplanationUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ExplanationScalarWhereInput | ExplanationScalarWhereInput[]
+  }
+
+  export type SkillUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<SkillCreateWithoutUserInput, SkillUncheckedCreateWithoutUserInput> | SkillCreateWithoutUserInput[] | SkillUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SkillCreateOrConnectWithoutUserInput | SkillCreateOrConnectWithoutUserInput[]
+    upsert?: SkillUpsertWithWhereUniqueWithoutUserInput | SkillUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: SkillCreateManyUserInputEnvelope
+    set?: SkillWhereUniqueInput | SkillWhereUniqueInput[]
+    disconnect?: SkillWhereUniqueInput | SkillWhereUniqueInput[]
+    delete?: SkillWhereUniqueInput | SkillWhereUniqueInput[]
+    connect?: SkillWhereUniqueInput | SkillWhereUniqueInput[]
+    update?: SkillUpdateWithWhereUniqueWithoutUserInput | SkillUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: SkillUpdateManyWithWhereWithoutUserInput | SkillUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: SkillScalarWhereInput | SkillScalarWhereInput[]
+  }
+
+  export type SkillGoalUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<SkillGoalCreateWithoutUserInput, SkillGoalUncheckedCreateWithoutUserInput> | SkillGoalCreateWithoutUserInput[] | SkillGoalUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SkillGoalCreateOrConnectWithoutUserInput | SkillGoalCreateOrConnectWithoutUserInput[]
+    upsert?: SkillGoalUpsertWithWhereUniqueWithoutUserInput | SkillGoalUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: SkillGoalCreateManyUserInputEnvelope
+    set?: SkillGoalWhereUniqueInput | SkillGoalWhereUniqueInput[]
+    disconnect?: SkillGoalWhereUniqueInput | SkillGoalWhereUniqueInput[]
+    delete?: SkillGoalWhereUniqueInput | SkillGoalWhereUniqueInput[]
+    connect?: SkillGoalWhereUniqueInput | SkillGoalWhereUniqueInput[]
+    update?: SkillGoalUpdateWithWhereUniqueWithoutUserInput | SkillGoalUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: SkillGoalUpdateManyWithWhereWithoutUserInput | SkillGoalUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: SkillGoalScalarWhereInput | SkillGoalScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutSessionsInput = {
@@ -16053,6 +20448,127 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCommentReactionsInput, UserUpdateWithoutCommentReactionsInput>, UserUncheckedUpdateWithoutCommentReactionsInput>
   }
 
+  export type ExplanationCreateconceptsInput = {
+    set: string[]
+  }
+
+  export type UserCreateNestedOneWithoutExplanationsInput = {
+    create?: XOR<UserCreateWithoutExplanationsInput, UserUncheckedCreateWithoutExplanationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutExplanationsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type ExplanationUpdateconceptsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type UserUpdateOneRequiredWithoutExplanationsNestedInput = {
+    create?: XOR<UserCreateWithoutExplanationsInput, UserUncheckedCreateWithoutExplanationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutExplanationsInput
+    upsert?: UserUpsertWithoutExplanationsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutExplanationsInput, UserUpdateWithoutExplanationsInput>, UserUncheckedUpdateWithoutExplanationsInput>
+  }
+
+  export type UserCreateNestedOneWithoutSkillsInput = {
+    create?: XOR<UserCreateWithoutSkillsInput, UserUncheckedCreateWithoutSkillsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSkillsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type SkillGoalCreateNestedManyWithoutSkillInput = {
+    create?: XOR<SkillGoalCreateWithoutSkillInput, SkillGoalUncheckedCreateWithoutSkillInput> | SkillGoalCreateWithoutSkillInput[] | SkillGoalUncheckedCreateWithoutSkillInput[]
+    connectOrCreate?: SkillGoalCreateOrConnectWithoutSkillInput | SkillGoalCreateOrConnectWithoutSkillInput[]
+    createMany?: SkillGoalCreateManySkillInputEnvelope
+    connect?: SkillGoalWhereUniqueInput | SkillGoalWhereUniqueInput[]
+  }
+
+  export type SkillGoalUncheckedCreateNestedManyWithoutSkillInput = {
+    create?: XOR<SkillGoalCreateWithoutSkillInput, SkillGoalUncheckedCreateWithoutSkillInput> | SkillGoalCreateWithoutSkillInput[] | SkillGoalUncheckedCreateWithoutSkillInput[]
+    connectOrCreate?: SkillGoalCreateOrConnectWithoutSkillInput | SkillGoalCreateOrConnectWithoutSkillInput[]
+    createMany?: SkillGoalCreateManySkillInputEnvelope
+    connect?: SkillGoalWhereUniqueInput | SkillGoalWhereUniqueInput[]
+  }
+
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type UserUpdateOneRequiredWithoutSkillsNestedInput = {
+    create?: XOR<UserCreateWithoutSkillsInput, UserUncheckedCreateWithoutSkillsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSkillsInput
+    upsert?: UserUpsertWithoutSkillsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSkillsInput, UserUpdateWithoutSkillsInput>, UserUncheckedUpdateWithoutSkillsInput>
+  }
+
+  export type SkillGoalUpdateManyWithoutSkillNestedInput = {
+    create?: XOR<SkillGoalCreateWithoutSkillInput, SkillGoalUncheckedCreateWithoutSkillInput> | SkillGoalCreateWithoutSkillInput[] | SkillGoalUncheckedCreateWithoutSkillInput[]
+    connectOrCreate?: SkillGoalCreateOrConnectWithoutSkillInput | SkillGoalCreateOrConnectWithoutSkillInput[]
+    upsert?: SkillGoalUpsertWithWhereUniqueWithoutSkillInput | SkillGoalUpsertWithWhereUniqueWithoutSkillInput[]
+    createMany?: SkillGoalCreateManySkillInputEnvelope
+    set?: SkillGoalWhereUniqueInput | SkillGoalWhereUniqueInput[]
+    disconnect?: SkillGoalWhereUniqueInput | SkillGoalWhereUniqueInput[]
+    delete?: SkillGoalWhereUniqueInput | SkillGoalWhereUniqueInput[]
+    connect?: SkillGoalWhereUniqueInput | SkillGoalWhereUniqueInput[]
+    update?: SkillGoalUpdateWithWhereUniqueWithoutSkillInput | SkillGoalUpdateWithWhereUniqueWithoutSkillInput[]
+    updateMany?: SkillGoalUpdateManyWithWhereWithoutSkillInput | SkillGoalUpdateManyWithWhereWithoutSkillInput[]
+    deleteMany?: SkillGoalScalarWhereInput | SkillGoalScalarWhereInput[]
+  }
+
+  export type SkillGoalUncheckedUpdateManyWithoutSkillNestedInput = {
+    create?: XOR<SkillGoalCreateWithoutSkillInput, SkillGoalUncheckedCreateWithoutSkillInput> | SkillGoalCreateWithoutSkillInput[] | SkillGoalUncheckedCreateWithoutSkillInput[]
+    connectOrCreate?: SkillGoalCreateOrConnectWithoutSkillInput | SkillGoalCreateOrConnectWithoutSkillInput[]
+    upsert?: SkillGoalUpsertWithWhereUniqueWithoutSkillInput | SkillGoalUpsertWithWhereUniqueWithoutSkillInput[]
+    createMany?: SkillGoalCreateManySkillInputEnvelope
+    set?: SkillGoalWhereUniqueInput | SkillGoalWhereUniqueInput[]
+    disconnect?: SkillGoalWhereUniqueInput | SkillGoalWhereUniqueInput[]
+    delete?: SkillGoalWhereUniqueInput | SkillGoalWhereUniqueInput[]
+    connect?: SkillGoalWhereUniqueInput | SkillGoalWhereUniqueInput[]
+    update?: SkillGoalUpdateWithWhereUniqueWithoutSkillInput | SkillGoalUpdateWithWhereUniqueWithoutSkillInput[]
+    updateMany?: SkillGoalUpdateManyWithWhereWithoutSkillInput | SkillGoalUpdateManyWithWhereWithoutSkillInput[]
+    deleteMany?: SkillGoalScalarWhereInput | SkillGoalScalarWhereInput[]
+  }
+
+  export type UserCreateNestedOneWithoutSkillGoalsInput = {
+    create?: XOR<UserCreateWithoutSkillGoalsInput, UserUncheckedCreateWithoutSkillGoalsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSkillGoalsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type SkillCreateNestedOneWithoutGoalsInput = {
+    create?: XOR<SkillCreateWithoutGoalsInput, SkillUncheckedCreateWithoutGoalsInput>
+    connectOrCreate?: SkillCreateOrConnectWithoutGoalsInput
+    connect?: SkillWhereUniqueInput
+  }
+
+  export type EnumGoalStatusFieldUpdateOperationsInput = {
+    set?: $Enums.GoalStatus
+  }
+
+  export type UserUpdateOneRequiredWithoutSkillGoalsNestedInput = {
+    create?: XOR<UserCreateWithoutSkillGoalsInput, UserUncheckedCreateWithoutSkillGoalsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSkillGoalsInput
+    upsert?: UserUpsertWithoutSkillGoalsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSkillGoalsInput, UserUpdateWithoutSkillGoalsInput>, UserUncheckedUpdateWithoutSkillGoalsInput>
+  }
+
+  export type SkillUpdateOneWithoutGoalsNestedInput = {
+    create?: XOR<SkillCreateWithoutGoalsInput, SkillUncheckedCreateWithoutGoalsInput>
+    connectOrCreate?: SkillCreateOrConnectWithoutGoalsInput
+    upsert?: SkillUpsertWithoutGoalsInput
+    disconnect?: SkillWhereInput | boolean
+    delete?: SkillWhereInput | boolean
+    connect?: SkillWhereUniqueInput
+    update?: XOR<XOR<SkillUpdateToOneWithWhereWithoutGoalsInput, SkillUpdateWithoutGoalsInput>, SkillUncheckedUpdateWithoutGoalsInput>
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -16254,6 +20770,50 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumFeatureTagFilter<$PrismaModel>
     _max?: NestedEnumFeatureTagFilter<$PrismaModel>
+  }
+
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type NestedEnumGoalStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.GoalStatus | EnumGoalStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.GoalStatus[] | ListEnumGoalStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.GoalStatus[] | ListEnumGoalStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumGoalStatusFilter<$PrismaModel> | $Enums.GoalStatus
+  }
+
+  export type NestedEnumGoalStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.GoalStatus | EnumGoalStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.GoalStatus[] | ListEnumGoalStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.GoalStatus[] | ListEnumGoalStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumGoalStatusWithAggregatesFilter<$PrismaModel> | $Enums.GoalStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumGoalStatusFilter<$PrismaModel>
+    _max?: NestedEnumGoalStatusFilter<$PrismaModel>
   }
 
   export type SessionCreateWithoutUserInput = {
@@ -16511,6 +21071,104 @@ export namespace Prisma {
 
   export type CommentReactionCreateManyUserInputEnvelope = {
     data: CommentReactionCreateManyUserInput | CommentReactionCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ExplanationCreateWithoutUserInput = {
+    id?: string
+    sessionId?: string | null
+    language?: string | null
+    concepts?: ExplanationCreateconceptsInput | string[]
+    interactionType: string
+    createdAt?: Date | string
+  }
+
+  export type ExplanationUncheckedCreateWithoutUserInput = {
+    id?: string
+    sessionId?: string | null
+    language?: string | null
+    concepts?: ExplanationCreateconceptsInput | string[]
+    interactionType: string
+    createdAt?: Date | string
+  }
+
+  export type ExplanationCreateOrConnectWithoutUserInput = {
+    where: ExplanationWhereUniqueInput
+    create: XOR<ExplanationCreateWithoutUserInput, ExplanationUncheckedCreateWithoutUserInput>
+  }
+
+  export type ExplanationCreateManyUserInputEnvelope = {
+    data: ExplanationCreateManyUserInput | ExplanationCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SkillCreateWithoutUserInput = {
+    id?: string
+    concept: string
+    language?: string | null
+    totalExplanations?: number
+    sessionsCount?: number
+    confidence?: number
+    lastSeenAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    goals?: SkillGoalCreateNestedManyWithoutSkillInput
+  }
+
+  export type SkillUncheckedCreateWithoutUserInput = {
+    id?: string
+    concept: string
+    language?: string | null
+    totalExplanations?: number
+    sessionsCount?: number
+    confidence?: number
+    lastSeenAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    goals?: SkillGoalUncheckedCreateNestedManyWithoutSkillInput
+  }
+
+  export type SkillCreateOrConnectWithoutUserInput = {
+    where: SkillWhereUniqueInput
+    create: XOR<SkillCreateWithoutUserInput, SkillUncheckedCreateWithoutUserInput>
+  }
+
+  export type SkillCreateManyUserInputEnvelope = {
+    data: SkillCreateManyUserInput | SkillCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SkillGoalCreateWithoutUserInput = {
+    id?: string
+    conceptName: string
+    targetConfidence?: number
+    currentProgress?: number
+    deadline?: Date | string | null
+    status?: $Enums.GoalStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    skill?: SkillCreateNestedOneWithoutGoalsInput
+  }
+
+  export type SkillGoalUncheckedCreateWithoutUserInput = {
+    id?: string
+    skillId?: string | null
+    conceptName: string
+    targetConfidence?: number
+    currentProgress?: number
+    deadline?: Date | string | null
+    status?: $Enums.GoalStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SkillGoalCreateOrConnectWithoutUserInput = {
+    where: SkillGoalWhereUniqueInput
+    create: XOR<SkillGoalCreateWithoutUserInput, SkillGoalUncheckedCreateWithoutUserInput>
+  }
+
+  export type SkillGoalCreateManyUserInputEnvelope = {
+    data: SkillGoalCreateManyUserInput | SkillGoalCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -16774,6 +21432,99 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"CommentReaction"> | Date | string
   }
 
+  export type ExplanationUpsertWithWhereUniqueWithoutUserInput = {
+    where: ExplanationWhereUniqueInput
+    update: XOR<ExplanationUpdateWithoutUserInput, ExplanationUncheckedUpdateWithoutUserInput>
+    create: XOR<ExplanationCreateWithoutUserInput, ExplanationUncheckedCreateWithoutUserInput>
+  }
+
+  export type ExplanationUpdateWithWhereUniqueWithoutUserInput = {
+    where: ExplanationWhereUniqueInput
+    data: XOR<ExplanationUpdateWithoutUserInput, ExplanationUncheckedUpdateWithoutUserInput>
+  }
+
+  export type ExplanationUpdateManyWithWhereWithoutUserInput = {
+    where: ExplanationScalarWhereInput
+    data: XOR<ExplanationUpdateManyMutationInput, ExplanationUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type ExplanationScalarWhereInput = {
+    AND?: ExplanationScalarWhereInput | ExplanationScalarWhereInput[]
+    OR?: ExplanationScalarWhereInput[]
+    NOT?: ExplanationScalarWhereInput | ExplanationScalarWhereInput[]
+    id?: StringFilter<"Explanation"> | string
+    userId?: StringFilter<"Explanation"> | string
+    sessionId?: StringNullableFilter<"Explanation"> | string | null
+    language?: StringNullableFilter<"Explanation"> | string | null
+    concepts?: StringNullableListFilter<"Explanation">
+    interactionType?: StringFilter<"Explanation"> | string
+    createdAt?: DateTimeFilter<"Explanation"> | Date | string
+  }
+
+  export type SkillUpsertWithWhereUniqueWithoutUserInput = {
+    where: SkillWhereUniqueInput
+    update: XOR<SkillUpdateWithoutUserInput, SkillUncheckedUpdateWithoutUserInput>
+    create: XOR<SkillCreateWithoutUserInput, SkillUncheckedCreateWithoutUserInput>
+  }
+
+  export type SkillUpdateWithWhereUniqueWithoutUserInput = {
+    where: SkillWhereUniqueInput
+    data: XOR<SkillUpdateWithoutUserInput, SkillUncheckedUpdateWithoutUserInput>
+  }
+
+  export type SkillUpdateManyWithWhereWithoutUserInput = {
+    where: SkillScalarWhereInput
+    data: XOR<SkillUpdateManyMutationInput, SkillUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type SkillScalarWhereInput = {
+    AND?: SkillScalarWhereInput | SkillScalarWhereInput[]
+    OR?: SkillScalarWhereInput[]
+    NOT?: SkillScalarWhereInput | SkillScalarWhereInput[]
+    id?: StringFilter<"Skill"> | string
+    userId?: StringFilter<"Skill"> | string
+    concept?: StringFilter<"Skill"> | string
+    language?: StringNullableFilter<"Skill"> | string | null
+    totalExplanations?: IntFilter<"Skill"> | number
+    sessionsCount?: IntFilter<"Skill"> | number
+    confidence?: IntFilter<"Skill"> | number
+    lastSeenAt?: DateTimeFilter<"Skill"> | Date | string
+    createdAt?: DateTimeFilter<"Skill"> | Date | string
+    updatedAt?: DateTimeFilter<"Skill"> | Date | string
+  }
+
+  export type SkillGoalUpsertWithWhereUniqueWithoutUserInput = {
+    where: SkillGoalWhereUniqueInput
+    update: XOR<SkillGoalUpdateWithoutUserInput, SkillGoalUncheckedUpdateWithoutUserInput>
+    create: XOR<SkillGoalCreateWithoutUserInput, SkillGoalUncheckedCreateWithoutUserInput>
+  }
+
+  export type SkillGoalUpdateWithWhereUniqueWithoutUserInput = {
+    where: SkillGoalWhereUniqueInput
+    data: XOR<SkillGoalUpdateWithoutUserInput, SkillGoalUncheckedUpdateWithoutUserInput>
+  }
+
+  export type SkillGoalUpdateManyWithWhereWithoutUserInput = {
+    where: SkillGoalScalarWhereInput
+    data: XOR<SkillGoalUpdateManyMutationInput, SkillGoalUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type SkillGoalScalarWhereInput = {
+    AND?: SkillGoalScalarWhereInput | SkillGoalScalarWhereInput[]
+    OR?: SkillGoalScalarWhereInput[]
+    NOT?: SkillGoalScalarWhereInput | SkillGoalScalarWhereInput[]
+    id?: StringFilter<"SkillGoal"> | string
+    userId?: StringFilter<"SkillGoal"> | string
+    skillId?: StringNullableFilter<"SkillGoal"> | string | null
+    conceptName?: StringFilter<"SkillGoal"> | string
+    targetConfidence?: IntFilter<"SkillGoal"> | number
+    currentProgress?: IntFilter<"SkillGoal"> | number
+    deadline?: DateTimeNullableFilter<"SkillGoal"> | Date | string | null
+    status?: EnumGoalStatusFilter<"SkillGoal"> | $Enums.GoalStatus
+    createdAt?: DateTimeFilter<"SkillGoal"> | Date | string
+    updatedAt?: DateTimeFilter<"SkillGoal"> | Date | string
+  }
+
   export type UserCreateWithoutSessionsInput = {
     id?: string
     email: string
@@ -16792,6 +21543,9 @@ export namespace Prisma {
     featureVotes?: FeatureVoteCreateNestedManyWithoutUserInput
     featureComments?: FeatureCommentCreateNestedManyWithoutUserInput
     commentReactions?: CommentReactionCreateNestedManyWithoutUserInput
+    explanations?: ExplanationCreateNestedManyWithoutUserInput
+    skills?: SkillCreateNestedManyWithoutUserInput
+    skillGoals?: SkillGoalCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -16812,6 +21566,9 @@ export namespace Prisma {
     featureVotes?: FeatureVoteUncheckedCreateNestedManyWithoutUserInput
     featureComments?: FeatureCommentUncheckedCreateNestedManyWithoutUserInput
     commentReactions?: CommentReactionUncheckedCreateNestedManyWithoutUserInput
+    explanations?: ExplanationUncheckedCreateNestedManyWithoutUserInput
+    skills?: SkillUncheckedCreateNestedManyWithoutUserInput
+    skillGoals?: SkillGoalUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -16848,6 +21605,9 @@ export namespace Prisma {
     featureVotes?: FeatureVoteUpdateManyWithoutUserNestedInput
     featureComments?: FeatureCommentUpdateManyWithoutUserNestedInput
     commentReactions?: CommentReactionUpdateManyWithoutUserNestedInput
+    explanations?: ExplanationUpdateManyWithoutUserNestedInput
+    skills?: SkillUpdateManyWithoutUserNestedInput
+    skillGoals?: SkillGoalUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -16868,6 +21628,9 @@ export namespace Prisma {
     featureVotes?: FeatureVoteUncheckedUpdateManyWithoutUserNestedInput
     featureComments?: FeatureCommentUncheckedUpdateManyWithoutUserNestedInput
     commentReactions?: CommentReactionUncheckedUpdateManyWithoutUserNestedInput
+    explanations?: ExplanationUncheckedUpdateManyWithoutUserNestedInput
+    skills?: SkillUncheckedUpdateManyWithoutUserNestedInput
+    skillGoals?: SkillGoalUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutAccountsInput = {
@@ -16888,6 +21651,9 @@ export namespace Prisma {
     featureVotes?: FeatureVoteCreateNestedManyWithoutUserInput
     featureComments?: FeatureCommentCreateNestedManyWithoutUserInput
     commentReactions?: CommentReactionCreateNestedManyWithoutUserInput
+    explanations?: ExplanationCreateNestedManyWithoutUserInput
+    skills?: SkillCreateNestedManyWithoutUserInput
+    skillGoals?: SkillGoalCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -16908,6 +21674,9 @@ export namespace Prisma {
     featureVotes?: FeatureVoteUncheckedCreateNestedManyWithoutUserInput
     featureComments?: FeatureCommentUncheckedCreateNestedManyWithoutUserInput
     commentReactions?: CommentReactionUncheckedCreateNestedManyWithoutUserInput
+    explanations?: ExplanationUncheckedCreateNestedManyWithoutUserInput
+    skills?: SkillUncheckedCreateNestedManyWithoutUserInput
+    skillGoals?: SkillGoalUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -16944,6 +21713,9 @@ export namespace Prisma {
     featureVotes?: FeatureVoteUpdateManyWithoutUserNestedInput
     featureComments?: FeatureCommentUpdateManyWithoutUserNestedInput
     commentReactions?: CommentReactionUpdateManyWithoutUserNestedInput
+    explanations?: ExplanationUpdateManyWithoutUserNestedInput
+    skills?: SkillUpdateManyWithoutUserNestedInput
+    skillGoals?: SkillGoalUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -16964,6 +21736,9 @@ export namespace Prisma {
     featureVotes?: FeatureVoteUncheckedUpdateManyWithoutUserNestedInput
     featureComments?: FeatureCommentUncheckedUpdateManyWithoutUserNestedInput
     commentReactions?: CommentReactionUncheckedUpdateManyWithoutUserNestedInput
+    explanations?: ExplanationUncheckedUpdateManyWithoutUserNestedInput
+    skills?: SkillUncheckedUpdateManyWithoutUserNestedInput
+    skillGoals?: SkillGoalUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutApiKeysInput = {
@@ -16984,6 +21759,9 @@ export namespace Prisma {
     featureVotes?: FeatureVoteCreateNestedManyWithoutUserInput
     featureComments?: FeatureCommentCreateNestedManyWithoutUserInput
     commentReactions?: CommentReactionCreateNestedManyWithoutUserInput
+    explanations?: ExplanationCreateNestedManyWithoutUserInput
+    skills?: SkillCreateNestedManyWithoutUserInput
+    skillGoals?: SkillGoalCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutApiKeysInput = {
@@ -17004,6 +21782,9 @@ export namespace Prisma {
     featureVotes?: FeatureVoteUncheckedCreateNestedManyWithoutUserInput
     featureComments?: FeatureCommentUncheckedCreateNestedManyWithoutUserInput
     commentReactions?: CommentReactionUncheckedCreateNestedManyWithoutUserInput
+    explanations?: ExplanationUncheckedCreateNestedManyWithoutUserInput
+    skills?: SkillUncheckedCreateNestedManyWithoutUserInput
+    skillGoals?: SkillGoalUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutApiKeysInput = {
@@ -17040,6 +21821,9 @@ export namespace Prisma {
     featureVotes?: FeatureVoteUpdateManyWithoutUserNestedInput
     featureComments?: FeatureCommentUpdateManyWithoutUserNestedInput
     commentReactions?: CommentReactionUpdateManyWithoutUserNestedInput
+    explanations?: ExplanationUpdateManyWithoutUserNestedInput
+    skills?: SkillUpdateManyWithoutUserNestedInput
+    skillGoals?: SkillGoalUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutApiKeysInput = {
@@ -17060,6 +21844,9 @@ export namespace Prisma {
     featureVotes?: FeatureVoteUncheckedUpdateManyWithoutUserNestedInput
     featureComments?: FeatureCommentUncheckedUpdateManyWithoutUserNestedInput
     commentReactions?: CommentReactionUncheckedUpdateManyWithoutUserNestedInput
+    explanations?: ExplanationUncheckedUpdateManyWithoutUserNestedInput
+    skills?: SkillUncheckedUpdateManyWithoutUserNestedInput
+    skillGoals?: SkillGoalUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutCodingSessionsInput = {
@@ -17080,6 +21867,9 @@ export namespace Prisma {
     featureVotes?: FeatureVoteCreateNestedManyWithoutUserInput
     featureComments?: FeatureCommentCreateNestedManyWithoutUserInput
     commentReactions?: CommentReactionCreateNestedManyWithoutUserInput
+    explanations?: ExplanationCreateNestedManyWithoutUserInput
+    skills?: SkillCreateNestedManyWithoutUserInput
+    skillGoals?: SkillGoalCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCodingSessionsInput = {
@@ -17100,6 +21890,9 @@ export namespace Prisma {
     featureVotes?: FeatureVoteUncheckedCreateNestedManyWithoutUserInput
     featureComments?: FeatureCommentUncheckedCreateNestedManyWithoutUserInput
     commentReactions?: CommentReactionUncheckedCreateNestedManyWithoutUserInput
+    explanations?: ExplanationUncheckedCreateNestedManyWithoutUserInput
+    skills?: SkillUncheckedCreateNestedManyWithoutUserInput
+    skillGoals?: SkillGoalUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCodingSessionsInput = {
@@ -17136,6 +21929,9 @@ export namespace Prisma {
     featureVotes?: FeatureVoteUpdateManyWithoutUserNestedInput
     featureComments?: FeatureCommentUpdateManyWithoutUserNestedInput
     commentReactions?: CommentReactionUpdateManyWithoutUserNestedInput
+    explanations?: ExplanationUpdateManyWithoutUserNestedInput
+    skills?: SkillUpdateManyWithoutUserNestedInput
+    skillGoals?: SkillGoalUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCodingSessionsInput = {
@@ -17156,6 +21952,9 @@ export namespace Prisma {
     featureVotes?: FeatureVoteUncheckedUpdateManyWithoutUserNestedInput
     featureComments?: FeatureCommentUncheckedUpdateManyWithoutUserNestedInput
     commentReactions?: CommentReactionUncheckedUpdateManyWithoutUserNestedInput
+    explanations?: ExplanationUncheckedUpdateManyWithoutUserNestedInput
+    skills?: SkillUncheckedUpdateManyWithoutUserNestedInput
+    skillGoals?: SkillGoalUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutTipsInput = {
@@ -17176,6 +21975,9 @@ export namespace Prisma {
     featureVotes?: FeatureVoteCreateNestedManyWithoutUserInput
     featureComments?: FeatureCommentCreateNestedManyWithoutUserInput
     commentReactions?: CommentReactionCreateNestedManyWithoutUserInput
+    explanations?: ExplanationCreateNestedManyWithoutUserInput
+    skills?: SkillCreateNestedManyWithoutUserInput
+    skillGoals?: SkillGoalCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutTipsInput = {
@@ -17196,6 +21998,9 @@ export namespace Prisma {
     featureVotes?: FeatureVoteUncheckedCreateNestedManyWithoutUserInput
     featureComments?: FeatureCommentUncheckedCreateNestedManyWithoutUserInput
     commentReactions?: CommentReactionUncheckedCreateNestedManyWithoutUserInput
+    explanations?: ExplanationUncheckedCreateNestedManyWithoutUserInput
+    skills?: SkillUncheckedCreateNestedManyWithoutUserInput
+    skillGoals?: SkillGoalUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutTipsInput = {
@@ -17232,6 +22037,9 @@ export namespace Prisma {
     featureVotes?: FeatureVoteUpdateManyWithoutUserNestedInput
     featureComments?: FeatureCommentUpdateManyWithoutUserNestedInput
     commentReactions?: CommentReactionUpdateManyWithoutUserNestedInput
+    explanations?: ExplanationUpdateManyWithoutUserNestedInput
+    skills?: SkillUpdateManyWithoutUserNestedInput
+    skillGoals?: SkillGoalUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTipsInput = {
@@ -17252,6 +22060,9 @@ export namespace Prisma {
     featureVotes?: FeatureVoteUncheckedUpdateManyWithoutUserNestedInput
     featureComments?: FeatureCommentUncheckedUpdateManyWithoutUserNestedInput
     commentReactions?: CommentReactionUncheckedUpdateManyWithoutUserNestedInput
+    explanations?: ExplanationUncheckedUpdateManyWithoutUserNestedInput
+    skills?: SkillUncheckedUpdateManyWithoutUserNestedInput
+    skillGoals?: SkillGoalUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutCreatedFeaturesInput = {
@@ -17272,6 +22083,9 @@ export namespace Prisma {
     featureVotes?: FeatureVoteCreateNestedManyWithoutUserInput
     featureComments?: FeatureCommentCreateNestedManyWithoutUserInput
     commentReactions?: CommentReactionCreateNestedManyWithoutUserInput
+    explanations?: ExplanationCreateNestedManyWithoutUserInput
+    skills?: SkillCreateNestedManyWithoutUserInput
+    skillGoals?: SkillGoalCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCreatedFeaturesInput = {
@@ -17292,6 +22106,9 @@ export namespace Prisma {
     featureVotes?: FeatureVoteUncheckedCreateNestedManyWithoutUserInput
     featureComments?: FeatureCommentUncheckedCreateNestedManyWithoutUserInput
     commentReactions?: CommentReactionUncheckedCreateNestedManyWithoutUserInput
+    explanations?: ExplanationUncheckedCreateNestedManyWithoutUserInput
+    skills?: SkillUncheckedCreateNestedManyWithoutUserInput
+    skillGoals?: SkillGoalUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCreatedFeaturesInput = {
@@ -17382,6 +22199,9 @@ export namespace Prisma {
     featureVotes?: FeatureVoteUpdateManyWithoutUserNestedInput
     featureComments?: FeatureCommentUpdateManyWithoutUserNestedInput
     commentReactions?: CommentReactionUpdateManyWithoutUserNestedInput
+    explanations?: ExplanationUpdateManyWithoutUserNestedInput
+    skills?: SkillUpdateManyWithoutUserNestedInput
+    skillGoals?: SkillGoalUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedFeaturesInput = {
@@ -17402,6 +22222,9 @@ export namespace Prisma {
     featureVotes?: FeatureVoteUncheckedUpdateManyWithoutUserNestedInput
     featureComments?: FeatureCommentUncheckedUpdateManyWithoutUserNestedInput
     commentReactions?: CommentReactionUncheckedUpdateManyWithoutUserNestedInput
+    explanations?: ExplanationUncheckedUpdateManyWithoutUserNestedInput
+    skills?: SkillUncheckedUpdateManyWithoutUserNestedInput
+    skillGoals?: SkillGoalUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type FeatureVoteUpsertWithWhereUniqueWithoutFeatureInput = {
@@ -17483,6 +22306,9 @@ export namespace Prisma {
     createdFeatures?: FeatureCreateNestedManyWithoutCreatedByInput
     featureComments?: FeatureCommentCreateNestedManyWithoutUserInput
     commentReactions?: CommentReactionCreateNestedManyWithoutUserInput
+    explanations?: ExplanationCreateNestedManyWithoutUserInput
+    skills?: SkillCreateNestedManyWithoutUserInput
+    skillGoals?: SkillGoalCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutFeatureVotesInput = {
@@ -17503,6 +22329,9 @@ export namespace Prisma {
     createdFeatures?: FeatureUncheckedCreateNestedManyWithoutCreatedByInput
     featureComments?: FeatureCommentUncheckedCreateNestedManyWithoutUserInput
     commentReactions?: CommentReactionUncheckedCreateNestedManyWithoutUserInput
+    explanations?: ExplanationUncheckedCreateNestedManyWithoutUserInput
+    skills?: SkillUncheckedCreateNestedManyWithoutUserInput
+    skillGoals?: SkillGoalUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutFeatureVotesInput = {
@@ -17574,6 +22403,9 @@ export namespace Prisma {
     createdFeatures?: FeatureUpdateManyWithoutCreatedByNestedInput
     featureComments?: FeatureCommentUpdateManyWithoutUserNestedInput
     commentReactions?: CommentReactionUpdateManyWithoutUserNestedInput
+    explanations?: ExplanationUpdateManyWithoutUserNestedInput
+    skills?: SkillUpdateManyWithoutUserNestedInput
+    skillGoals?: SkillGoalUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFeatureVotesInput = {
@@ -17594,6 +22426,9 @@ export namespace Prisma {
     createdFeatures?: FeatureUncheckedUpdateManyWithoutCreatedByNestedInput
     featureComments?: FeatureCommentUncheckedUpdateManyWithoutUserNestedInput
     commentReactions?: CommentReactionUncheckedUpdateManyWithoutUserNestedInput
+    explanations?: ExplanationUncheckedUpdateManyWithoutUserNestedInput
+    skills?: SkillUncheckedUpdateManyWithoutUserNestedInput
+    skillGoals?: SkillGoalUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type FeatureCreateWithoutCommentsInput = {
@@ -17643,6 +22478,9 @@ export namespace Prisma {
     createdFeatures?: FeatureCreateNestedManyWithoutCreatedByInput
     featureVotes?: FeatureVoteCreateNestedManyWithoutUserInput
     commentReactions?: CommentReactionCreateNestedManyWithoutUserInput
+    explanations?: ExplanationCreateNestedManyWithoutUserInput
+    skills?: SkillCreateNestedManyWithoutUserInput
+    skillGoals?: SkillGoalCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutFeatureCommentsInput = {
@@ -17663,6 +22501,9 @@ export namespace Prisma {
     createdFeatures?: FeatureUncheckedCreateNestedManyWithoutCreatedByInput
     featureVotes?: FeatureVoteUncheckedCreateNestedManyWithoutUserInput
     commentReactions?: CommentReactionUncheckedCreateNestedManyWithoutUserInput
+    explanations?: ExplanationUncheckedCreateNestedManyWithoutUserInput
+    skills?: SkillUncheckedCreateNestedManyWithoutUserInput
+    skillGoals?: SkillGoalUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutFeatureCommentsInput = {
@@ -17817,6 +22658,9 @@ export namespace Prisma {
     createdFeatures?: FeatureUpdateManyWithoutCreatedByNestedInput
     featureVotes?: FeatureVoteUpdateManyWithoutUserNestedInput
     commentReactions?: CommentReactionUpdateManyWithoutUserNestedInput
+    explanations?: ExplanationUpdateManyWithoutUserNestedInput
+    skills?: SkillUpdateManyWithoutUserNestedInput
+    skillGoals?: SkillGoalUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFeatureCommentsInput = {
@@ -17837,6 +22681,9 @@ export namespace Prisma {
     createdFeatures?: FeatureUncheckedUpdateManyWithoutCreatedByNestedInput
     featureVotes?: FeatureVoteUncheckedUpdateManyWithoutUserNestedInput
     commentReactions?: CommentReactionUncheckedUpdateManyWithoutUserNestedInput
+    explanations?: ExplanationUncheckedUpdateManyWithoutUserNestedInput
+    skills?: SkillUncheckedUpdateManyWithoutUserNestedInput
+    skillGoals?: SkillGoalUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type FeatureCommentUpsertWithoutRepliesInput = {
@@ -17949,6 +22796,9 @@ export namespace Prisma {
     createdFeatures?: FeatureCreateNestedManyWithoutCreatedByInput
     featureVotes?: FeatureVoteCreateNestedManyWithoutUserInput
     featureComments?: FeatureCommentCreateNestedManyWithoutUserInput
+    explanations?: ExplanationCreateNestedManyWithoutUserInput
+    skills?: SkillCreateNestedManyWithoutUserInput
+    skillGoals?: SkillGoalCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCommentReactionsInput = {
@@ -17969,6 +22819,9 @@ export namespace Prisma {
     createdFeatures?: FeatureUncheckedCreateNestedManyWithoutCreatedByInput
     featureVotes?: FeatureVoteUncheckedCreateNestedManyWithoutUserInput
     featureComments?: FeatureCommentUncheckedCreateNestedManyWithoutUserInput
+    explanations?: ExplanationUncheckedCreateNestedManyWithoutUserInput
+    skills?: SkillUncheckedCreateNestedManyWithoutUserInput
+    skillGoals?: SkillGoalUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCommentReactionsInput = {
@@ -18038,6 +22891,9 @@ export namespace Prisma {
     createdFeatures?: FeatureUpdateManyWithoutCreatedByNestedInput
     featureVotes?: FeatureVoteUpdateManyWithoutUserNestedInput
     featureComments?: FeatureCommentUpdateManyWithoutUserNestedInput
+    explanations?: ExplanationUpdateManyWithoutUserNestedInput
+    skills?: SkillUpdateManyWithoutUserNestedInput
+    skillGoals?: SkillGoalUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCommentReactionsInput = {
@@ -18058,6 +22914,451 @@ export namespace Prisma {
     createdFeatures?: FeatureUncheckedUpdateManyWithoutCreatedByNestedInput
     featureVotes?: FeatureVoteUncheckedUpdateManyWithoutUserNestedInput
     featureComments?: FeatureCommentUncheckedUpdateManyWithoutUserNestedInput
+    explanations?: ExplanationUncheckedUpdateManyWithoutUserNestedInput
+    skills?: SkillUncheckedUpdateManyWithoutUserNestedInput
+    skillGoals?: SkillGoalUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutExplanationsInput = {
+    id?: string
+    email: string
+    name?: string | null
+    emailVerified?: boolean | null
+    image?: string | null
+    bio?: string | null
+    theme?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    apiKeys?: ApiKeyCreateNestedManyWithoutUserInput
+    codingSessions?: CodingSessionCreateNestedManyWithoutUserInput
+    tips?: TipCreateNestedManyWithoutUserInput
+    createdFeatures?: FeatureCreateNestedManyWithoutCreatedByInput
+    featureVotes?: FeatureVoteCreateNestedManyWithoutUserInput
+    featureComments?: FeatureCommentCreateNestedManyWithoutUserInput
+    commentReactions?: CommentReactionCreateNestedManyWithoutUserInput
+    skills?: SkillCreateNestedManyWithoutUserInput
+    skillGoals?: SkillGoalCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutExplanationsInput = {
+    id?: string
+    email: string
+    name?: string | null
+    emailVerified?: boolean | null
+    image?: string | null
+    bio?: string | null
+    theme?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutUserInput
+    codingSessions?: CodingSessionUncheckedCreateNestedManyWithoutUserInput
+    tips?: TipUncheckedCreateNestedManyWithoutUserInput
+    createdFeatures?: FeatureUncheckedCreateNestedManyWithoutCreatedByInput
+    featureVotes?: FeatureVoteUncheckedCreateNestedManyWithoutUserInput
+    featureComments?: FeatureCommentUncheckedCreateNestedManyWithoutUserInput
+    commentReactions?: CommentReactionUncheckedCreateNestedManyWithoutUserInput
+    skills?: SkillUncheckedCreateNestedManyWithoutUserInput
+    skillGoals?: SkillGoalUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutExplanationsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutExplanationsInput, UserUncheckedCreateWithoutExplanationsInput>
+  }
+
+  export type UserUpsertWithoutExplanationsInput = {
+    update: XOR<UserUpdateWithoutExplanationsInput, UserUncheckedUpdateWithoutExplanationsInput>
+    create: XOR<UserCreateWithoutExplanationsInput, UserUncheckedCreateWithoutExplanationsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutExplanationsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutExplanationsInput, UserUncheckedUpdateWithoutExplanationsInput>
+  }
+
+  export type UserUpdateWithoutExplanationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    theme?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    apiKeys?: ApiKeyUpdateManyWithoutUserNestedInput
+    codingSessions?: CodingSessionUpdateManyWithoutUserNestedInput
+    tips?: TipUpdateManyWithoutUserNestedInput
+    createdFeatures?: FeatureUpdateManyWithoutCreatedByNestedInput
+    featureVotes?: FeatureVoteUpdateManyWithoutUserNestedInput
+    featureComments?: FeatureCommentUpdateManyWithoutUserNestedInput
+    commentReactions?: CommentReactionUpdateManyWithoutUserNestedInput
+    skills?: SkillUpdateManyWithoutUserNestedInput
+    skillGoals?: SkillGoalUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutExplanationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    theme?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    apiKeys?: ApiKeyUncheckedUpdateManyWithoutUserNestedInput
+    codingSessions?: CodingSessionUncheckedUpdateManyWithoutUserNestedInput
+    tips?: TipUncheckedUpdateManyWithoutUserNestedInput
+    createdFeatures?: FeatureUncheckedUpdateManyWithoutCreatedByNestedInput
+    featureVotes?: FeatureVoteUncheckedUpdateManyWithoutUserNestedInput
+    featureComments?: FeatureCommentUncheckedUpdateManyWithoutUserNestedInput
+    commentReactions?: CommentReactionUncheckedUpdateManyWithoutUserNestedInput
+    skills?: SkillUncheckedUpdateManyWithoutUserNestedInput
+    skillGoals?: SkillGoalUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutSkillsInput = {
+    id?: string
+    email: string
+    name?: string | null
+    emailVerified?: boolean | null
+    image?: string | null
+    bio?: string | null
+    theme?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    apiKeys?: ApiKeyCreateNestedManyWithoutUserInput
+    codingSessions?: CodingSessionCreateNestedManyWithoutUserInput
+    tips?: TipCreateNestedManyWithoutUserInput
+    createdFeatures?: FeatureCreateNestedManyWithoutCreatedByInput
+    featureVotes?: FeatureVoteCreateNestedManyWithoutUserInput
+    featureComments?: FeatureCommentCreateNestedManyWithoutUserInput
+    commentReactions?: CommentReactionCreateNestedManyWithoutUserInput
+    explanations?: ExplanationCreateNestedManyWithoutUserInput
+    skillGoals?: SkillGoalCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutSkillsInput = {
+    id?: string
+    email: string
+    name?: string | null
+    emailVerified?: boolean | null
+    image?: string | null
+    bio?: string | null
+    theme?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutUserInput
+    codingSessions?: CodingSessionUncheckedCreateNestedManyWithoutUserInput
+    tips?: TipUncheckedCreateNestedManyWithoutUserInput
+    createdFeatures?: FeatureUncheckedCreateNestedManyWithoutCreatedByInput
+    featureVotes?: FeatureVoteUncheckedCreateNestedManyWithoutUserInput
+    featureComments?: FeatureCommentUncheckedCreateNestedManyWithoutUserInput
+    commentReactions?: CommentReactionUncheckedCreateNestedManyWithoutUserInput
+    explanations?: ExplanationUncheckedCreateNestedManyWithoutUserInput
+    skillGoals?: SkillGoalUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutSkillsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutSkillsInput, UserUncheckedCreateWithoutSkillsInput>
+  }
+
+  export type SkillGoalCreateWithoutSkillInput = {
+    id?: string
+    conceptName: string
+    targetConfidence?: number
+    currentProgress?: number
+    deadline?: Date | string | null
+    status?: $Enums.GoalStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutSkillGoalsInput
+  }
+
+  export type SkillGoalUncheckedCreateWithoutSkillInput = {
+    id?: string
+    userId: string
+    conceptName: string
+    targetConfidence?: number
+    currentProgress?: number
+    deadline?: Date | string | null
+    status?: $Enums.GoalStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SkillGoalCreateOrConnectWithoutSkillInput = {
+    where: SkillGoalWhereUniqueInput
+    create: XOR<SkillGoalCreateWithoutSkillInput, SkillGoalUncheckedCreateWithoutSkillInput>
+  }
+
+  export type SkillGoalCreateManySkillInputEnvelope = {
+    data: SkillGoalCreateManySkillInput | SkillGoalCreateManySkillInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserUpsertWithoutSkillsInput = {
+    update: XOR<UserUpdateWithoutSkillsInput, UserUncheckedUpdateWithoutSkillsInput>
+    create: XOR<UserCreateWithoutSkillsInput, UserUncheckedCreateWithoutSkillsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutSkillsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutSkillsInput, UserUncheckedUpdateWithoutSkillsInput>
+  }
+
+  export type UserUpdateWithoutSkillsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    theme?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    apiKeys?: ApiKeyUpdateManyWithoutUserNestedInput
+    codingSessions?: CodingSessionUpdateManyWithoutUserNestedInput
+    tips?: TipUpdateManyWithoutUserNestedInput
+    createdFeatures?: FeatureUpdateManyWithoutCreatedByNestedInput
+    featureVotes?: FeatureVoteUpdateManyWithoutUserNestedInput
+    featureComments?: FeatureCommentUpdateManyWithoutUserNestedInput
+    commentReactions?: CommentReactionUpdateManyWithoutUserNestedInput
+    explanations?: ExplanationUpdateManyWithoutUserNestedInput
+    skillGoals?: SkillGoalUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutSkillsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    theme?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    apiKeys?: ApiKeyUncheckedUpdateManyWithoutUserNestedInput
+    codingSessions?: CodingSessionUncheckedUpdateManyWithoutUserNestedInput
+    tips?: TipUncheckedUpdateManyWithoutUserNestedInput
+    createdFeatures?: FeatureUncheckedUpdateManyWithoutCreatedByNestedInput
+    featureVotes?: FeatureVoteUncheckedUpdateManyWithoutUserNestedInput
+    featureComments?: FeatureCommentUncheckedUpdateManyWithoutUserNestedInput
+    commentReactions?: CommentReactionUncheckedUpdateManyWithoutUserNestedInput
+    explanations?: ExplanationUncheckedUpdateManyWithoutUserNestedInput
+    skillGoals?: SkillGoalUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type SkillGoalUpsertWithWhereUniqueWithoutSkillInput = {
+    where: SkillGoalWhereUniqueInput
+    update: XOR<SkillGoalUpdateWithoutSkillInput, SkillGoalUncheckedUpdateWithoutSkillInput>
+    create: XOR<SkillGoalCreateWithoutSkillInput, SkillGoalUncheckedCreateWithoutSkillInput>
+  }
+
+  export type SkillGoalUpdateWithWhereUniqueWithoutSkillInput = {
+    where: SkillGoalWhereUniqueInput
+    data: XOR<SkillGoalUpdateWithoutSkillInput, SkillGoalUncheckedUpdateWithoutSkillInput>
+  }
+
+  export type SkillGoalUpdateManyWithWhereWithoutSkillInput = {
+    where: SkillGoalScalarWhereInput
+    data: XOR<SkillGoalUpdateManyMutationInput, SkillGoalUncheckedUpdateManyWithoutSkillInput>
+  }
+
+  export type UserCreateWithoutSkillGoalsInput = {
+    id?: string
+    email: string
+    name?: string | null
+    emailVerified?: boolean | null
+    image?: string | null
+    bio?: string | null
+    theme?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    apiKeys?: ApiKeyCreateNestedManyWithoutUserInput
+    codingSessions?: CodingSessionCreateNestedManyWithoutUserInput
+    tips?: TipCreateNestedManyWithoutUserInput
+    createdFeatures?: FeatureCreateNestedManyWithoutCreatedByInput
+    featureVotes?: FeatureVoteCreateNestedManyWithoutUserInput
+    featureComments?: FeatureCommentCreateNestedManyWithoutUserInput
+    commentReactions?: CommentReactionCreateNestedManyWithoutUserInput
+    explanations?: ExplanationCreateNestedManyWithoutUserInput
+    skills?: SkillCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutSkillGoalsInput = {
+    id?: string
+    email: string
+    name?: string | null
+    emailVerified?: boolean | null
+    image?: string | null
+    bio?: string | null
+    theme?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutUserInput
+    codingSessions?: CodingSessionUncheckedCreateNestedManyWithoutUserInput
+    tips?: TipUncheckedCreateNestedManyWithoutUserInput
+    createdFeatures?: FeatureUncheckedCreateNestedManyWithoutCreatedByInput
+    featureVotes?: FeatureVoteUncheckedCreateNestedManyWithoutUserInput
+    featureComments?: FeatureCommentUncheckedCreateNestedManyWithoutUserInput
+    commentReactions?: CommentReactionUncheckedCreateNestedManyWithoutUserInput
+    explanations?: ExplanationUncheckedCreateNestedManyWithoutUserInput
+    skills?: SkillUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutSkillGoalsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutSkillGoalsInput, UserUncheckedCreateWithoutSkillGoalsInput>
+  }
+
+  export type SkillCreateWithoutGoalsInput = {
+    id?: string
+    concept: string
+    language?: string | null
+    totalExplanations?: number
+    sessionsCount?: number
+    confidence?: number
+    lastSeenAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutSkillsInput
+  }
+
+  export type SkillUncheckedCreateWithoutGoalsInput = {
+    id?: string
+    userId: string
+    concept: string
+    language?: string | null
+    totalExplanations?: number
+    sessionsCount?: number
+    confidence?: number
+    lastSeenAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SkillCreateOrConnectWithoutGoalsInput = {
+    where: SkillWhereUniqueInput
+    create: XOR<SkillCreateWithoutGoalsInput, SkillUncheckedCreateWithoutGoalsInput>
+  }
+
+  export type UserUpsertWithoutSkillGoalsInput = {
+    update: XOR<UserUpdateWithoutSkillGoalsInput, UserUncheckedUpdateWithoutSkillGoalsInput>
+    create: XOR<UserCreateWithoutSkillGoalsInput, UserUncheckedCreateWithoutSkillGoalsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutSkillGoalsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutSkillGoalsInput, UserUncheckedUpdateWithoutSkillGoalsInput>
+  }
+
+  export type UserUpdateWithoutSkillGoalsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    theme?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    apiKeys?: ApiKeyUpdateManyWithoutUserNestedInput
+    codingSessions?: CodingSessionUpdateManyWithoutUserNestedInput
+    tips?: TipUpdateManyWithoutUserNestedInput
+    createdFeatures?: FeatureUpdateManyWithoutCreatedByNestedInput
+    featureVotes?: FeatureVoteUpdateManyWithoutUserNestedInput
+    featureComments?: FeatureCommentUpdateManyWithoutUserNestedInput
+    commentReactions?: CommentReactionUpdateManyWithoutUserNestedInput
+    explanations?: ExplanationUpdateManyWithoutUserNestedInput
+    skills?: SkillUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutSkillGoalsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    theme?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    apiKeys?: ApiKeyUncheckedUpdateManyWithoutUserNestedInput
+    codingSessions?: CodingSessionUncheckedUpdateManyWithoutUserNestedInput
+    tips?: TipUncheckedUpdateManyWithoutUserNestedInput
+    createdFeatures?: FeatureUncheckedUpdateManyWithoutCreatedByNestedInput
+    featureVotes?: FeatureVoteUncheckedUpdateManyWithoutUserNestedInput
+    featureComments?: FeatureCommentUncheckedUpdateManyWithoutUserNestedInput
+    commentReactions?: CommentReactionUncheckedUpdateManyWithoutUserNestedInput
+    explanations?: ExplanationUncheckedUpdateManyWithoutUserNestedInput
+    skills?: SkillUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type SkillUpsertWithoutGoalsInput = {
+    update: XOR<SkillUpdateWithoutGoalsInput, SkillUncheckedUpdateWithoutGoalsInput>
+    create: XOR<SkillCreateWithoutGoalsInput, SkillUncheckedCreateWithoutGoalsInput>
+    where?: SkillWhereInput
+  }
+
+  export type SkillUpdateToOneWithWhereWithoutGoalsInput = {
+    where?: SkillWhereInput
+    data: XOR<SkillUpdateWithoutGoalsInput, SkillUncheckedUpdateWithoutGoalsInput>
+  }
+
+  export type SkillUpdateWithoutGoalsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    concept?: StringFieldUpdateOperationsInput | string
+    language?: NullableStringFieldUpdateOperationsInput | string | null
+    totalExplanations?: IntFieldUpdateOperationsInput | number
+    sessionsCount?: IntFieldUpdateOperationsInput | number
+    confidence?: IntFieldUpdateOperationsInput | number
+    lastSeenAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutSkillsNestedInput
+  }
+
+  export type SkillUncheckedUpdateWithoutGoalsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    concept?: StringFieldUpdateOperationsInput | string
+    language?: NullableStringFieldUpdateOperationsInput | string | null
+    totalExplanations?: IntFieldUpdateOperationsInput | number
+    sessionsCount?: IntFieldUpdateOperationsInput | number
+    confidence?: IntFieldUpdateOperationsInput | number
+    lastSeenAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type SessionCreateManyUserInput = {
@@ -18138,6 +23439,39 @@ export namespace Prisma {
     commentId: string
     emoji: string
     createdAt?: Date | string
+  }
+
+  export type ExplanationCreateManyUserInput = {
+    id?: string
+    sessionId?: string | null
+    language?: string | null
+    concepts?: ExplanationCreateconceptsInput | string[]
+    interactionType: string
+    createdAt?: Date | string
+  }
+
+  export type SkillCreateManyUserInput = {
+    id?: string
+    concept: string
+    language?: string | null
+    totalExplanations?: number
+    sessionsCount?: number
+    confidence?: number
+    lastSeenAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SkillGoalCreateManyUserInput = {
+    id?: string
+    skillId?: string | null
+    conceptName: string
+    targetConfidence?: number
+    currentProgress?: number
+    deadline?: Date | string | null
+    status?: $Enums.GoalStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type SessionUpdateWithoutUserInput = {
@@ -18388,6 +23722,107 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ExplanationUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: NullableStringFieldUpdateOperationsInput | string | null
+    concepts?: ExplanationUpdateconceptsInput | string[]
+    interactionType?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExplanationUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: NullableStringFieldUpdateOperationsInput | string | null
+    concepts?: ExplanationUpdateconceptsInput | string[]
+    interactionType?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExplanationUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: NullableStringFieldUpdateOperationsInput | string | null
+    concepts?: ExplanationUpdateconceptsInput | string[]
+    interactionType?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SkillUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    concept?: StringFieldUpdateOperationsInput | string
+    language?: NullableStringFieldUpdateOperationsInput | string | null
+    totalExplanations?: IntFieldUpdateOperationsInput | number
+    sessionsCount?: IntFieldUpdateOperationsInput | number
+    confidence?: IntFieldUpdateOperationsInput | number
+    lastSeenAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    goals?: SkillGoalUpdateManyWithoutSkillNestedInput
+  }
+
+  export type SkillUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    concept?: StringFieldUpdateOperationsInput | string
+    language?: NullableStringFieldUpdateOperationsInput | string | null
+    totalExplanations?: IntFieldUpdateOperationsInput | number
+    sessionsCount?: IntFieldUpdateOperationsInput | number
+    confidence?: IntFieldUpdateOperationsInput | number
+    lastSeenAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    goals?: SkillGoalUncheckedUpdateManyWithoutSkillNestedInput
+  }
+
+  export type SkillUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    concept?: StringFieldUpdateOperationsInput | string
+    language?: NullableStringFieldUpdateOperationsInput | string | null
+    totalExplanations?: IntFieldUpdateOperationsInput | number
+    sessionsCount?: IntFieldUpdateOperationsInput | number
+    confidence?: IntFieldUpdateOperationsInput | number
+    lastSeenAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SkillGoalUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conceptName?: StringFieldUpdateOperationsInput | string
+    targetConfidence?: IntFieldUpdateOperationsInput | number
+    currentProgress?: IntFieldUpdateOperationsInput | number
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumGoalStatusFieldUpdateOperationsInput | $Enums.GoalStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    skill?: SkillUpdateOneWithoutGoalsNestedInput
+  }
+
+  export type SkillGoalUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    skillId?: NullableStringFieldUpdateOperationsInput | string | null
+    conceptName?: StringFieldUpdateOperationsInput | string
+    targetConfidence?: IntFieldUpdateOperationsInput | number
+    currentProgress?: IntFieldUpdateOperationsInput | number
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumGoalStatusFieldUpdateOperationsInput | $Enums.GoalStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SkillGoalUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    skillId?: NullableStringFieldUpdateOperationsInput | string | null
+    conceptName?: StringFieldUpdateOperationsInput | string
+    targetConfidence?: IntFieldUpdateOperationsInput | number
+    currentProgress?: IntFieldUpdateOperationsInput | number
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumGoalStatusFieldUpdateOperationsInput | $Enums.GoalStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type FeatureVoteCreateManyFeatureInput = {
     id?: string
     userId: string
@@ -18520,6 +23955,54 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type SkillGoalCreateManySkillInput = {
+    id?: string
+    userId: string
+    conceptName: string
+    targetConfidence?: number
+    currentProgress?: number
+    deadline?: Date | string | null
+    status?: $Enums.GoalStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SkillGoalUpdateWithoutSkillInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conceptName?: StringFieldUpdateOperationsInput | string
+    targetConfidence?: IntFieldUpdateOperationsInput | number
+    currentProgress?: IntFieldUpdateOperationsInput | number
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumGoalStatusFieldUpdateOperationsInput | $Enums.GoalStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutSkillGoalsNestedInput
+  }
+
+  export type SkillGoalUncheckedUpdateWithoutSkillInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    conceptName?: StringFieldUpdateOperationsInput | string
+    targetConfidence?: IntFieldUpdateOperationsInput | number
+    currentProgress?: IntFieldUpdateOperationsInput | number
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumGoalStatusFieldUpdateOperationsInput | $Enums.GoalStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SkillGoalUncheckedUpdateManyWithoutSkillInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    conceptName?: StringFieldUpdateOperationsInput | string
+    targetConfidence?: IntFieldUpdateOperationsInput | number
+    currentProgress?: IntFieldUpdateOperationsInput | number
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumGoalStatusFieldUpdateOperationsInput | $Enums.GoalStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
 
 
   /**
@@ -18537,6 +24020,10 @@ export namespace Prisma {
      * @deprecated Use FeatureCommentCountOutputTypeDefaultArgs instead
      */
     export type FeatureCommentCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = FeatureCommentCountOutputTypeDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use SkillCountOutputTypeDefaultArgs instead
+     */
+    export type SkillCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = SkillCountOutputTypeDefaultArgs<ExtArgs>
     /**
      * @deprecated Use UserDefaultArgs instead
      */
@@ -18581,6 +24068,18 @@ export namespace Prisma {
      * @deprecated Use CommentReactionDefaultArgs instead
      */
     export type CommentReactionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = CommentReactionDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use ExplanationDefaultArgs instead
+     */
+    export type ExplanationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ExplanationDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use SkillDefaultArgs instead
+     */
+    export type SkillArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = SkillDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use SkillGoalDefaultArgs instead
+     */
+    export type SkillGoalArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = SkillGoalDefaultArgs<ExtArgs>
 
   /**
    * Batch Payload for updateMany & deleteMany & createMany

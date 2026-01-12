@@ -9,20 +9,26 @@ datasource db {
 }
 
 model User {
-  id             String          @id @default(cuid())
-  email          String          @unique
-  name           String?
-  emailVerified  Boolean?
-  image          String?
-  bio            String?
-  theme          String? // 'light' | 'dark' | 'system'
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  sessions       Session[]
-  accounts       Account[]
-  apiKeys        ApiKey[]
-  codingSessions CodingSession[]
-  tips           Tip[]
+  id               String            @id @default(cuid())
+  email            String            @unique
+  name             String?
+  emailVerified    Boolean?
+  image            String?
+  bio              String?
+  theme            String? // 'light' | 'dark' | 'system'
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  sessions         Session[]
+  accounts         Account[]
+  apiKeys          ApiKey[]
+  codingSessions   CodingSession[]
+  tips             Tip[]
+  createdFeatures  Feature[]
+  featureVotes     FeatureVote[]
+  featureComments  FeatureComment[]
+  commentReactions CommentReaction[]
+  explanations     Explanation[]
+  skills           Skill[]
 
   @@map("user")
 }
@@ -97,12 +103,131 @@ model CodingSession {
 }
 
 model Tip {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  content   String   @db.Text
-  createdAt DateTime @default(now())
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  content     String   @db.Text
+  title       String?  @db.Text
+  explanation String?  @db.Text
+  createdAt   DateTime @default(now())
 
   @@index([userId, createdAt])
   @@map("tip")
+}
+
+enum FeatureStatus {
+  now
+  in_progress
+  next
+  planned
+  later
+  considering
+}
+
+enum FeatureTag {
+  feature
+  improvement
+  integration
+  platform
+  ai
+  export
+}
+
+model Feature {
+  id              String           @id @default(cuid())
+  title           String
+  description     String           @db.Text
+  status          FeatureStatus    @default(considering)
+  tag             FeatureTag       @default(feature)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  createdByUserId String?
+  createdBy       User?            @relation(fields: [createdByUserId], references: [id], onDelete: SetNull)
+  votes           FeatureVote[]
+  comments        FeatureComment[]
+
+  @@index([status])
+  @@index([createdByUserId])
+  @@map("feature")
+}
+
+model FeatureVote {
+  id        String   @id @default(cuid())
+  featureId String
+  feature   Feature  @relation(fields: [featureId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([featureId, userId])
+  @@index([userId])
+  @@map("feature_vote")
+}
+
+model FeatureComment {
+  id              String            @id @default(cuid())
+  featureId       String
+  feature         Feature           @relation(fields: [featureId], references: [id], onDelete: Cascade)
+  userId          String
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  body            String            @db.Text
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  parentCommentId String?
+  parentComment   FeatureComment?   @relation("CommentReplies", fields: [parentCommentId], references: [id], onDelete: Cascade)
+  replies         FeatureComment[]  @relation("CommentReplies")
+  reactions       CommentReaction[]
+
+  @@index([featureId])
+  @@index([userId])
+  @@index([parentCommentId])
+  @@map("feature_comment")
+}
+
+model CommentReaction {
+  id        String         @id @default(cuid())
+  commentId String
+  comment   FeatureComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  emoji     String
+  createdAt DateTime       @default(now())
+
+  @@unique([commentId, userId, emoji])
+  @@index([commentId])
+  @@map("comment_reaction")
+}
+
+model Explanation {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessionId       String?
+  language        String?
+  concepts        String[] // Array of concepts like ["loops", "recursion", "React Hooks"]
+  interactionType String // 'Explanation', 'Error', 'Review', etc.
+  createdAt       DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@map("explanation")
+}
+
+model Skill {
+  id                String   @id @default(cuid())
+  userId            String
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  concept           String // e.g., "React Hooks", "Recursion", "TypeScript"
+  language          String? // e.g., "typescript", "python", "react"
+  totalExplanations Int      @default(0)
+  sessionsCount     Int      @default(0)
+  confidence        Int      @default(20) // 0-100 scale
+  lastSeenAt        DateTime @default(now())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@unique([userId, concept])
+  @@index([userId])
+  @@index([userId, confidence])
+  @@index([lastSeenAt])
+  @@map("skill")
 }

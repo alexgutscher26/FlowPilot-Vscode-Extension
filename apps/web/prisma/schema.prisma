@@ -27,6 +27,9 @@ model User {
   featureVotes    FeatureVote[]
   featureComments FeatureComment[]
   commentReactions CommentReaction[]
+  explanations    Explanation[]
+  skills          Skill[]
+  skillGoals      SkillGoal[]
   @@map("user")
 }
 
@@ -192,5 +195,65 @@ model CommentReaction {
   @@unique([commentId, userId, emoji])
   @@index([commentId])
   @@map("comment_reaction")
+}
+
+model Explanation {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessionId       String?
+  language        String?
+  concepts        String[] // Array of concepts like ["loops", "recursion", "React Hooks"]
+  interactionType String   // 'Explanation', 'Error', 'Review', etc.
+  createdAt       DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@map("explanation")
+}
+
+model Skill {
+  id                String   @id @default(cuid())
+  userId            String
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  concept           String   // e.g., "React Hooks", "Recursion", "TypeScript"
+  language          String?  // e.g., "typescript", "python", "react"
+  totalExplanations Int      @default(0)
+  sessionsCount     Int      @default(0)
+  confidence        Int      @default(20) // 0-100 scale
+  lastSeenAt        DateTime @default(now())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  goals             SkillGoal[]
+
+  @@unique([userId, concept])
+  @@index([userId])
+  @@index([userId, confidence])
+  @@index([lastSeenAt])
+  @@map("skill")
+}
+
+enum GoalStatus {
+  active
+  completed
+  abandoned
+}
+
+model SkillGoal {
+  id               String     @id @default(cuid())
+  userId           String
+  user             User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skillId          String?
+  skill            Skill?     @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  conceptName      String
+  targetConfidence Int        @default(80)
+  currentProgress  Int        @default(0)
+  deadline         DateTime?
+  status           GoalStatus @default(active)
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+
+  @@index([userId])
+  @@index([userId, status])
+  @@map("skill_goal")
 }
 

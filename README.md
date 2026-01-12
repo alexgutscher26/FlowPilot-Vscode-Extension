@@ -15,7 +15,9 @@ FlowPilot is an intelligent VS Code extension that helps you understand code, de
 - **💡 Explain Selection**: Highlight any code and get instant, step-by-step explanations
 - **🐞 Debug Faster**: AI-powered error analysis with fix suggestions
 - **📝 Code Reviews**: On-demand quality checks for bugs, security, and best practices
-- **📊 Session Analytics**: Track your coding sessions via the web dashboard
+- **🧠 Smart Concept Extraction**: Automatically identifies and tracks programming concepts you're learning
+- **🎯 Skill Goals**: Set learning goals and track your progress toward mastery
+- **📊 Session Analytics**: Track your coding sessions and skill development via the web dashboard
 - **🔒 Privacy First**: Your code is only sent when you explicitly trigger commands
 - **⚡ Lightning Fast**: Powered by streaming responses and Tree-sitter AST parsing
 
@@ -166,6 +168,8 @@ See our [Master Implementation Roadmap](./todo.md) for the full list of planned 
 **Current Focus:**
 - ✅ Core extension features (Explain, Debug, Review)
 - ✅ Web dashboard with session analytics
+- ✅ Advanced concept extraction with LLM
+- ✅ Skill goals and progress tracking
 - ✅ Comprehensive documentation
 - 🚧 API reference and OpenAPI spec
 - 🚧 CI/CD pipeline

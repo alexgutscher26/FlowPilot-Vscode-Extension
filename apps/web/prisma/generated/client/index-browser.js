@@ -232,6 +232,42 @@ exports.Prisma.CommentReactionScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.ExplanationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  sessionId: 'sessionId',
+  language: 'language',
+  concepts: 'concepts',
+  interactionType: 'interactionType',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.SkillScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  concept: 'concept',
+  language: 'language',
+  totalExplanations: 'totalExplanations',
+  sessionsCount: 'sessionsCount',
+  confidence: 'confidence',
+  lastSeenAt: 'lastSeenAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SkillGoalScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  skillId: 'skillId',
+  conceptName: 'conceptName',
+  targetConfidence: 'targetConfidence',
+  currentProgress: 'currentProgress',
+  deadline: 'deadline',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -275,6 +311,12 @@ exports.FeatureTag = exports.$Enums.FeatureTag = {
   export: 'export'
 };
 
+exports.GoalStatus = exports.$Enums.GoalStatus = {
+  active: 'active',
+  completed: 'completed',
+  abandoned: 'abandoned'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Session: 'Session',
@@ -286,7 +328,10 @@ exports.Prisma.ModelName = {
   Feature: 'Feature',
   FeatureVote: 'FeatureVote',
   FeatureComment: 'FeatureComment',
-  CommentReaction: 'CommentReaction'
+  CommentReaction: 'CommentReaction',
+  Explanation: 'Explanation',
+  Skill: 'Skill',
+  SkillGoal: 'SkillGoal'
 };
 
 /**

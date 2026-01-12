@@ -74,6 +74,55 @@ The chat understands your current project context, making its suggestions releva
 
 ---
 
+## 🧠 Advanced Concept Extraction
+
+**Learn passively as you code.**
+
+FlowPilot automatically identifies and tracks programming concepts from your code explanations using advanced LLM analysis.
+
+### How it works:
+1. When you explain code, FlowPilot extracts 2-5 key concepts (e.g., "React Hooks", "Async/Await", "TypeScript Generics")
+2. These concepts are stored and linked to your skill profile
+3. Your confidence score increases with each interaction
+4. Skills decay over time if not practiced, encouraging continuous learning
+
+### What you get:
+- **Automatic Skill Tracking**: No manual logging required
+- **Confidence Scoring**: Multi-factor algorithm considering frequency, recency, and complexity
+- **Learning Momentum**: Visual heatmap showing your daily coding activity
+- **Personalized Recommendations**: Suggestions for concepts to review based on your patterns
+
+---
+
+## 🎯 Skill Goals & Progress Tracking
+
+**Set goals and watch yourself improve.**
+
+Take control of your learning journey by setting specific skill goals and tracking your progress in real-time.
+
+### How to use:
+1. Visit the **Skills** page in the web dashboard
+2. Click **"Add Skill Goal"**
+3. Choose a concept (with autocomplete from your existing skills)
+4. Set your target confidence level (1-100%)
+5. Optionally add a deadline for motivation
+
+### Features:
+- **Visual Progress Bars**: See exactly how close you are to your goal
+- **Automatic Updates**: Goals update as you explain code with that concept
+- **Deadline Tracking**: Optional deadlines with countdown timers
+- **Status Management**: Active, completed, and abandoned states
+- **Achievement System**: Celebrate when you reach your targets
+
+### Example Goal:
+- **Concept**: "React Hooks"
+- **Current Confidence**: 45%
+- **Target**: 80%
+- **Deadline**: 2 weeks
+- **Progress**: Updates automatically as you work with React Hooks
+
+---
+
 ## 🔒 Private Local Inference
 
 **Use FlowPilot completely offline.**

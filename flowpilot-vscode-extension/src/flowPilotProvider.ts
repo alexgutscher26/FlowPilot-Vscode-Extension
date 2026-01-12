@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import fetch from 'node-fetch';
-import { trackExplain } from './sessionManager';
+import { trackExplain, trackExplanationResult } from './sessionManager';
 import { SanitizationService } from './services/sanitizationService';
 
 export class FlowPilotProvider implements vscode.WebviewViewProvider {
@@ -76,9 +76,11 @@ export class FlowPilotProvider implements vscode.WebviewViewProvider {
         await this.explainCode(context);
     }
 
+    private _currentExplainContext: any = null;
+
     public async explainCode(context: any) {
-        // Track selection explanation
-        trackExplain('selection', context);
+        // Store context for later tracking
+        this._currentExplainContext = context;
 
         // Sanitize context code
         if (context.code) {
@@ -134,7 +136,7 @@ Code to explain:
 ${context.code}
 `;
 
-        await this.streamLocalResponse(endpoint, modelName, systemPrompt, userPrompt, 'showExplanation');
+        await this.streamLocalResponse(endpoint, modelName, systemPrompt, userPrompt, 'showExplanation', context, 'selection');
     }
 
     private async explainCodeCloud(context: any) {
@@ -144,7 +146,7 @@ ${context.code}
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(context)
             });
-            await this.handleCloudStream(response, 'showExplanation');
+            await this.handleCloudStream(response, 'showExplanation', context, 'selection');
         } catch (error) {
             console.error('Error explaining code:', error);
             this.sendErrorResponse();
@@ -383,7 +385,7 @@ ${context.code}
         }
     }
 
-    private async handleCloudStream(response: any, messageType: string) {
+    private async handleCloudStream(response: any, messageType: string, context?: any, trackType?: 'selection' | 'error' | 'review') {
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const body = response.body;
         if (!body) throw new Error('No response body');
@@ -407,8 +409,12 @@ ${context.code}
                                 if (this._view) {
                                     this._view.webview.postMessage({
                                         type: messageType,
-                                        explanation: finalJson // Assuming 'explanation' field name for both types for now, or adapt
+                                        explanation: finalJson
                                     });
+                                }
+                                // Track the explanation result with concepts
+                                if (context && trackType) {
+                                    trackExplanationResult(trackType, context, finalJson);
                                 }
                             } catch (e) {
                                 this.sendErrorResponse('Sorry, I received an invalid response from the AI.');
@@ -433,7 +439,7 @@ ${context.code}
         });
     }
 
-    private async streamLocalResponse(endpoint: string, model: string, systemPrompt: string, userPrompt: string, messageType: string) {
+    private async streamLocalResponse(endpoint: string, model: string, systemPrompt: string, userPrompt: string, messageType: string, context?: any, trackType?: 'selection' | 'error' | 'review') {
         try {
             const response = await fetch(endpoint, {
                 method: 'POST',
@@ -492,8 +498,13 @@ ${context.code}
             if (this._view) {
                 this._view.webview.postMessage({
                     type: messageType,
-                    explanation: finalJson // Note: explanation uses 'explanation' key, review uses 'review'. We need to be careful.
+                    explanation: finalJson
                 });
+            }
+
+            // Track the explanation result with concepts
+            if (context && trackType) {
+                trackExplanationResult(trackType, context, finalJson);
             }
 
         } catch (error) {
@@ -545,7 +556,7 @@ ${context.code}
                     <div class="panel-header">
                         <div class="header-left">
                             <span class="fp-icon fp-icon-primary">${robotIcon}</span>
-                            <span class="header-title">Code Coach</span>
+                            <span class="header-title">FlowPilot</span>
                         </div>
                         <div class="header-actions">
                             <button class="icon-button" id="refresh-btn" type="button" aria-label="Refresh">
@@ -606,7 +617,7 @@ ${context.code}
                             </button>
                         </div>
                         <div class="input-footer">
-                            <span class="powered-by">Powered by Code Coach AI</span>
+                            <span class="powered-by">Powered by FlowPilot AI</span>
                             <span class="history-link">History</span>
                         </div>
                     </div>

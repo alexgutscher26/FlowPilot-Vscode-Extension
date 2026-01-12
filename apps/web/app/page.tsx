@@ -492,7 +492,10 @@ export default function Page() {
               <a className="hover:text-primary transition-colors" href="https://x.com/snackforcode">
                 Twitter
               </a>
-              <a className="hover:text-primary transition-colors" href="https://github.com/alexgutscher26/FlowPilot-Vscode-Extension">
+              <a
+                className="hover:text-primary transition-colors"
+                href="https://github.com/alexgutscher26/FlowPilot-Vscode-Extension"
+              >
                 GitHub
               </a>
             </div>

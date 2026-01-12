@@ -315,6 +315,201 @@ Get details for a specific session.
 
 ---
 
+### Skills & Learning
+
+#### `GET /api/skills/summary`
+
+Get skills summary including learning momentum and skill cards.
+
+**Response:**
+
+```json
+{
+  "learningMomentum": {
+    "dailyActivity": [
+      { "day": "2026-01-01", "count": 3 },
+      { "day": "2026-01-02", "count": 5 }
+    ],
+    "totalExplanations": 127,
+    "activeSkills": 15,
+    "currentStreak": 7
+  },
+  "skills": [
+    {
+      "id": "skill_abc123",
+      "concept": "React Hooks",
+      "language": "typescript",
+      "totalExplanations": 23,
+      "sessionsCount": 8,
+      "confidence": 75,
+      "lastSeenAt": "2026-01-11T16:00:00Z"
+    }
+  ]
+}
+```
+
+---
+
+#### `GET /api/skills/recommendation`
+
+Get personalized learning recommendations based on user patterns.
+
+**Response:**
+
+```json
+{
+  "focus": [
+    {
+      "concept": "React Hooks",
+      "title": "Master useEffect Dependencies",
+      "duration": "5 min"
+    },
+    {
+      "concept": "Async/Await",
+      "title": "Async/Await Pattern",
+      "snippets": 2
+    }
+  ]
+}
+```
+
+---
+
+#### `GET /api/skills/goals`
+
+Get all skill goals for the authenticated user.
+
+**Query Parameters:**
+- `status` (optional): Filter by status - "active", "completed", or "all" (default: "active")
+
+**Response:**
+
+```json
+{
+  "goals": [
+    {
+      "id": "goal_xyz789",
+      "conceptName": "React Hooks",
+      "targetConfidence": 80,
+      "currentProgress": 62,
+      "deadline": "2026-01-25T00:00:00Z",
+      "status": "active",
+      "createdAt": "2026-01-11T16:00:00Z",
+      "skill": {
+        "id": "skill_abc123",
+        "concept": "React Hooks",
+        "confidence": 50,
+        "language": "typescript"
+      }
+    }
+  ]
+}
+```
+
+---
+
+#### `POST /api/skills/goals`
+
+Create a new skill goal.
+
+**Request Body:**
+
+```json
+{
+  "conceptName": "TypeScript Generics",
+  "targetConfidence": 85,
+  "deadline": "2026-02-01T00:00:00Z"
+}
+```
+
+**Response:**
+
+```json
+{
+  "goal": {
+    "id": "goal_new123",
+    "conceptName": "TypeScript Generics",
+    "targetConfidence": 85,
+    "currentProgress": 0,
+    "deadline": "2026-02-01T00:00:00Z",
+    "status": "active",
+    "createdAt": "2026-01-12T16:00:00Z"
+  }
+}
+```
+
+---
+
+#### `PATCH /api/skills/goals`
+
+Update a skill goal's status, deadline, or target confidence.
+
+**Request Body:**
+
+```json
+{
+  "goalId": "goal_xyz789",
+  "status": "completed"
+}
+```
+
+**Response:**
+
+```json
+{
+  "goal": {
+    "id": "goal_xyz789",
+    "status": "completed",
+    "updatedAt": "2026-01-12T16:00:00Z"
+  }
+}
+```
+
+---
+
+#### `DELETE /api/skills/goals?id={goalId}`
+
+Delete (abandon) a skill goal.
+
+**Response:**
+
+```json
+{
+  "success": true
+}
+```
+
+---
+
+#### `GET /api/skills/goals/:id`
+
+Get details for a specific goal.
+
+**Response:**
+
+```json
+{
+  "goal": {
+    "id": "goal_xyz789",
+    "conceptName": "React Hooks",
+    "targetConfidence": 80,
+    "currentProgress": 62,
+    "deadline": "2026-01-25T00:00:00Z",
+    "status": "active",
+    "skill": {
+      "id": "skill_abc123",
+      "concept": "React Hooks",
+      "confidence": 50,
+      "totalExplanations": 23,
+      "sessionsCount": 8,
+      "lastSeenAt": "2026-01-11T16:00:00Z"
+    }
+  }
+}
+```
+
+---
+
 ### User Management
 
 #### `GET /api/user/profile`
@@ -507,7 +702,15 @@ const explanation = await client.explain({
 
 ## 📝 Changelog
 
-### v0.8.10 (Current)
+### v0.9.0 (Current)
+- Added Skills & Learning API endpoints
+  - `/api/skills/summary` - Get learning momentum and skills
+  - `/api/skills/recommendation` - Get personalized recommendations
+  - `/api/skills/goals` - Full CRUD for skill goals
+- Enhanced `/api/explain` with automatic concept extraction
+- Improved confidence scoring algorithm
+
+### v0.8.10
 - Added `/api/analyze-security` endpoint
 - Improved streaming performance for `/api/explain`
 - Added rate limiting headers

@@ -9,7 +9,11 @@ interface CommentFormProps {
   onCancel?: () => void
 }
 
-export function CommentForm({ onSubmit, placeholder = "Add a comment...", onCancel }: CommentFormProps) {
+export function CommentForm({
+  onSubmit,
+  placeholder = "Add a comment...",
+  onCancel,
+}: CommentFormProps) {
   const [body, setBody] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState("")

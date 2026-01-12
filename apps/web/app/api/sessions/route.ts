@@ -52,7 +52,7 @@ export async function POST(req: Request) {
     // Let's treat the incoming data as an "Action" or "Interaction"
     // We'll map the extension's "trackExplain" call to a DB entry.
 
-    await prisma.codingSession.create({
+    const codingSession = await prisma.codingSession.create({
       data: {
         userId: apiKeyRecord.userId,
         description: description,
@@ -63,6 +63,66 @@ export async function POST(req: Request) {
         metadata: sessionData,
       },
     })
+
+    // Create Explanation record for Skills & Mastery tracking
+    const concepts = sessionData.concepts || []
+    const language = sessionData.language || null
+    const interactionType = sessionData.interactionType || "Explanation"
+
+    if (concepts.length > 0) {
+      // Create explanation record
+      await prisma.explanation.create({
+        data: {
+          userId: apiKeyRecord.userId,
+          sessionId: codingSession.id,
+          language,
+          concepts,
+          interactionType,
+        },
+      })
+
+      // Aggregate skills for each concept
+      for (const concept of concepts) {
+        // Upsert skill record
+        const existingSkill = await prisma.skill.findUnique({
+          where: {
+            userId_concept: {
+              userId: apiKeyRecord.userId,
+              concept,
+            },
+          },
+        })
+
+        if (existingSkill) {
+          // Update existing skill
+          const newTotalExplanations = existingSkill.totalExplanations + 1
+          const newConfidence = Math.min(95, existingSkill.confidence + 1)
+
+          await prisma.skill.update({
+            where: { id: existingSkill.id },
+            data: {
+              totalExplanations: newTotalExplanations,
+              confidence: newConfidence,
+              lastSeenAt: new Date(),
+              language: language || existingSkill.language,
+            },
+          })
+        } else {
+          // Create new skill
+          await prisma.skill.create({
+            data: {
+              userId: apiKeyRecord.userId,
+              concept,
+              language,
+              totalExplanations: 1,
+              sessionsCount: 1,
+              confidence: 20, // Starting confidence
+              lastSeenAt: new Date(),
+            },
+          })
+        }
+      }
+    }
 
     return NextResponse.json({ success: true })
   } catch (error) {

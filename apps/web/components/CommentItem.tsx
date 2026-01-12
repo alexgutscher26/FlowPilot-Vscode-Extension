@@ -110,9 +110,7 @@ export function CommentItem({
         <div className="flex items-center gap-2 mb-1">
           <span className="text-sm font-medium">{user.name || "Anonymous"}</span>
           <span className="text-xs text-muted-foreground">{getRelativeTime(createdAt)}</span>
-          {isEdited && (
-            <span className="text-xs text-muted-foreground italic">(edited)</span>
-          )}
+          {isEdited && <span className="text-xs text-muted-foreground italic">(edited)</span>}
         </div>
 
         {isEditing ? (
@@ -147,9 +145,7 @@ export function CommentItem({
           </div>
         ) : (
           <>
-            <p className="text-sm text-foreground whitespace-pre-wrap break-words mb-2">
-              {body}
-            </p>
+            <p className="text-sm text-foreground whitespace-pre-wrap break-words mb-2">{body}</p>
 
             {/* Reactions */}
             {(reactions.length > 0 || currentUserId) && (
@@ -191,7 +187,9 @@ export function CommentItem({
           </button>
           {showConfirm ? (
             <div className="flex items-center gap-1 bg-red-50 dark:bg-red-900/20 px-2 py-1 rounded-lg">
-              <span className="text-xs text-red-600 dark:text-red-400 font-medium mr-1">Delete?</span>
+              <span className="text-xs text-red-600 dark:text-red-400 font-medium mr-1">
+                Delete?
+              </span>
               <button
                 onClick={handleDelete}
                 disabled={isDeleting}

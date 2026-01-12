@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server"
 import OpenAI from "openai"
+import { auth } from "@/lib/auth"
+import { headers } from "next/headers"
+import { prisma } from "@/lib/db"
+import { processConceptsForUser } from "@/lib/skillProcessor"
 
 const openai = new OpenAI({
   baseURL: "https://openrouter.ai/api/v1",
@@ -9,13 +13,24 @@ const openai = new OpenAI({
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    const { code, fileName, languageId, surroundingLines } = body
+    const { code, fileName, languageId, surroundingLines, apiKey } = body
 
     console.log("[Explain API] Received request:", {
       fileName,
       languageId,
       codeLength: code?.length,
     })
+
+    // Get authenticated user (optional - can work without auth)
+    let userId: string | null = null
+    try {
+      const session = await auth.api.getSession({
+        headers: await headers(),
+      })
+      userId = session?.user?.id || null
+    } catch (authError) {
+      console.log("[Explain API] No authenticated user, proceeding anonymously")
+    }
 
     if (!process.env.OPENROUTER_API_KEY) {
       console.error("[Explain API] Missing OPENROUTER_API_KEY")
@@ -41,6 +56,12 @@ You must return a valid JSON object with the following structure:
     "concepts": ["<concept1>", "<concept2>", ...],
     "suggestions": ["<suggestion1>", "<suggestion2>", ...]
 }
+
+IMPORTANT for "concepts" field:
+- Extract 2-5 key programming concepts demonstrated in the code
+- Use standard, recognizable concept names (e.g., "React Hooks", "Async/Await", "TypeScript Generics", "Array Methods", "Error Handling")
+- Focus on concepts that are actually demonstrated, not just mentioned
+- Be specific but not overly granular (e.g., "useState Hook" not just "React")
 
 Format the "lineByLine" array to match the input code lines exactly.
 Do not include markdown formatting (like \`\`\`json) in your response, just the raw JSON object.
@@ -103,6 +124,41 @@ ${code}
                   `data: ${JSON.stringify({ done: true, content: accumulatedContent })}\n\n`
                 )
               )
+
+              // Process concepts if user is authenticated
+              if (userId && accumulatedContent) {
+                try {
+                  const parsedResponse = JSON.parse(accumulatedContent)
+                  const concepts = parsedResponse.concepts || []
+
+                  if (concepts.length > 0) {
+                    // Store explanation record
+                    await prisma.explanation.create({
+                      data: {
+                        userId,
+                        language: languageId,
+                        concepts,
+                        interactionType: "Explanation",
+                      },
+                    })
+
+                    // Process concepts and update skills
+                    await processConceptsForUser(
+                      userId,
+                      concepts.map((concept: string) => ({
+                        concept,
+                        language: languageId,
+                      }))
+                    )
+
+                    console.log(`[Explain API] Processed ${concepts.length} concepts for user ${userId}`)
+                  }
+                } catch (conceptError) {
+                  console.error("[Explain API] Failed to process concepts:", conceptError)
+                  // Don't fail the request if concept processing fails
+                }
+              }
+
               controller.close()
             } catch (error) {
               console.error("[Explain API] Streaming error:", error)
@@ -115,7 +171,7 @@ ${code}
         try {
           const logEntry = {
             timestamp: new Date().toISOString(),
-            userId: "anonymous-user",
+            userId: userId || "anonymous-user",
             language: languageId,
             fileName: fileName,
             model: selectedModel,

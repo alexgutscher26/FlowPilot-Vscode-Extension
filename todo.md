@@ -182,6 +182,11 @@
 *Focus: Moving beyond wrapper-level features to proprietary intelligence.*
 
 ### 5.1 RAG (Retrieval Augmented Generation) System
+- [x] **Advanced Concept Extraction**
+    - [x] Enhance `/api/explain` to extract concepts using LLM
+    - [x] Create skill processor utility with confidence calculation
+    - [x] Store extracted concepts in Explanation table
+    - [x] Update or create Skill records automatically
 - [ ] **Vector Database Setup**
     - [ ] Deploy Pinecone, Weaviate, or pgvector.
     - [ ] Index the entire User Workspace codebase.
@@ -268,3 +273,16 @@
 - [x] **Privacy Policy**: Explicit details on code data handling (Does code leave the machine? Is it stored?).
 - [x] **Terms of Service**: Usage limits, liability disclaimers.
 - [ ] **GDPR/CCPA Compliance**: Data export and deletion tools.
+
+- [x] **Skill Goals - Allow users to set learning goals and track progress**
+    - [x] Add SkillGoal model to database schema
+    - [x] Create `/api/skills/goals` CRUD endpoints
+    - [x] Build SkillGoalModal, SkillGoalCard, and GoalsSection components
+    - [x] Integrate goal management into Skills page
+    - [x] Implement automatic goal progress updates
+
+    
+Skill Sharing - Share skill profiles with team members
+Export Reports - Generate PDF/CSV reports of learning progress
+Integration with Review Modules - Actually implement the learning sessions
+Skill Decay Algorithm - More sophisticated confidence decay based on complexity
