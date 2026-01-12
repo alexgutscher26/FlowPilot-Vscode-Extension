@@ -284,7 +284,7 @@ var Xo = Z((Gf, Yu) => {
       "dts-check": "tsc --project tests/types/tsconfig.json",
       lint: "standard",
       "lint-readme": "standard-markdown",
-      pretest: "bunrun lint && bunrun dts-check",
+      pretest: "bun lint && bun dts-check",
       test: "tap tests/*.js --100 -Rspec",
       prerelease: "buntest",
       release: "standard-version",

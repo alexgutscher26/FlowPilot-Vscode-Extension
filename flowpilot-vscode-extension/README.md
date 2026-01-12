@@ -43,17 +43,17 @@ A VSCode extension that provides an AI coding coach to help developers understan
 
 ### Building
 ```bash
-bunrun compile
+bun compile
 ```
 
 ### Watching for changes
 ```bash
-bunrun watch
+bun watch
 ```
 
 ### Linting
 ```bash
-bunrun lint
+bun lint
 ```
 
 ## Architecture

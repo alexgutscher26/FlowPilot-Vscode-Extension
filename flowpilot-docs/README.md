@@ -106,7 +106,7 @@ See the [Docusaurus Markdown Features](https://docusaurus.io/docs/markdown-featu
 ### GitHub Pages
 
 ```bash
-GIT_USER=<Your GitHub username> bunrun deploy
+GIT_USER=<Your GitHub username> bun deploy
 ```
 
 This builds the site and pushes to the `gh-pages` branch.

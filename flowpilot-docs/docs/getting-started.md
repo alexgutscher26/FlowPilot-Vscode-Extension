@@ -48,7 +48,7 @@ This is the core of the product. To build and debug the extension:
 
 3.  **Start the Compiler in Watch Mode:**
     ```bash
-    bunrun watch
+    bun watch
     ```
     This uses `esbuild` to compile the TypeScript code and watches for changes.
 
@@ -77,7 +77,7 @@ The web dashboard handles authentication, user history, and deeper analytics.
 
 3.  **Start the Development Server:**
     ```bash
-    bunrun dev
+    bun dev
     ```
     The app will be available at [http://localhost:3000](http://localhost:3000).
 

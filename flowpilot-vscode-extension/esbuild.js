@@ -26,7 +26,9 @@ const esbuildProblemMatcherPlugin = {
 async function main() {
     const ctx = await esbuild.context({
         entryPoints: [
-            'src/extension.ts'
+            'src/extension.ts',
+            'src/webview.js',
+            'src/webview.css'
         ],
         bundle: true,
         format: 'cjs',
@@ -34,7 +36,8 @@ async function main() {
         sourcemap: !production,
         sourcesContent: false,
         platform: 'node',
-        outfile: 'dist/extension.js',
+        outdir: 'dist',
+        outbase: 'src',
         external: ['vscode'],
         logLevel: 'silent',
         plugins: [
@@ -52,6 +55,16 @@ async function main() {
 }
 
 main().catch(e => {
-    console.error(e);
+    console.error('Build failed:');
+    if (e.errors) {
+        e.errors.forEach(err => {
+            console.error(`Error: ${err.text}`);
+            if (err.location) {
+                console.error(`  at ${err.location.file}:${err.location.line}`);
+            }
+        });
+    } else {
+        console.error(e.message || e);
+    }
     process.exit(1);
 });

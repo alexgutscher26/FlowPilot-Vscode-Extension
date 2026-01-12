@@ -313,7 +313,7 @@ FlowPilot-Vscode-Extension/
 ### Backend Debugging
 
 1. Use `console.log()` in API routes
-2. Check terminal output where `bunrun dev` is running
+2. Check terminal output where `bun dev` is running
 3. Use browser DevTools Network tab for API requests
 
 ---

@@ -184,7 +184,7 @@
                 }
                 break;
 
-            case 'showErrorExplanation':
+            case 'showErrorExplanation': {
                 const errorData = message.explanation;
 
                 // Create error explanation message with structured sections
@@ -277,12 +277,13 @@
                 chatMessages.appendChild(errorMessageDiv);
                 scrollToBottom();
                 break;
+            }
 
             case 'explainCode':
                 addMessage(`I'll explain this code...`, 'ai');
                 break;
 
-            case 'showReview':
+            case 'showReview': {
                 const review = message.review;
 
                 const reviewDiv = document.createElement('div');
@@ -370,6 +371,7 @@
                 chatMessages.appendChild(reviewDiv);
                 scrollToBottom();
                 break;
+            }
         }
     });
 

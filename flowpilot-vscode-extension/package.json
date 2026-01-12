@@ -2,7 +2,7 @@
   "name": "flowpilot",
   "displayName": "FlowPilot - AI Coding Coach",
   "description": "Your AI coding coach that helps you write better code with real-time explanations and suggestions",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "publisher": "flowpilot",
   "icon": "icon.png",
   "repository": {
@@ -158,11 +158,11 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "bunrun esbuild-base -- --minify",
+    "vscode:prepublish": "bun esbuild-base -- --minify",
     "esbuild-base": "node esbuild.js",
     "compile": "tsc -p ./",
     "watch": "node esbuild.js --watch",
-    "pretest": "bunrun compile && bunrun lint",
+    "pretest": "bun compile && bun lint",
     "lint": "eslint src --ext ts",
     "test": "node ./out/test/runTest.js"
   },

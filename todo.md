@@ -260,7 +260,7 @@
     - [x] "Features Deep Dive".
     - [x] FAQ: "Why is the AI hallucinating?"
 - [x] **In-Editor Walkthrough**
-    - [x] VS Code "Welcome Page" with interactive checklist.
+    - [x] VS Code "Welcome Page" with interactive checklist. not showing up
 
 ### 8.2 Developer Documentation
 - [x] **Architecture Diagrams**: C4 Model diagrams of how Extension talks to Backend.
@@ -270,4 +270,4 @@
 ### 8.3 Legal
 - [x] **Privacy Policy**: Explicit details on code data handling (Does code leave the machine? Is it stored?).
 - [x] **Terms of Service**: Usage limits, liability disclaimers.
-- [x] **GDPR/CCPA Compliance**: Data export and deletion tools.
+- [ ] **GDPR/CCPA Compliance**: Data export and deletion tools.
