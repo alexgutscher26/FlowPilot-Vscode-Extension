@@ -191,35 +191,88 @@
                 const errorMessageDiv = document.createElement('div');
                 errorMessageDiv.className = 'chat-message ai error-explanation';
 
-                let errorHtml = '<div class="message-avatar"><span class="fp-icon">' + robotIcon + '</span></div>';
-                errorHtml += '<div class="message-content">';
+                // Avatar
+                const avatarDiv = document.createElement('div');
+                avatarDiv.className = 'message-avatar';
+                const avatarSpan = document.createElement('span');
+                avatarSpan.className = 'fp-icon';
+                avatarSpan.innerHTML = robotIcon; // robotIcon is trusted static HTML/icon
+                avatarDiv.appendChild(avatarSpan);
+                errorMessageDiv.appendChild(avatarDiv);
+
+                // Message content container
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'message-content';
 
                 // Plain English section
                 if (errorData.plainEnglish) {
-                    errorHtml += `<div class="error-section"><strong>🔴 What this means:</strong><p>${errorData.plainEnglish}</p></div>`;
+                    const section = document.createElement('div');
+                    section.className = 'error-section';
+
+                    const title = document.createElement('strong');
+                    title.textContent = '🔴 What this means:';
+                    section.appendChild(title);
+
+                    const p = document.createElement('p');
+                    p.textContent = errorData.plainEnglish;
+                    section.appendChild(p);
+
+                    contentDiv.appendChild(section);
                 }
 
                 // Why it happens section
                 if (errorData.whyItHappens) {
-                    errorHtml += `<div class="error-section"><strong>❓ Why it happens:</strong><p>${errorData.whyItHappens}</p></div>`;
+                    const section = document.createElement('div');
+                    section.className = 'error-section';
+
+                    const title = document.createElement('strong');
+                    title.textContent = '❓ Why it happens:';
+                    section.appendChild(title);
+
+                    const p = document.createElement('p');
+                    p.textContent = errorData.whyItHappens;
+                    section.appendChild(p);
+
+                    contentDiv.appendChild(section);
                 }
 
                 // How to fix section
                 if (errorData.howToFix && errorData.howToFix.length > 0) {
-                    errorHtml += '<div class="error-section"><strong>✅ How to fix:</strong><ol>';
+                    const section = document.createElement('div');
+                    section.className = 'error-section';
+
+                    const title = document.createElement('strong');
+                    title.textContent = '✅ How to fix:';
+                    section.appendChild(title);
+
+                    const ol = document.createElement('ol');
                     errorData.howToFix.forEach(step => {
-                        errorHtml += `<li>${step}</li>`;
+                        const li = document.createElement('li');
+                        li.textContent = step;
+                        ol.appendChild(li);
                     });
-                    errorHtml += '</ol></div>';
+                    section.appendChild(ol);
+
+                    contentDiv.appendChild(section);
                 }
 
                 // Prevention section
                 if (errorData.prevention) {
-                    errorHtml += `<div class="error-section"><strong>🛡️ Prevention:</strong><p>${errorData.prevention}</p></div>`;
+                    const section = document.createElement('div');
+                    section.className = 'error-section';
+
+                    const title = document.createElement('strong');
+                    title.textContent = '🛡️ Prevention:';
+                    section.appendChild(title);
+
+                    const p = document.createElement('p');
+                    p.textContent = errorData.prevention;
+                    section.appendChild(p);
+
+                    contentDiv.appendChild(section);
                 }
 
-                errorHtml += '</div>';
-                errorMessageDiv.innerHTML = errorHtml;
+                errorMessageDiv.appendChild(contentDiv);
 
                 chatMessages.appendChild(errorMessageDiv);
                 scrollToBottom();
