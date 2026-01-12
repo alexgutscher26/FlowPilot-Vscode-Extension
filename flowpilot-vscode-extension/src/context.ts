@@ -18,21 +18,33 @@ export async function getExplainContext(): Promise<ExplainContext | null> {
     }
 
     const document = editor.document;
-    const selection = editor.selection;
+    const selections = editor.selections;
     const fileName = document.fileName;
     const languageId = document.languageId;
-    const cursorLine = selection.active.line;
+    // Default to the active cursor line of the primary selection
+    const cursorLine = editor.selection.active.line;
 
     let code = '';
     let surroundingLines = '';
 
-    if (!selection.isEmpty) {
+    if (selections.length > 0 && !selections[0].isEmpty) {
         // User selected code
-        code = document.getText(selection);
+        // Aggregate all selections
+        const selectedTexts: string[] = [];
+        selections.forEach(sel => {
+            if (!sel.isEmpty) {
+                selectedTexts.push(document.getText(sel));
+            }
+        });
 
-        // Get some surrounding context (e.g., 5 lines before and after)
-        const startLine = Math.max(0, selection.start.line - 5);
-        const endLine = Math.min(document.lineCount - 1, selection.end.line + 5);
+        // Join with a clear separator
+        code = selectedTexts.join('\n\n---\n\n');
+
+        // For surrounding lines, we'll just stick to the primary selection for now to avoid Context Overflow
+        // Get some surrounding context (e.g., 5 lines before and after primary selection)
+        const primarySelection = editor.selection;
+        const startLine = Math.max(0, primarySelection.start.line - 5);
+        const endLine = Math.min(document.lineCount - 1, primarySelection.end.line + 5);
         const contextRange = new vscode.Range(startLine, 0, endLine, document.lineAt(endLine).text.length);
         surroundingLines = document.getText(contextRange);
     } else {
@@ -42,7 +54,8 @@ export async function getExplainContext(): Promise<ExplainContext | null> {
             const parser = ParserService.getInstance();
             // Need full text for parsing to find context
             const fullText = document.getText();
-            const enclosing = await parser.findEnclosingFunction(fullText, languageId, cursorLine, selection.active.character);
+            // Use primary selection active position
+            const enclosing = await parser.findEnclosingFunction(fullText, languageId, cursorLine, editor.selection.active.character);
 
             if (enclosing) {
                 expansionRange = new vscode.Range(enclosing.startLine, 0, enclosing.endLine, document.lineAt(enclosing.endLine).text.length);

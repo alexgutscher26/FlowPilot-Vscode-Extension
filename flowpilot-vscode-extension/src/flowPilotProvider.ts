@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import fetch from 'node-fetch';
 import { trackExplain } from './sessionManager';
+import { SanitizationService } from './services/sanitizationService';
 
 export class FlowPilotProvider implements vscode.WebviewViewProvider {
     public static readonly viewType = 'flowpilotPanel';
@@ -62,11 +63,14 @@ export class FlowPilotProvider implements vscode.WebviewViewProvider {
         const fileName = document.fileName;
         const languageId = document.languageId;
 
+        // Sanitize code
+        const sanitizedCode = SanitizationService.redactSecrets(fullContent);
+
         const context = {
-            code: fullContent,
+            code: sanitizedCode,
             fileName: fileName,
             languageId: languageId,
-            surroundingLines: fullContent
+            surroundingLines: sanitizedCode
         };
 
         await this.explainCode(context);
@@ -75,6 +79,14 @@ export class FlowPilotProvider implements vscode.WebviewViewProvider {
     public async explainCode(context: any) {
         // Track selection explanation
         trackExplain('selection', context);
+
+        // Sanitize context code
+        if (context.code) {
+            context.code = SanitizationService.redactSecrets(context.code);
+        }
+        if (context.surroundingLines) {
+            context.surroundingLines = SanitizationService.redactSecrets(context.surroundingLines);
+        }
 
         if (this._view) {
             this._view.webview.postMessage({ type: 'streamingStart' });
@@ -142,6 +154,11 @@ ${context.code}
     public async explainError(context: any) {
         // Track error explanation
         trackExplain('error', context);
+
+        // Sanitize error context
+        if (context.codeSnippet) {
+            context.codeSnippet = SanitizationService.redactSecrets(context.codeSnippet);
+        }
 
         if (this._view) {
             this._view.webview.postMessage({ type: 'streamingStart' });
@@ -228,6 +245,11 @@ Please explain this error and how to fix it.
 
     public async reviewSnippet(context: any) {
         trackExplain('review', context);
+
+        // Sanitize context code
+        if (context.code) {
+            context.code = SanitizationService.redactSecrets(context.code);
+        }
 
         if (this._view) {
             this._view.webview.postMessage({ type: 'streamingStart' });

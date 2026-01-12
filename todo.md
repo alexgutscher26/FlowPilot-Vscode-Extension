@@ -19,8 +19,8 @@
 - [ ] **Context Extraction Engine**
     - [x] Implement AST-based parsing (using `tree-sitter` or similar) to verify valid code blocks are selected.
     - [x] Create fallback logic: If selection is empty, auto-expand selection to current function boundaries.
-    - [ ] Add support for multi-cursor selections (aggregate context or error out gracefully).
-    - [ ] Sanitize input: Remove secrets/API keys from code before sending to LLM.
+    - [x] Add support for multi-cursor selections (aggregate context or error out gracefully).
+    - [x] Sanitize input: Remove secrets/API keys from code before sending to LLM.
 - [ ] **Streaming Response Handling**
     - [ ] Implement Server-Sent Events (SSE) listener in the Extension Host.
     - [ ] Create a "Typing Effect" buffer to smooth out text rendering in the Webview.

@@ -5,10 +5,4 @@ function calculateTotal(price, tax) {
     return price + text;
 }
 
-// Error 2: SyntaxError (missing closing parenthesis
-console.log("Starting calculation";
-
-// Error 3: TypeError
-const number = 42;
-number.toUpperCase(
-number.to
+const key = "sk-123...";

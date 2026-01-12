@@ -700,3 +700,7 @@
 {"timestamp":"2026-01-12T03:59:47.758Z","userId":"anonymous-user","type":"lint-code","language":"typescript","fileName":"\\172","issuesFound":7,"model":"openai/gpt-4o-mini"}
 {"timestamp":"2026-01-12T03:59:48.400Z","userId":"anonymous-user","type":"lint-code","language":"typescript","fileName":"\\175","issuesFound":8,"model":"openai/gpt-4o-mini"}
 {"timestamp":"2026-01-12T03:59:59.630Z","userId":"anonymous-user","type":"lint-code","language":"typescript","fileName":"\\158","issuesFound":23,"model":"openai/gpt-4o-mini"}
+{"timestamp":"2026-01-12T04:41:56.187Z","userId":"anonymous-user","language":"typescript","fileName":"c:\\Users\\gutsc\\OneDrive\\Desktop\\New folder\\apps\\web\\test_error.ts","model":"openai/gpt-4o-mini"}
+{"timestamp":"2026-01-12T04:42:24.376Z","userId":"anonymous-user","language":"typescript","fileName":"c:\\Users\\gutsc\\OneDrive\\Desktop\\New folder\\apps\\web\\test_error.ts","model":"openai/gpt-4o-mini"}
+{"timestamp":"2026-01-12T04:42:26.395Z","userId":"anonymous-user","type":"lint-code","language":"typescript","fileName":"c:\\Users\\gutsc\\OneDrive\\Desktop\\New folder\\apps\\web\\test_error.ts","issuesFound":4,"model":"openai/gpt-4o-mini"}
+{"timestamp":"2026-01-12T04:42:27.059Z","userId":"anonymous-user","type":"security-analysis","language":"typescript","fileName":"c:\\Users\\gutsc\\OneDrive\\Desktop\\New folder\\apps\\web\\test_error.ts","findingsCount":2,"overallRisk":"medium","model":"openai/gpt-4o-mini"}
