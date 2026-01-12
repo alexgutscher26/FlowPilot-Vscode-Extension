@@ -71,3 +71,21 @@ The FlowPilot side panel (`Cmd+Opt+F` or click the icon in the activity bar) is 
 - **Refactor:** "Rewrite this function to be more efficient."
 
 The chat understands your current project context, making its suggestions relevant to your specific codebase.
+
+---
+
+## 🔒 Private Local Inference
+
+**Use FlowPilot completely offline.**
+
+For enhanced privacy or disconnected environments, FlowPilot can connect to specific local LLM servers.
+
+### Supported Backends:
+- **Ollama:** The easiest way to get up and running locally.
+- **LM Studio:** Compatible with OpenAI-style endpoints.
+
+### How to enable:
+1. Ensure your local server is running (e.g., `ollama serve`).
+2. Go to **Settings > FlowPilot**.
+3. Enable **"Prefer Local Model"**.
+4. (Optional) Customize the endpoint URL and Model name.

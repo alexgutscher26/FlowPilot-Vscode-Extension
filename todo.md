@@ -191,9 +191,9 @@
 
 ### 5.2 Local LLM Fallbacks
 - [ ] **Ollama / LM Studio Protocol**
-    - [ ] Detect if local server is running on port `11434`.
-    - [ ] Configuration toggle: "Prefer Local Model (Privacy Mode)".
-    - [ ] Support generic OpenAI-compatible endpoints for local inference.
+    - [x] Detect if local server is running on port `11434`.
+    - [x] Configuration toggle: "Prefer Local Model (Privacy Mode)".
+    - [x] Support generic OpenAI-compatible endpoints for local inference.
 
 ### 5.3 Personalized Finetuning (Long Term)
 - [ ] Data pipeline to collect user's specific coding style (variable naming conventions, preferred libraries).

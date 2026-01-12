@@ -10,6 +10,7 @@ A VSCode extension that provides an AI coding coach to help developers understan
 - **Interactive Chat**: Ask questions about your code and get instant answers
 - **Code Optimization**: Get suggestions to improve your code performance
 - **Documentation**: Add docstrings and improve code documentation
+- **Local Model Support**: Use local LLMs via Ollama for complete privacy
 
 ## Installation
 
@@ -38,6 +39,22 @@ A VSCode extension that provides an AI coding coach to help developers understan
 - Type your questions in the chat input
 - Get instant answers about your code
 - Ask about best practices, optimizations, or clarifications
+
+## Local Model Support (Privacy Mode)
+
+FlowPilot supports running completely offline using local LLMs (like Llama 3) via **Ollama**. This ensures your code never leaves your machine.
+
+### Setup
+1. Download and install [Ollama](https://ollama.com).
+2. Pull a model (e.g., `ollama pull llama3`).
+3. Open VS Code Settings (`Cmd+,`).
+4. Search for `Flowpilot`.
+5. Check **"Prefer Local Model"**.
+6. (Optional) Configure the endpoint and model name if different from defaults.
+
+Defaults:
+- Endpoint: `http://localhost:11434/v1/chat/completions`
+- Model: `llama3`
 
 ## Development
 

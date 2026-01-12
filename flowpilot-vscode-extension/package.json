@@ -2,7 +2,7 @@
   "name": "flowpilot",
   "displayName": "FlowPilot - AI Coding Coach",
   "description": "Your AI coding coach that helps you write better code with real-time explanations and suggestions",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "publisher": "flowpilot",
   "icon": "icon.png",
   "repository": {
@@ -153,6 +153,21 @@
           "type": "boolean",
           "default": true,
           "description": "Enable/Disable 'Review Entire File' feature."
+        },
+        "flowpilot.privacy.preferLocalModel": {
+          "type": "boolean",
+          "default": false,
+          "description": "If enabled, use a local OpenAI-compatible endpoint for inference instead of the cloud API."
+        },
+        "flowpilot.local.modelEndpoint": {
+          "type": "string",
+          "default": "http://localhost:11434/v1/chat/completions",
+          "description": "The URL for the local OpenAI-compatible inference endpoint."
+        },
+        "flowpilot.local.modelName": {
+          "type": "string",
+          "default": "llama3",
+          "description": "The name of the model to use for local inference."
         }
       }
     }
