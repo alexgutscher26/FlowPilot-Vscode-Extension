@@ -248,7 +248,7 @@
 ### 7.3 Monitoring
 - [ ] **Sentry**: Catch logic crashes in both Extension and Web.
 - [ ] **PostHog**: Product analytics (Funnel analysis: Install -> Activation).
-- [ ] **Uptime Robot**: Monitor API health endpoints.
+- [x] **Uptime Robot**: Monitor API health endpoints.
 
 ---
 
