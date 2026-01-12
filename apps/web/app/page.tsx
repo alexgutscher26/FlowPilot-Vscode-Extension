@@ -483,16 +483,16 @@ export default function Page() {
           <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t text-sm text-muted-foreground">
             <p>© 2026 FlowPilot. All rights reserved.</p>
             <div className="flex gap-6 mt-4 md:mt-0">
-              <a className="hover:text-primary transition-colors" href="#">
+              <a className="hover:text-primary transition-colors" href="/privacy">
                 Privacy
               </a>
-              <a className="hover:text-primary transition-colors" href="#">
+              <a className="hover:text-primary transition-colors" href="/terms">
                 Terms
               </a>
-              <a className="hover:text-primary transition-colors" href="#">
+              <a className="hover:text-primary transition-colors" href="https://x.com/snackforcode">
                 Twitter
               </a>
-              <a className="hover:text-primary transition-colors" href="#">
+              <a className="hover:text-primary transition-colors" href="https://github.com/alexgutscher26/FlowPilot-Vscode-Extension">
                 GitHub
               </a>
             </div>

@@ -268,6 +268,6 @@
 - [x] **Contributing Guide**: Codespaces setup, `pnpm` workspace strictness.
 
 ### 8.3 Legal
-- [ ] **Privacy Policy**: Explicit details on code data handling (Does code leave the machine? Is it stored?).
-- [ ] **Terms of Service**: Usage limits, liability disclaimers.
+- [x] **Privacy Policy**: Explicit details on code data handling (Does code leave the machine? Is it stored?).
+- [x] **Terms of Service**: Usage limits, liability disclaimers.
 - [ ] **GDPR/CCPA Compliance**: Data export and deletion tools.
