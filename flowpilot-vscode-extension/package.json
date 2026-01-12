@@ -164,7 +164,8 @@
     "watch": "node esbuild.js --watch",
     "pretest": "bun compile && bun lint",
     "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js"
+    "test": "node ./out/test/runTest.js",
+    "version-bump": "npm version patch"
   },
   "devDependencies": {
     "@types/node": "16.x",

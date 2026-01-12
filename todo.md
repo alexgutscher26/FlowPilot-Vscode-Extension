@@ -220,7 +220,7 @@
     - [ ] Mobile responsiveness checks.
 
 ### 6.3 Security Audits
-- [ ] **Dependency Scan**: Setup `bunaudit` or Snyk in CI pipeline.
+- [x] **Dependency Scan**: Setup `bun audit` or Snyk in CI pipeline.
 - [ ] **Penetration Testing**: Attempt prompt injection attacks on the LLM.
 
 ---
@@ -229,19 +229,16 @@
 
 ### 7.1 Build Pipelines (GitHub Actions)
 - [ ] **Extension Build**
-    - [ ] `version-bump`: Auto-increment semver.
-    - [ ] `package`: Run `vsce package`.
-    - [ ] `artifact`: Upload `.vsix` file to GitHub Releases.
-- [ ] **Web Build**
-    - [ ] Dockerize the Next.js application.
-    - [ ] Push image to registry (GHCR or Docker Hub).
+    - [x] `version-bump`: Auto-increment semver.
+    - [x] `package`: Run `vsce package`.
+    - [x] `artifact`: Upload `.vsix` file to GitHub Releases.
 
 ### 7.2 Deployment
 - [ ] **Vercel / Netlify** (for Web Frontend)
     - [ ] Configure Preview Deployments for PRs.
     - [ ] Set up Environment Variables (Production vs Staging).
 - [ ] **VS Code Marketplace**
-    - [ ] Create Publisher Account (Microsoft).
+    - [x] Create Publisher Account (Microsoft).
     - [ ] Automate publishing via `vsce publish` token.
     - [ ] Open VSX Registry Support (for VSCodium users).
 
