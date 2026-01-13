@@ -138,10 +138,7 @@ function FeatureBlocks() {
           </div>
           <div className="w-full md:w-1/2">
             <div className="rounded-xl overflow-hidden shadow-xl border border-gray-200 dark:border-gray-800 bg-card p-2 rotate-1 hover:rotate-0 transition-transform duration-500">
-              <div
-                className="w-full aspect-[4/3] bg-cover bg-center rounded-lg"
-                style={{ backgroundImage: "linear-gradient(135deg, #e0e7ff 0%, #f3f4f6 100%)" }}
-              >
+              <div className="w-full aspect-[4/3] bg-cover bg-center rounded-lg bg-gradient-to-br from-indigo-100 to-gray-100 dark:from-indigo-950/50 dark:to-gray-900/50">
                 <div className="h-full w-full flex items-center justify-center relative">
                   <div className="absolute inset-x-8 top-12 h-4 bg-red-400/20 rounded"></div>
                   <div className="bg-white dark:bg-gray-800 p-4 rounded shadow-lg absolute right-12 top-20 w-48 text-xs z-10">
@@ -175,10 +172,7 @@ function FeatureBlocks() {
           </div>
           <div className="w-full md:w-1/2">
             <div className="rounded-xl overflow-hidden shadow-xl border border-gray-200 dark:border-gray-800 bg-card p-2 -rotate-1 hover:rotate-0 transition-transform duration-500">
-              <div
-                className="w-full aspect-[4/3] bg-cover bg-center rounded-lg"
-                style={{ backgroundImage: "linear-gradient(135deg, #f3e8ff 0%, #f3f4f6 100%)" }}
-              >
+              <div className="w-full aspect-[4/3] bg-cover bg-center rounded-lg bg-gradient-to-br from-purple-100 to-gray-100 dark:from-purple-950/50 dark:to-gray-900/50">
                 <div className="h-full w-full p-8 flex gap-4">
                   <div className="w-1/2 bg-gray-200 dark:bg-gray-700 rounded h-3/4"></div>
                   <div className="w-1/2 bg-white dark:bg-gray-800 rounded h-full shadow p-4 flex flex-col gap-2">
@@ -208,10 +202,7 @@ function FeatureBlocks() {
           </div>
           <div className="w-full md:w-1/2">
             <div className="rounded-xl overflow-hidden shadow-xl border border-gray-200 dark:border-gray-800 bg-card p-2 rotate-1 hover:rotate-0 transition-transform duration-500">
-              <div
-                className="w-full aspect-[4/3] bg-cover bg-center rounded-lg"
-                style={{ backgroundImage: "linear-gradient(135deg, #dcfce7 0%, #f3f4f6 100%)" }}
-              >
+              <div className="w-full aspect-[4/3] bg-cover bg-center rounded-lg bg-gradient-to-br from-green-100 to-gray-100 dark:from-green-950/50 dark:to-gray-900/50">
                 <div className="h-full w-full flex flex-col items-center justify-center gap-4 p-6">
                   <div className="w-full bg-red-100 dark:bg-red-900/20 p-3 rounded border border-red-200 dark:border-red-800 opacity-70">
                     <div className="h-2 w-3/4 bg-red-400 rounded"></div>
@@ -299,16 +290,36 @@ function Pricing() {
             </div>
             <ul className="flex flex-col gap-4 mb-8 flex-1">
               <li className="flex items-center gap-3 text-sm">
-                <Check className="h-5 w-5 text-green-500" />
-                Basic Syntax Checking
+                <Check className="h-5 w-5 text-green-500 shrink-0" />
+                <span>
+                  <strong>10</strong> AI Explanations / day
+                </span>
               </li>
               <li className="flex items-center gap-3 text-sm">
-                <Check className="h-5 w-5 text-green-500" />
-                10 AI Explanations / day
+                <Check className="h-5 w-5 text-green-500 shrink-0" />
+                <span>
+                  <strong>5</strong> Refactoring Suggestions / day
+                </span>
               </li>
               <li className="flex items-center gap-3 text-sm">
-                <Check className="h-5 w-5 text-green-500" />
-                Community Support
+                <Check className="h-5 w-5 text-green-500 shrink-0" />
+                <span>
+                  <strong>10</strong> Error Analysis / day
+                </span>
+              </li>
+              <li className="flex items-center gap-3 text-sm">
+                <Check className="h-5 w-5 text-green-500 shrink-0" />
+                <span>
+                  <strong>3</strong> Security Scans / week
+                </span>
+              </li>
+              <li className="flex items-center gap-3 text-sm text-muted-foreground">
+                <div className="h-1.5 w-1.5 rounded-full bg-gray-300 dark:bg-gray-600 ml-1.5 mr-1 shrink-0" />
+                <span>Max 100 lines / request</span>
+              </li>
+              <li className="flex items-center gap-3 text-sm text-muted-foreground">
+                <div className="h-1.5 w-1.5 rounded-full bg-gray-300 dark:bg-gray-600 ml-1.5 mr-1 shrink-0" />
+                <span>30 API requests / min</span>
               </li>
             </ul>
             <button className="w-full py-3 rounded-lg border-2 border-gray-200 dark:border-gray-700 font-bold hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
@@ -316,7 +327,7 @@ function Pricing() {
             </button>
           </div>
 
-          <div className="p-8 rounded-2xl border-2 border-primary bg-white dark:bg-surface-dark shadow-xl relative flex flex-col h-full transform md:-translate-y-4">
+          <div className="p-8 rounded-2xl border-2 border-primary bg-white dark:bg-slate-900 shadow-xl relative flex flex-col h-full transform md:-translate-y-4">
             <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
               Most Popular
             </div>
@@ -332,20 +343,42 @@ function Pricing() {
             </div>
             <ul className="flex flex-col gap-4 mb-8 flex-1">
               <li className="flex items-center gap-3 text-sm">
-                <Check className="h-5 w-5 text-primary" />
-                <strong>Real-time Refactoring Tips</strong>
+                <Check className="h-5 w-5 text-primary shrink-0" />
+                <span>
+                  <strong>Unlimited</strong> AI Explanations
+                </span>
               </li>
               <li className="flex items-center gap-3 text-sm">
-                <Check className="h-5 w-5 text-primary" />
-                Unlimited AI Explanations
+                <Check className="h-5 w-5 text-primary shrink-0" />
+                <span>
+                  <strong>Unlimited</strong> Refactoring Suggestions
+                </span>
               </li>
               <li className="flex items-center gap-3 text-sm">
-                <Check className="h-5 w-5 text-primary" />
-                Security Analysis
+                <Check className="h-5 w-5 text-primary shrink-0" />
+                <span>
+                  <strong>Unlimited</strong> Error Analysis
+                </span>
               </li>
               <li className="flex items-center gap-3 text-sm">
-                <Check className="h-5 w-5 text-primary" />
-                Custom Learning Path
+                <Check className="h-5 w-5 text-primary shrink-0" />
+                <span>
+                  <strong>Unlimited</strong> Security Scans
+                </span>
+              </li>
+              <li className="flex items-center gap-3 text-sm">
+                <Check className="h-5 w-5 text-primary shrink-0" />
+                <span>
+                  <strong>Priority</strong> Processing
+                </span>
+              </li>
+              <li className="flex items-center gap-3 text-sm text-muted-foreground">
+                <div className="h-1.5 w-1.5 rounded-full bg-gray-300 dark:bg-gray-600 ml-1.5 mr-1 shrink-0" />
+                <span>Max 500 lines / request</span>
+              </li>
+              <li className="flex items-center gap-3 text-sm text-muted-foreground">
+                <div className="h-1.5 w-1.5 rounded-full bg-gray-300 dark:bg-gray-600 ml-1.5 mr-1 shrink-0" />
+                <span>120 API requests / min</span>
               </li>
             </ul>
             <button className="w-full py-3 rounded-lg bg-primary text-white font-bold hover:bg-primary/90 transition-colors shadow-lg shadow-primary/30">
@@ -366,7 +399,7 @@ function FAQ() {
           Frequently Asked Questions
         </h2>
         <div className="flex flex-col gap-4">
-          <details className="group bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden transition-all duration-300">
+          <details className="group bg-white dark:bg-slate-900 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden transition-all duration-300">
             <summary className="flex items-center justify-between p-5 cursor-pointer list-none font-semibold">
               <span>Does this replace a human mentor?</span>
               <ChevronDown className="h-5 w-5 transition-transform duration-300 group-open:rotate-180" />
@@ -378,7 +411,7 @@ function FAQ() {
               advice.
             </div>
           </details>
-          <details className="group bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden transition-all duration-300">
+          <details className="group bg-white dark:bg-slate-900 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden transition-all duration-300">
             <summary className="flex items-center justify-between p-5 cursor-pointer list-none font-semibold">
               <span>Which languages do you support?</span>
               <ChevronDown className="h-5 w-5 transition-transform duration-300 group-open:rotate-180" />
@@ -388,7 +421,7 @@ function FAQ() {
               actively working on adding support for Java, Go, and Ruby in the coming months.
             </div>
           </details>
-          <details className="group bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden transition-all duration-300">
+          <details className="group bg-white dark:bg-slate-900 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden transition-all duration-300">
             <summary className="flex items-center justify-between p-5 cursor-pointer list-none font-semibold">
               <span>Is my code safe?</span>
               <ChevronDown className="h-5 w-5 transition-transform duration-300 group-open:rotate-180" />
@@ -423,7 +456,7 @@ function BuildingInPublic() {
           <div className="shrink-0">
             <a
               className="inline-flex items-center gap-2 bg-black hover:bg-gray-800 text-white px-6 py-3 rounded-lg font-medium transition-colors"
-              href="#"
+              href="https://x.com/snackforcode"
             >
               <span>Follow on X</span>
               <ExternalLink className="h-4 w-4" />
