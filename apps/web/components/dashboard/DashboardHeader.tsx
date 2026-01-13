@@ -18,10 +18,8 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
         <Menu />
       </button>
       <div className="flex items-center gap-6 flex-1">
-        <nav className="hidden md:flex text-sm font-medium text-muted-foreground">
-          <a className="hover:text-primary transition-colors" href="#">
-            Home
-          </a>
+        <nav className="hidden md:flex items-center relative text-sm font-medium text-muted-foreground w-full max-w-md">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
             className="block w-full pl-10 pr-3 py-2 border-none rounded-lg leading-5 bg-muted text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 sm:text-sm transition-all"
             placeholder="Search sessions, snippets, or docs..."
