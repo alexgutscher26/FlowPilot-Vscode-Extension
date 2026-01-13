@@ -272,7 +272,7 @@
 ### 8.3 Legal
 - [x] **Privacy Policy**: Explicit details on code data handling (Does code leave the machine? Is it stored?).
 - [x] **Terms of Service**: Usage limits, liability disclaimers.
-- [ ] **GDPR/CCPA Compliance**: Data export and deletion tools.
+- [x] **GDPR/CCPA Compliance**: Data export and deletion tools.
 
 - [x] **Skill Goals - Allow users to set learning goals and track progress**
     - [x] Add SkillGoal model to database schema
@@ -282,7 +282,6 @@
     - [x] Implement automatic goal progress updates
 
     
-Skill Sharing - Share skill profiles with team members
-Export Reports - Generate PDF/CSV reports of learning progress
-Integration with Review Modules - Actually implement the learning sessions
-Skill Decay Algorithm - More sophisticated confidence decay based on complexity
+- [ ] Skill Sharing - Share skill profiles with team members
+- [ ] Export Reports - Generate PDF/CSV reports of learning progress
+- [ ] Skill Decay Algorithm - More sophisticated confidence decay based on complexity
