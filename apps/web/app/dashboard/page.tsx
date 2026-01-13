@@ -21,6 +21,7 @@ import { headers } from "next/headers"
 import { RecentSessions } from "@/components/dashboard/RecentSessions"
 import { TipOfTheDay } from "@/components/dashboard/TipOfTheDay"
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader"
+import { getDashboardStats } from "@/lib/dashboard"
 
 // Server Component
 export default async function DashboardPage() {
@@ -33,12 +34,10 @@ export default async function DashboardPage() {
   }
 
   // Ensure user logic (Server Side)
-  // We can just rely on the session existence here, or trigger a background sync if strictly needed.
-  // For 'instant' load, we shouldn't block on a sync unless it's critical.
-  // The client-side hook was doing this: fetch("/api/user/ensure")
-  // Let's omit the blocking ensure call for speed, as the session implies existence.
-
   const user = session.user
+
+  // Fetch dynamic stats
+  const stats = await getDashboardStats(user.id)
 
   return (
     <div className="bg-background min-h-screen text-foreground">
@@ -126,53 +125,83 @@ export default async function DashboardPage() {
                 <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-primary/5 to-transparent pointer-events-none" />
                 <div className="flex flex-col md:flex-row items-center p-6 md:p-8 gap-8">
                   <div className="flex-1 space-y-4 relative z-10">
-                    <div className="inline-flex items-center px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-xs font-bold uppercase tracking-wide">
-                      <Flame className="mr-1" size={14} />5 Day Streak
+                    <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-[#FFF1E0] text-[#C2410C] text-sm font-bold uppercase tracking-wide border border-transparent">
+                      <Flame className="mr-1.5" size={16} strokeWidth={2.5} />{stats.streak} Day Streak
                     </div>
                     <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">
-                      Welcome back, {user.name || user.email}!
+                      Welcome back, {user.name || "Coder"}!
                     </h1>
                     <p className="text-muted-foreground text-lg max-w-2xl">
-                      You're making great progress. Your consistency score is up
-                      <span className="text-green-600 font-semibold"> 12% </span>
+                      You're making great progress. Your consistency score is {stats.weeklyStats.percentChange >= 0 ? "up" : "down"}
+                      <span className={`${stats.weeklyStats.percentChange >= 0 ? "text-green-600" : "text-red-500"} font-semibold`}>
+                        {" "}{Math.abs(stats.weeklyStats.percentChange)}%{" "}
+                      </span>
                       this week. Ready to tackle that Refactoring module?
                     </p>
                     <div className="pt-2 flex flex-wrap gap-4">
-                      <button className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-3 rounded-lg font-semibold shadow-lg shadow-primary/20 transition-all flex items-center gap-2">
-                        <Play />
+                      <Link
+                        href="/settings/connect"
+                        className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-3 rounded-lg font-semibold shadow-lg shadow-primary/20 transition-all flex items-center gap-2"
+                      >
+                        <Play size={18} />
                         Start New Session
-                      </button>
-                      <button className="bg-card border border-muted/40 text-foreground hover:bg-muted px-6 py-3 rounded-lg font-semibold transition-colors flex items-center gap-2">
-                        <ListChecks />
+                      </Link>
+                      <Link
+                        href="/roadmap"
+                        className="bg-card border border-muted/40 text-foreground hover:bg-muted px-6 py-3 rounded-lg font-semibold transition-colors flex items-center gap-2"
+                      >
+                        <ListChecks size={18} />
                         View Roadmap
-                      </button>
+                      </Link>
                     </div>
                   </div>
                   <div className="relative w-full max-w-xs flex-shrink-0 hidden md:block">
-                    <div className="bg-muted rounded-xl p-4 border border-muted/40">
-                      <div className="flex justify-between items-center mb-4">
-                        <h3 className="font-semibold">Daily Goal</h3>
-                        <span className="text-xs font-medium text-muted-foreground">
-                          85% Complete
-                        </span>
-                      </div>
-                      <div className="relative h-4 bg-muted rounded-full overflow-hidden">
-                        <div className="absolute top-0 left-0 h-full bg-primary w-[85%] rounded-full" />
-                      </div>
-                      <div className="mt-4 flex justify-between text-xs text-muted-foreground">
-                        <div className="text-center">
-                          <div className="font-bold text-foreground text-lg">45m</div>
-                          <div>Coded</div>
+                    <div className="bg-muted rounded-xl p-4 border border-muted/40 h-full flex flex-col justify-center">
+                      {stats.focusedGoal ? (
+                        <>
+                          <div className="flex justify-between items-center mb-4">
+                            <h3 className="font-semibold">Daily Focus: {stats.focusedGoal.title}</h3>
+                            <span className="text-xs font-medium text-muted-foreground">
+                              {stats.focusedGoal.progress}% / {stats.focusedGoal.target}%
+                            </span>
+                          </div>
+                          <div className="relative h-4 bg-muted rounded-full overflow-hidden">
+                            <div
+                              className="absolute top-0 left-0 h-full bg-primary rounded-full transition-all duration-500"
+                              style={{
+                                width: `${(stats.focusedGoal.progress / stats.focusedGoal.target) * 100}%`
+                              }}
+                            />
+                          </div>
+                          <div className="mt-4 flex justify-between text-xs text-muted-foreground">
+                            <div className="text-center">
+                              <div className="font-bold text-foreground text-lg">{stats.dailyGoal.minutesCoded}m</div>
+                              <div>Coded</div>
+                            </div>
+                            <div className="text-center border-l border-muted/40 pl-4">
+                              <div className="font-bold text-foreground text-lg">{stats.dailyGoal.snippetsAnalyzed}</div>
+                              <div>Snippets</div>
+                            </div>
+                            <div className="text-center border-l border-muted/40 pl-4">
+                              <div className="font-bold text-green-500 text-lg">+{stats.dailyGoal.xpGained}xp</div>
+                              <div>Gained</div>
+                            </div>
+                          </div>
+                        </>
+                      ) : (
+                        <div className="animate-pulse space-y-4">
+                          <div className="flex justify-between items-center">
+                            <div className="h-5 bg-muted-foreground/20 rounded w-1/3"></div>
+                            <div className="h-4 bg-muted-foreground/20 rounded w-1/4"></div>
+                          </div>
+                          <div className="h-4 bg-muted-foreground/20 rounded-full w-full"></div>
+                          <div className="flex justify-between pt-2">
+                            <div className="h-8 bg-muted-foreground/20 rounded w-16"></div>
+                            <div className="h-8 bg-muted-foreground/20 rounded w-16"></div>
+                            <div className="h-8 bg-muted-foreground/20 rounded w-16"></div>
+                          </div>
                         </div>
-                        <div className="text-center border-l border-muted/40 pl-4">
-                          <div className="font-bold text-foreground text-lg">12</div>
-                          <div>Snippets</div>
-                        </div>
-                        <div className="text-center border-l border-muted/40 pl-4">
-                          <div className="font-bold text-green-500 text-lg">+15xp</div>
-                          <div>Gained</div>
-                        </div>
-                      </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -184,16 +213,16 @@ export default async function DashboardPage() {
                       <p className="text-sm font-medium text-muted-foreground">
                         Hours Coded (Week)
                       </p>
-                      <p className="text-3xl font-bold mt-2">12.5h</p>
+                      <p className="text-3xl font-bold mt-2">{stats.weeklyStats.hoursCoded}h</p>
                     </div>
                     <div className="p-2 bg-primary/10 rounded-lg text-primary">
                       <Clock />
                     </div>
                   </div>
                   <div className="mt-4 flex items-center text-sm">
-                    <span className="text-green-600 font-medium flex items-center">
+                    <span className={`font-medium flex items-center ${stats.weeklyStats.percentChange >= 0 ? "text-green-600" : "text-red-500"}`}>
                       <TrendingUp className="mr-1" size={16} />
-                      15%
+                      {stats.weeklyStats.percentChange}%
                     </span>
                     <span className="text-muted-foreground ml-2">vs last week</span>
                   </div>
@@ -202,16 +231,16 @@ export default async function DashboardPage() {
                   <div className="flex items-start justify-between">
                     <div>
                       <p className="text-sm font-medium text-muted-foreground">Snippets Analyzed</p>
-                      <p className="text-3xl font-bold mt-2">142</p>
+                      <p className="text-3xl font-bold mt-2">{stats.weeklyStats.snippetsAnalyzed}</p>
                     </div>
                     <div className="p-2 bg-purple-100 dark:bg-purple-900/20 rounded-lg text-purple-600">
                       <FileCode />
                     </div>
                   </div>
                   <div className="mt-4 flex items-center text-sm">
-                    <span className="text-green-600 font-medium flex items-center">
-                      <TrendingUp className="mr-1" size={16} />
-                      5%
+                    <span className={`${stats.weeklyStats.efficiencyGain >= 0 ? "text-green-600" : "text-red-500"} font-medium flex items-center`}>
+                      <TrendingUp className={`mr-1 ${stats.weeklyStats.efficiencyGain < 0 ? "rotate-180" : ""}`} size={16} />
+                      {Math.abs(stats.weeklyStats.efficiencyGain)}%
                     </span>
                     <span className="text-muted-foreground ml-2">efficiency gain</span>
                   </div>
@@ -220,15 +249,21 @@ export default async function DashboardPage() {
                   <div className="flex items-start justify-between">
                     <div>
                       <p className="text-sm font-medium text-muted-foreground">Top Language</p>
-                      <p className="text-3xl font-bold mt-2">TypeScript</p>
+                      <p className="text-3xl font-bold mt-2">{stats.topLanguage?.language || "—"}</p>
                     </div>
                     <div className="p-2 bg-sky-100 dark:bg-sky-900/20 rounded-lg text-sky-600">
                       <Code2 />
                     </div>
                   </div>
                   <div className="mt-4 flex items-center text-sm">
-                    <span className="text-muted-foreground">Most active in </span>
-                    <span className="font-medium ml-1">frontend/core</span>
+                    {stats.topLanguage ? (
+                      <>
+                        <span className="text-muted-foreground">Most active in </span>
+                        <span className="font-medium ml-1">{stats.topLanguage.mostActivePath}</span>
+                      </>
+                    ) : (
+                      <span className="text-muted-foreground">Start coding to see stats</span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -236,9 +271,12 @@ export default async function DashboardPage() {
                 <div className="lg:col-span-2 bg-card rounded-xl border border-muted/40 shadow-sm flex flex-col">
                   <div className="p-6 border-b border-muted/40 flex justify-between items-center">
                     <h2 className="text-lg font-bold">Skill Proficiency</h2>
-                    <button className="text-sm text-primary hover:text-primary/80 font-medium">
+                    <Link
+                      href="/skills"
+                      className="text-sm text-primary hover:text-primary/80 font-medium"
+                    >
                       View Detail
-                    </button>
+                    </Link>
                   </div>
                   <div className="p-6 flex-1 flex flex-col justify-center gap-6">
                     <div>
