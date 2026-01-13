@@ -590,7 +590,7 @@ export default function SkillsPage() {
                 </div>
               </div>
               <footer className="mt-auto py-4 text-center text-xs text-muted-foreground bg-background">
-                <p>© 2023 FlowPilot Inc. All rights reserved.</p>
+                <p>© 2026 FlowPilot Inc. All rights reserved.</p>
               </footer>
             </div>
           </div>

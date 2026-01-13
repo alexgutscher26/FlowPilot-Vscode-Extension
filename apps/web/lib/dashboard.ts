@@ -25,6 +25,10 @@ export type DashboardStats = {
         progress: number
         target: number
     } | null
+    topSkills: {
+        name: string
+        level: number
+    }[]
 }
 
 const DAILY_GOAL_MINUTES = 60
@@ -181,6 +185,17 @@ export async function getDashboardStats(userId: string): Promise<DashboardStats>
         }
     }
 
+    // 6. Top Skills
+    const topSkills = await prisma.skill.findMany({
+        where: { userId },
+        orderBy: { confidence: "desc" },
+        take: 4,
+        select: {
+            concept: true,
+            confidence: true
+        }
+    })
+
     return {
         streak,
         dailyGoal: {
@@ -196,6 +211,10 @@ export async function getDashboardStats(userId: string): Promise<DashboardStats>
             efficiencyGain
         },
         topLanguage,
-        focusedGoal
+        focusedGoal,
+        topSkills: topSkills.map(s => ({
+            name: s.concept,
+            level: s.confidence
+        }))
     }
 }

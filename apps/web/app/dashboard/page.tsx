@@ -279,52 +279,37 @@ export default async function DashboardPage() {
                     </Link>
                   </div>
                   <div className="p-6 flex-1 flex flex-col justify-center gap-6">
-                    <div>
-                      <div className="flex justify-between mb-2">
-                        <span className="text-sm font-medium">Refactoring & Clean Code</span>
-                        <span className="text-sm font-bold">78%</span>
+                    {stats.topSkills.length > 0 ? (
+                      stats.topSkills.map((skill, i) => (
+                        <div key={skill.name}>
+                          <div className="flex justify-between mb-2">
+                            <span className="text-sm font-medium">{skill.name}</span>
+                            <span className="text-sm font-bold">{skill.level}%</span>
+                          </div>
+                          <div className="w-full bg-muted rounded-full h-2.5">
+                            <div
+                              className={`h-2.5 rounded-full ${i % 4 === 0 ? 'bg-blue-500' :
+                                  i % 4 === 1 ? 'bg-purple-500' :
+                                    i % 4 === 2 ? 'bg-emerald-500' : 'bg-amber-500'
+                                }`}
+                              style={{ width: `${skill.level}%` }}
+                            />
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-center py-8 text-muted-foreground">
+                        <p>No skills recorded yet.</p>
+                        <p className="text-sm mt-2">Complete coding sessions to build your profile!</p>
                       </div>
-                      <div className="w-full bg-muted rounded-full h-2.5">
-                        <div className="bg-primary h-2.5 rounded-full" style={{ width: "78%" }} />
-                      </div>
-                    </div>
-                    <div>
-                      <div className="flex justify-between mb-2">
-                        <span className="text-sm font-medium">Security Best Practices</span>
-                        <span className="text-sm font-bold">92%</span>
-                      </div>
-                      <div className="w-full bg-muted rounded-full h-2.5">
-                        <div className="bg-green-500 h-2.5 rounded-full" style={{ width: "92%" }} />
-                      </div>
-                    </div>
-                    <div>
-                      <div className="flex justify-between mb-2">
-                        <span className="text-sm font-medium">Performance Optimization</span>
-                        <span className="text-sm font-bold">64%</span>
-                      </div>
-                      <div className="w-full bg-muted rounded-full h-2.5">
-                        <div
-                          className="bg-orange-400 h-2.5 rounded-full"
-                          style={{ width: "64%" }}
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <div className="flex justify-between mb-2">
-                        <span className="text-sm font-medium">Testing & QA</span>
-                        <span className="text-sm font-bold">45%</span>
-                      </div>
-                      <div className="w-full bg-muted rounded-full h-2.5">
-                        <div className="bg-slate-400 h-2.5 rounded-full" style={{ width: "45%" }} />
-                      </div>
-                    </div>
+                    )}
                   </div>
                 </div>
                 <RecentSessions />
               </div>
               <TipOfTheDay />
               <footer className="text-center text-xs text-muted-foreground pb-4">
-                <p>© 2023 FlowPilot Inc. All rights reserved.</p>
+                <p>© 2026 FlowPilot Inc. All rights reserved.</p>
               </footer>
             </div>
           </div>
