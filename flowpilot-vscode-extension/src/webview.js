@@ -14,6 +14,11 @@
     const moreBtn = document.getElementById('more-btn');
     const robotIcon = document.getElementById('fp-icon-robot')?.innerHTML ?? '';
 
+    // Helper to send messages from inline onclick handlers
+    window.postMessageToVsCode = (type) => {
+        vscode.postMessage({ type });
+    };
+
     // Initialize
     function initialize() {
         setupEventListeners();
@@ -55,6 +60,14 @@
         moreBtn.addEventListener('click', () => {
             // Show more options menu
             console.log('More options clicked');
+        });
+
+        // Event delegation for dynamic buttons
+        chatMessages.addEventListener('click', (e) => {
+            const target = e.target;
+            if (target.classList.contains('action-button') && target.dataset.action) {
+                vscode.postMessage({ type: target.dataset.action });
+            }
         });
     }
 
@@ -177,6 +190,10 @@
                         <div class="message-content">
                             ${conceptsHtml}
                             ${suggestionsHtml}
+                            <div class="action-buttons">
+                                <button class="action-button small" data-action="optimizeCode">⚡ Optimize</button>
+                                <button class="action-button small" data-action="addDocstring">📝 Add Docstring</button>
+                            </div>
                         </div>
                     `;
                     chatMessages.appendChild(footerDiv);
@@ -294,7 +311,7 @@
                 avatarDiv.className = 'message-avatar';
                 const avatarSpan = document.createElement('span');
                 avatarSpan.className = 'fp-icon';
-                avatarSpan.textContent = robotIcon;
+                avatarSpan.innerHTML = robotIcon;
                 avatarDiv.appendChild(avatarSpan);
 
                 // Message content container
@@ -336,7 +353,14 @@
                 if (Array.isArray(review.issues)) {
                     review.issues.forEach(issue => {
                         const li = document.createElement('li');
-                        li.textContent = issue;
+                        if (typeof issue === 'string') {
+                            li.textContent = issue;
+                        } else if (typeof issue === 'object' && issue !== null) {
+                            // Try to find a meaningful string property
+                            li.textContent = issue.description || issue.message || issue.text || issue.summary || JSON.stringify(issue);
+                        } else {
+                            li.textContent = String(issue);
+                        }
                         issuesList.appendChild(li);
                     });
                 }
@@ -352,7 +376,11 @@
                 betterParagraph.textContent = review.whyBetter;
                 const pre = document.createElement('pre');
                 const code = document.createElement('code');
-                code.textContent = review.improvedCode;
+                if (typeof review.improvedCode === 'object' && review.improvedCode !== null) {
+                    code.textContent = review.improvedCode.code || review.improvedCode.content || JSON.stringify(review.improvedCode, null, 2);
+                } else {
+                    code.textContent = review.improvedCode;
+                }
                 pre.appendChild(code);
                 betterSectionDiv.appendChild(betterStrong);
                 betterSectionDiv.appendChild(betterParagraph);

@@ -254,21 +254,34 @@ body {
     border-top: 1px solid var(--vscode-border);
 }
 
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
 .action-button {
     flex: 1;
-    background-color: var(--button-bg);
-    color: white;
+    background-color: var(--vscode-button-secondaryBackground, #3a3d41);
+    color: var(--vscode-button-secondaryForeground, #ffffff);
     border: none;
     border-radius: 10px;
     padding: 10px 12px;
-    font-size: 14px;
-    font-weight: 700;
+    font-size: 13px;
+    font-weight: 600;
     cursor: pointer;
     transition: background-color 0.2s ease;
 }
 
+.action-button.small {
+    padding: 6px 10px;
+    font-size: 12px;
+    border-radius: 6px;
+    flex: initial;
+}
+
 .action-button:hover {
-    background-color: var(--button-hover);
+    background-color: var(--vscode-button-secondaryHoverBackground, #45494e);
 }
 
 /* Chat Messages */

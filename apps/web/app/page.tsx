@@ -9,32 +9,9 @@ import {
   ExternalLink,
   ChevronDown,
 } from "lucide-react"
+import { Nav } from "@/components/Nav"
 
-function Nav() {
-  return (
-    <div className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur">
-      <div className="container flex h-16 items-center justify-between">
-        <div className="flex items-center gap-3">
-          <span className="text-lg font-semibold">FlowPilot</span>
-        </div>
-        <div className="hidden items-center gap-8 md:flex">
-          <a className="text-sm text-muted-foreground hover:text-foreground" href="#features">
-            Features
-          </a>
-          <a className="text-sm text-muted-foreground hover:text-foreground" href="#how">
-            How it works
-          </a>
-          <a className="text-sm text-muted-foreground hover:text-foreground" href="#pricing">
-            Pricing
-          </a>
-        </div>
-        <Button asChild>
-          <a href="/login">Sign in</a>
-        </Button>
-      </div>
-    </div>
-  )
-}
+
 
 function Hero() {
   return (
@@ -54,17 +31,22 @@ function Hero() {
             Stop getting stuck on tutorials. Get instant feedback, refactoring tips, and mentorship
             directly in your IDE while you code.
           </p>
-          <div className="mx-auto mt-8 flex max-w-xl items-center justify-between rounded-xl border bg-card p-2 shadow-sm">
-            <input
-              type="text"
-              inputMode="email"
-              placeholder="Enter your email address"
-              className="w-full appearance-none rounded-lg bg-background px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary"
-            />
-            <Button className="ml-2 h-11 px-6">Join Waitlist</Button>
+          <div className="mx-auto mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <Button size="lg" className="w-full font-bold sm:w-auto px-8" asChild>
+              <a
+                href="https://marketplace.visualstudio.com/items?itemName=alexgutscher26.flowpilot"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Download Extension
+              </a>
+            </Button>
+            <Button variant="outline" size="lg" className="w-full font-bold sm:w-auto px-8" asChild>
+              <a href="/login">Get Started for Free</a>
+            </Button>
           </div>
-          <div className="mt-3 text-xs text-muted-foreground">
-            Join 2,000+ developers on the waitlist.
+          <div className="mt-4 text-xs text-muted-foreground">
+            No credit card required. • Free for individuals.
           </div>
         </div>
         <div className="mx-auto mt-14 w-full max-w-5xl rounded-xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-800 bg-[#0f172a] relative">
@@ -477,7 +459,9 @@ export default function Page() {
             </div>
             <div className="flex flex-col sm:flex-row items-center gap-4">
               <p className="text-lg font-bold">Ready to level up?</p>
-              <Button className="px-6 py-3">Join Waitlist</Button>
+              <Button className="px-6 py-3" asChild>
+                <a href="/login">Get Started</a>
+              </Button>
             </div>
           </div>
           <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t text-sm text-muted-foreground">

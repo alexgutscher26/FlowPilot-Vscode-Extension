@@ -2,7 +2,7 @@
   "name": "flowpilot",
   "displayName": "FlowPilot - AI Coding Coach",
   "description": "Your AI coding coach that helps you write better code with real-time explanations and suggestions",
-  "version": "0.9.6",
+  "version": "0.9.13",
   "publisher": "flowpilot",
   "icon": "icon.png",
   "repository": {

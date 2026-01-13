@@ -237,12 +237,92 @@ Please explain this error and how to fix it.
         }, 1000);
     }
 
-    private optimizeCode() {
-        vscode.window.showInformationMessage('Code optimization suggestion: Consider using memoization for better performance.');
+    private async optimizeCode() {
+        if (!this._currentExplainContext) {
+            vscode.window.showWarningMessage('Please select code to explain first.');
+            return;
+        }
+
+        if (this._view) {
+            this._view.webview.postMessage({ type: 'aiResponse', text: 'Optimizing your code...' });
+
+            try {
+                const config = vscode.workspace.getConfiguration('flowpilot');
+                const preferLocal = config.get<boolean>('privacy.preferLocalModel', false);
+
+                // TODO: Implement local optimization if needed
+                if (preferLocal) {
+                    vscode.window.showInformationMessage('Local optimization not yet supported.');
+                    return;
+                }
+
+                await this.optimizeCodeCloud(this._currentExplainContext);
+
+            } catch (error) {
+                console.error('Error optimizing code:', error);
+                this.sendErrorResponse('Sorry, failed to optimize code.');
+            }
+        }
     }
 
-    private addDocstring() {
-        vscode.window.showInformationMessage('Docstring added to your function.');
+    private async optimizeCodeCloud(context: any) {
+        const response = await fetch('http://localhost:3000/api/optimize-code', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(context)
+        });
+
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const data: any = await response.json();
+
+        // Reuse the review card format for consistency
+        const reviewFormat = {
+            score: 10, // Not applicable
+            does: data.explanation || "Optimized version of your code.",
+            issues: data.changes || [],
+            improvedCode: data.optimizedCode,
+            whyBetter: "Optimizations applied based on analysis."
+        };
+
+        if (this._view) {
+            this._view.webview.postMessage({
+                type: 'showReview',
+                review: reviewFormat
+            });
+        }
+    }
+
+    private async addDocstring() {
+        if (!this._currentExplainContext) {
+            vscode.window.showWarningMessage('Please select code to explain first.');
+            return;
+        }
+
+        if (this._view) {
+            this._view.webview.postMessage({ type: 'aiResponse', text: 'Generating docstring...' });
+
+            try {
+                const response = await fetch('http://localhost:3000/api/add-docstring', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(this._currentExplainContext)
+                });
+
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const data: any = await response.json();
+
+                // Show as a simple response for now
+                if (this._view) {
+                    this._view.webview.postMessage({
+                        type: 'aiResponse',
+                        text: `Here is your code with docstrings:\n\n\`\`\`${this._currentExplainContext.languageId}\n${data.codeWithDocstring}\n\`\`\``
+                    });
+                }
+            } catch (error) {
+                console.error('Error adding docstring:', error);
+                this.sendErrorResponse('Sorry, failed to generate docstring.');
+            }
+        }
     }
 
     public async reviewSnippet(context: any) {
