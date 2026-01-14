@@ -30,6 +30,7 @@ model User {
   explanations    Explanation[]
   skills          Skill[]
   skillGoals      SkillGoal[]
+  integrations    Integration[]
   @@map("user")
 }
 
@@ -257,3 +258,16 @@ model SkillGoal {
   @@map("skill_goal")
 }
 
+
+model Integration {
+  id        String   @id @default(cuid())
+  userId    String
+  provider  String   // "jira"
+  config    Json     // { domain: string, email: string, apiToken: string }
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, provider])
+  @@map("integration")
+}

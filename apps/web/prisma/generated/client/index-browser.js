@@ -268,6 +268,15 @@ exports.Prisma.SkillGoalScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.IntegrationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  provider: 'provider',
+  config: 'config',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -275,6 +284,10 @@ exports.Prisma.SortOrder = {
 
 exports.Prisma.NullableJsonNullValueInput = {
   DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
+};
+
+exports.Prisma.JsonNullValueInput = {
   JsonNull: Prisma.JsonNull
 };
 
@@ -331,7 +344,8 @@ exports.Prisma.ModelName = {
   CommentReaction: 'CommentReaction',
   Explanation: 'Explanation',
   Skill: 'Skill',
-  SkillGoal: 'SkillGoal'
+  SkillGoal: 'SkillGoal',
+  Integration: 'Integration'
 };
 
 /**

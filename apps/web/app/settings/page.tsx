@@ -29,6 +29,7 @@ import {
 } from "lucide-react"
 import { UploadButton } from "@uploadthing/react"
 import type { OurFileRouter } from "@/lib/uploadthing"
+import { JiraConnectModal } from "./_components/jira-connect-modal"
 
 export default function SettingsPage() {
   const router = useRouter()
@@ -87,7 +88,24 @@ export default function SettingsPage() {
   const [exporting, setExporting] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const [jiraModalOpen, setJiraModalOpen] = useState(false)
+  const [jiraConnected, setJiraConnected] = useState(false)
+  const [jiraConfig, setJiraConfig] = useState<{ domain: string; email: string } | null>(null)
 
+  useEffect(() => {
+    // Fetch integrations status
+    if (session) {
+      fetch("/api/integrations/jira")
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.connected) {
+            setJiraConnected(true)
+            setJiraConfig({ domain: data.domain, email: data.email })
+          }
+        })
+        .catch(() => { })
+    }
+  }, [session])
   useEffect(() => {
     if (!isPending && !session) {
       router.replace("/login")
@@ -200,8 +218,40 @@ export default function SettingsPage() {
     }
   }
 
+  const onDisconnectJira = async () => {
+    try {
+      const res = await fetch("/api/integrations/jira", { method: "DELETE" })
+      if (res.ok) {
+        setJiraConnected(false)
+        setJiraConfig(null)
+        setToast({ message: "Jira disconnected", type: "success" })
+        setTimeout(() => setToast(null), 3000)
+      }
+    } catch {
+      setToast({ message: "Failed to disconnect Jira", type: "error" })
+      setTimeout(() => setToast(null), 3000)
+    }
+  }
+
   return (
     <div className="bg-background min-h-screen text-foreground">
+      {jiraModalOpen && (
+        <JiraConnectModal
+          onClose={() => setJiraModalOpen(false)}
+          onConnect={() => {
+            setJiraConnected(true)
+            fetch("/api/integrations/jira")
+              .then((res) => res.json())
+              .then((data) => {
+                if (data.connected) {
+                  setJiraConfig({ domain: data.domain, email: data.email })
+                }
+              })
+            setToast({ message: "Jira connected successfully", type: "success" })
+            setTimeout(() => setToast(null), 3000)
+          }}
+        />
+      )}
       <div className="flex h-screen w-full">
         <aside className="hidden md:flex flex-col w-64 bg-card border-r border-muted/40 h-full flex-shrink-0">
           <div className="p-6 flex items-center gap-3">
@@ -709,93 +759,107 @@ export default function SettingsPage() {
                       <div>
                         <h3 className="text-sm font-medium">Jira</h3>
                         <p className="text-xs text-muted-foreground">
-                          Link learning progress to tickets.
+                          {jiraConnected
+                            ? `Connected to ${jiraConfig?.domain || "Jira"}`
+                            : "Link learning progress to tickets."}
                         </p>
                       </div>
                     </div>
-                    <button className="px-3 py-1.5 text-xs font-medium bg-card text-foreground hover:bg-muted rounded-lg border border-muted/40 transition-colors">
-                      Connect
-                    </button>
+                    {jiraConnected ? (
+                      <button
+                        onClick={onDisconnectJira}
+                        className="px-3 py-1.5 text-xs font-medium bg-red-50 text-red-600 hover:bg-red-100 rounded-lg border border-red-200 transition-colors"
+                      >
+                        Disconnect
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => setJiraModalOpen(true)}
+                        className="px-3 py-1.5 text-xs font-medium bg-card text-foreground hover:bg-muted rounded-lg border border-muted/40 transition-colors"
+                      >
+                        Connect
+                      </button>
+                    )}
                   </div>
                 </div>
               </section>
             </div>
           </div>
-        </main>
 
-        {/* Delete Account Confirmation Modal */}
-        {showDeleteModal && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-card rounded-xl border border-muted/40 shadow-2xl max-w-md w-full">
-              <div className="p-6 border-b border-muted/40">
-                <div className="flex items-center gap-3">
-                  <div className="h-12 w-12 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center">
-                    <AlertTriangle className="text-red-600 dark:text-red-400" size={24} />
-                  </div>
-                  <div>
-                    <h2 className="text-lg font-semibold">Delete Account</h2>
-                    <p className="text-sm text-muted-foreground">This action cannot be undone</p>
+          {/* Delete Account Confirmation Modal */}
+          {showDeleteModal && (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+              <div className="bg-card rounded-xl border border-muted/40 shadow-2xl max-w-md w-full">
+                <div className="p-6 border-b border-muted/40">
+                  <div className="flex items-center gap-3">
+                    <div className="h-12 w-12 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center">
+                      <AlertTriangle className="text-red-600 dark:text-red-400" size={24} />
+                    </div>
+                    <div>
+                      <h2 className="text-lg font-semibold">Delete Account</h2>
+                      <p className="text-sm text-muted-foreground">This action cannot be undone</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="p-6">
-                <p className="text-sm text-foreground mb-4">
-                  Are you sure you want to permanently delete your account? This will:
-                </p>
-                <ul className="text-sm text-muted-foreground space-y-2 mb-6 ml-4">
-                  <li className="flex items-start gap-2">
-                    <span className="text-red-500 mt-0.5">•</span>
-                    <span>Delete all your profile information</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-red-500 mt-0.5">•</span>
-                    <span>Remove all coding sessions and activity history</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-red-500 mt-0.5">•</span>
-                    <span>Revoke all API keys and integrations</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-red-500 mt-0.5">•</span>
-                    <span>Sign you out immediately</span>
-                  </li>
-                </ul>
-                <div className="bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-900/30 rounded-lg p-4 mb-6">
-                  <p className="text-sm text-red-900 dark:text-red-200 font-medium">
-                    ⚠️ This action is permanent and cannot be reversed
+                <div className="p-6">
+                  <p className="text-sm text-foreground mb-4">
+                    Are you sure you want to permanently delete your account? This will:
                   </p>
-                </div>
-                <div className="flex gap-3">
-                  <button
-                    onClick={() => setShowDeleteModal(false)}
-                    disabled={deleting}
-                    className="flex-1 px-4 py-2 bg-muted hover:bg-muted/80 text-foreground rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={onDeleteAccount}
-                    disabled={deleting}
-                    className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {deleting ? "Deleting..." : "Yes, Delete My Account"}
-                  </button>
+                  <ul className="text-sm text-muted-foreground space-y-2 mb-6 ml-4">
+                    <li className="flex items-start gap-2">
+                      <span className="text-red-500 mt-0.5">•</span>
+                      <span>Delete all your profile information</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-red-500 mt-0.5">•</span>
+                      <span>Remove all coding sessions and activity history</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-red-500 mt-0.5">•</span>
+                      <span>Revoke all API keys and integrations</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-red-500 mt-0.5">•</span>
+                      <span>Sign you out immediately</span>
+                    </li>
+                  </ul>
+                  <div className="bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-900/30 rounded-lg p-4 mb-6">
+                    <p className="text-sm text-red-900 dark:text-red-200 font-medium">
+                      ⚠️ This action is permanent and cannot be reversed
+                    </p>
+                  </div>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => setShowDeleteModal(false)}
+                      disabled={deleting}
+                      className="flex-1 px-4 py-2 bg-muted hover:bg-muted/80 text-foreground rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={onDeleteAccount}
+                      disabled={deleting}
+                      className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {deleting ? "Deleting..." : "Yes, Delete My Account"}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {toast && (
-          <div className="fixed bottom-4 right-4 z-50 flex items-center gap-2 rounded-lg border border-muted/40 bg-background px-4 py-2 shadow-lg">
-            {toast.type === "success" ? (
-              <CheckCircle className="text-green-600 dark:text-green-400" size={18} />
-            ) : (
-              <AlertTriangle className="text-red-600 dark:text-red-400" size={18} />
-            )}
-            <span className="text-sm">{toast.message}</span>
-          </div>
-        )}
+          {toast && (
+            <div className="fixed bottom-4 right-4 z-50 flex items-center gap-2 rounded-lg border border-muted/40 bg-background px-4 py-2 shadow-lg">
+              {toast.type === "success" ? (
+                <CheckCircle className="text-green-600 dark:text-green-400" size={18} />
+              ) : (
+                <AlertTriangle className="text-red-600 dark:text-red-400" size={18} />
+              )}
+              <span className="text-sm">{toast.message}</span>
+            </div>
+          )}
+        </main>
       </div>
     </div>
   )
