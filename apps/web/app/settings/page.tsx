@@ -107,7 +107,7 @@ export default function SettingsPage() {
           if (user?.bio) setBio(user.bio)
           if (user?.image) setImageUrl(user.image)
           if (user?.theme) setTheme(user.theme as any)
-        } catch {}
+        } catch { }
       }
       run()
     }
@@ -122,7 +122,7 @@ export default function SettingsPage() {
       const root = document.documentElement
       if (effective === "dark") root.classList.add("dark")
       else root.classList.remove("dark")
-    } catch {}
+    } catch { }
   }, [theme])
 
   if (isPending) {
@@ -390,10 +390,10 @@ export default function SettingsPage() {
                               method: "PUT",
                               headers: { "Content-Type": "application/json" },
                               body: JSON.stringify({ email, image: url }),
-                            }).catch(() => {})
+                            }).catch(() => { })
                           }
                         }}
-                        onUploadError={() => {}}
+                        onUploadError={() => { }}
                       />
                     </div>
                   </div>
@@ -517,7 +517,10 @@ export default function SettingsPage() {
               </section>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <section className="bg-card rounded-xl border border-muted/40 shadow-sm overflow-hidden h-full">
+                <section className="bg-card rounded-xl border border-muted/40 shadow-sm overflow-hidden h-full opacity-60 pointer-events-none relative">
+                  <div className="absolute top-4 right-4 bg-yellow-100 text-yellow-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-yellow-200 z-10">
+                    COMING SOON
+                  </div>
                   <div className="p-6 border-b border-muted/40">
                     <div className="flex items-center gap-2">
                       <Bell className="text-muted-foreground" size={18} />
@@ -534,6 +537,7 @@ export default function SettingsPage() {
                       </div>
                       <input
                         type="checkbox"
+                        disabled
                         defaultChecked
                         className="h-5 w-5 rounded bg-card border-2 border-muted/60 text-primary"
                       />
@@ -547,6 +551,7 @@ export default function SettingsPage() {
                       </div>
                       <input
                         type="checkbox"
+                        disabled
                         className="h-5 w-5 rounded bg-card border-2 border-muted/60 text-primary"
                       />
                     </div>
@@ -559,6 +564,7 @@ export default function SettingsPage() {
                       </div>
                       <input
                         type="checkbox"
+                        disabled
                         defaultChecked
                         className="h-5 w-5 rounded bg-card border-2 border-muted/60 text-primary"
                       />
@@ -566,7 +572,10 @@ export default function SettingsPage() {
                   </div>
                 </section>
 
-                <section className="bg-card rounded-xl border border-muted/40 shadow-sm overflow-hidden h-full">
+                <section className="bg-card rounded-xl border border-muted/40 shadow-sm overflow-hidden h-full opacity-60 pointer-events-none relative">
+                  <div className="absolute top-4 right-4 bg-yellow-100 text-yellow-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-yellow-200 z-10">
+                    COMING SOON
+                  </div>
                   <div className="p-6 border-b border-muted/40">
                     <div className="flex items-center gap-2">
                       <Shield className="text-muted-foreground" size={18} />
@@ -583,6 +592,7 @@ export default function SettingsPage() {
                       </div>
                       <input
                         type="checkbox"
+                        disabled
                         defaultChecked
                         className="h-5 w-5 rounded bg-card border-2 border-muted/60 text-primary"
                       />
@@ -596,6 +606,7 @@ export default function SettingsPage() {
                       </div>
                       <input
                         type="checkbox"
+                        disabled
                         className="h-5 w-5 rounded bg-card border-2 border-muted/60 text-primary"
                       />
                     </div>
@@ -699,22 +710,6 @@ export default function SettingsPage() {
                         <h3 className="text-sm font-medium">Jira</h3>
                         <p className="text-xs text-muted-foreground">
                           Link learning progress to tickets.
-                        </p>
-                      </div>
-                    </div>
-                    <button className="px-3 py-1.5 text-xs font-medium bg-card text-foreground hover:bg-muted rounded-lg border border-muted/40 transition-colors">
-                      Connect
-                    </button>
-                  </div>
-                  <div className="p-6 flex items-center justify-between hover:bg-muted transition-colors">
-                    <div className="flex items-center gap-4">
-                      <div className="h-10 w-10 rounded-lg bg-[#4A154B] text-white flex items-center justify-center p-2">
-                        <Slack className="w-full h-full" />
-                      </div>
-                      <div>
-                        <h3 className="text-sm font-medium">Slack</h3>
-                        <p className="text-xs text-muted-foreground">
-                          Share achievements with your team.
                         </p>
                       </div>
                     </div>
