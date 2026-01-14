@@ -25,6 +25,7 @@ import {
 } from "lucide-react"
 import SkillGoalModal from "@/components/SkillGoalModal"
 import GoalsSection from "@/components/GoalsSection"
+import ExploreSkillsModal from "@/components/ExploreSkillsModal"
 
 type DailyActivity = {
   day: string
@@ -85,6 +86,8 @@ export default function SkillsPage() {
   const [categoryFilter, setCategoryFilter] = useState("all")
   const [sortBy, setSortBy] = useState("confidence")
   const [isGoalModalOpen, setIsGoalModalOpen] = useState(false)
+  const [isExploreModalOpen, setIsExploreModalOpen] = useState(false)
+  const [selectedConcept, setSelectedConcept] = useState("")
 
   useEffect(() => {
     if (!isPending && !session) {
@@ -245,6 +248,12 @@ export default function SkillsPage() {
     }
   }
 
+  const handleExploreSelect = (skill: string) => {
+    setSelectedConcept(skill)
+    setIsExploreModalOpen(false)
+    setIsGoalModalOpen(true)
+  }
+
   const existingConcepts = summary?.skills.map((s) => s.concept) || []
 
   return (
@@ -379,10 +388,13 @@ export default function SkillsPage() {
                   </p>
                 </div>
                 <div className="flex gap-3">
-                  <button className="inline-flex items-center gap-2 px-4 py-2 bg-card border border-muted/40 rounded-lg text-sm font-medium hover:bg-muted transition-colors">
+                  <Link
+                    href="/sessions"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-card border border-muted/40 rounded-lg text-sm font-medium hover:bg-muted transition-colors"
+                  >
                     <CalendarDays className="h-4 w-4" />
                     History
-                  </button>
+                  </Link>
                   <button
                     onClick={() => setIsGoalModalOpen(true)}
                     className="inline-flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg text-sm font-medium shadow-sm transition-colors"
@@ -579,7 +591,10 @@ export default function SkillsPage() {
                     )
                   })
                 )}
-                <div className="bg-muted rounded-xl border border-dashed border-muted/40 p-5 flex flex-col items-center justify-center text-center hover:bg-card transition-colors cursor-pointer group">
+                <div
+                  className="bg-muted rounded-xl border border-dashed border-muted/40 p-5 flex flex-col items-center justify-center text-center hover:bg-card transition-colors cursor-pointer group"
+                  onClick={() => setIsExploreModalOpen(true)}
+                >
                   <div className="h-12 w-12 rounded-full bg-card shadow-sm flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                     <Plus className="text-primary" />
                   </div>
@@ -598,9 +613,18 @@ export default function SkillsPage() {
       </div>
       <SkillGoalModal
         isOpen={isGoalModalOpen}
-        onClose={() => setIsGoalModalOpen(false)}
+        onClose={() => {
+          setIsGoalModalOpen(false)
+          setSelectedConcept("")
+        }}
         onSubmit={handleCreateGoal}
         existingConcepts={existingConcepts}
+        initialConcept={selectedConcept}
+      />
+      <ExploreSkillsModal
+        isOpen={isExploreModalOpen}
+        onClose={() => setIsExploreModalOpen(false)}
+        onSelectSkill={handleExploreSelect}
       />
     </div>
   )

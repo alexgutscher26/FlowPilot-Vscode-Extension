@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { X, Calendar, Target } from "lucide-react"
 
 type SkillGoalModalProps = {
@@ -11,6 +11,7 @@ type SkillGoalModalProps = {
         deadline?: string
     }) => Promise<void>
     existingConcepts?: string[]
+    initialConcept?: string
 }
 
 export default function SkillGoalModal({
@@ -18,13 +19,22 @@ export default function SkillGoalModal({
     onClose,
     onSubmit,
     existingConcepts = [],
+    initialConcept = "",
 }: SkillGoalModalProps) {
-    const [conceptName, setConceptName] = useState("")
+    const [conceptName, setConceptName] = useState(initialConcept)
     const [targetConfidence, setTargetConfidence] = useState(80)
     const [deadline, setDeadline] = useState("")
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [error, setError] = useState("")
     const [showSuggestions, setShowSuggestions] = useState(false)
+
+    // Reset or update local state when initialConcept changes or modal opens
+    // Sync if prop changes
+    useEffect(() => {
+        if (isOpen) {
+            setConceptName(initialConcept || "")
+        }
+    }, [isOpen, initialConcept])
 
     const filteredConcepts = existingConcepts.filter((concept) =>
         concept.toLowerCase().includes(conceptName.toLowerCase())

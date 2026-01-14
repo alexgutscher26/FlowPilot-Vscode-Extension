@@ -284,10 +284,6 @@ export default function RoadmapPage() {
                   </p>
                 </div>
                 <div className="flex gap-3 flex-shrink-0">
-                  <button className="inline-flex items-center gap-2 px-4 py-2 bg-card border border-muted/40 rounded-lg text-sm font-medium text-foreground hover:bg-muted transition-colors">
-                    <MessageSquare size={16} />
-                    Join Community
-                  </button>
                   <button
                     onClick={() => setIsModalOpen(true)}
                     className="inline-flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg text-sm font-medium shadow-sm transition-colors"
