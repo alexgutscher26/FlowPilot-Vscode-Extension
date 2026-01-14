@@ -30,6 +30,8 @@ import {
 import { UploadButton } from "@uploadthing/react"
 import type { OurFileRouter } from "@/lib/uploadthing"
 import { JiraConnectModal } from "./_components/jira-connect-modal"
+import { PricingModal } from "@/components/pricing-modal"
+import { CreditCard } from "lucide-react"
 
 export default function SettingsPage() {
   const router = useRouter()
@@ -92,6 +94,27 @@ export default function SettingsPage() {
   const [jiraConnected, setJiraConnected] = useState(false)
   const [jiraConfig, setJiraConfig] = useState<{ domain: string; email: string } | null>(null)
 
+  // Stripe States
+  const [pricingModalOpen, setPricingModalOpen] = useState(false)
+  const [isPro, setIsPro] = useState(false)
+  const [isLoadingPortal, setIsLoadingPortal] = useState(false)
+
+  const onManageSubscription = async () => {
+    try {
+      setIsLoadingPortal(true)
+      const response = await fetch("/api/stripe/portal", {
+        method: "POST",
+      })
+      const { url } = await response.json()
+      window.location.href = url
+    } catch (error) {
+      console.error(error)
+      setToast({ message: "Failed to open billing portal", type: "error" })
+    } finally {
+      setIsLoadingPortal(false)
+    }
+  }
+
   useEffect(() => {
     // Fetch integrations status
     if (session) {
@@ -125,6 +148,7 @@ export default function SettingsPage() {
           if (user?.bio) setBio(user.bio)
           if (user?.image) setImageUrl(user.image)
           if (user?.theme) setTheme(user.theme as any)
+          if (user?.plan === "PRO") setIsPro(true)
         } catch { }
       }
       run()
@@ -252,6 +276,7 @@ export default function SettingsPage() {
           }}
         />
       )}
+      <PricingModal isOpen={pricingModalOpen} onClose={() => setPricingModalOpen(false)} />
       <div className="flex h-screen w-full">
         <aside className="hidden md:flex flex-col w-64 bg-card border-r border-muted/40 h-full flex-shrink-0">
           <div className="p-6 flex items-center gap-3">
@@ -306,17 +331,19 @@ export default function SettingsPage() {
             </Link>
           </nav>
           <div className="p-4 border-t border-muted/40">
-            <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl p-4 text-white relative overflow-hidden">
-              <div className="relative z-10">
-                <p className="font-bold text-sm mb-1">Go Pro</p>
-                <p className="text-xs text-indigo-100 mb-3">
-                  Unlock advanced analytics and AI insights.
-                </p>
-                <button className="bg-white/20 hover:bg-white/30 text-white text-xs font-semibold py-1.5 px-3 rounded transition-colors">
-                  Upgrade
-                </button>
+            {!isPro && (
+              <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl p-4 text-white relative overflow-hidden">
+                <div className="relative z-10">
+                  <p className="font-bold text-sm mb-1">Go Pro</p>
+                  <p className="text-xs text-indigo-100 mb-3">
+                    Unlock advanced analytics and AI insights.
+                  </p>
+                  <button onClick={() => setPricingModalOpen(true)} className="bg-white/20 hover:bg-white/30 text-white text-xs font-semibold py-1.5 px-3 rounded transition-colors">
+                    Upgrade
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </aside>
 
@@ -352,7 +379,7 @@ export default function SettingsPage() {
               <div className="flex items-center gap-3 pl-4 border-l border-muted/40">
                 <div className="text-right hidden sm:block">
                   <p className="text-sm font-medium">{userName}</p>
-                  <p className="text-xs text-muted-foreground">Pro Plan</p>
+                  <p className="text-xs text-muted-foreground">{isPro ? "Pro Plan" : "Free Plan"}</p>
                 </div>
                 <div
                   className="h-10 w-10 rounded-full bg-muted overflow-hidden ring-2 ring-background cursor-pointer"
@@ -673,6 +700,44 @@ export default function SettingsPage() {
                 </section>
               </div>
 
+
+
+              <section className="bg-card rounded-xl border border-muted/40 shadow-sm overflow-hidden">
+                <div className="p-6 border-b border-muted/40">
+                  <div className="flex items-center gap-2">
+                    <CreditCard className="text-muted-foreground" size={18} />
+                    <h2 className="text-lg font-semibold">Subscription</h2>
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-1 pl-8">
+                    Manage your billing and plan details.
+                  </p>
+                </div>
+                <div className="p-6 flex items-center justify-between">
+                  <div>
+                    <h3 className="text-sm font-medium">Current Plan: {isPro ? "Pro" : "Free"}</h3>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {isPro ? "You have access to all premium features." : "Upgrade to Pro for unlimited access."}
+                    </p>
+                  </div>
+                  {isPro ? (
+                    <button
+                      onClick={onManageSubscription}
+                      disabled={isLoadingPortal}
+                      className="px-4 py-2 bg-card border border-muted/40 hover:bg-muted text-foreground rounded-lg text-sm font-medium shadow-sm transition-colors"
+                    >
+                      {isLoadingPortal ? "Loading..." : "Manage Subscription"}
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => setPricingModalOpen(true)}
+                      className="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white rounded-lg text-sm font-medium shadow-sm transition-colors"
+                    >
+                      Upgrade to Pro
+                    </button>
+                  )}
+                </div>
+              </section>
+
               <section className="bg-card rounded-xl border border-muted/40 shadow-sm overflow-hidden">
                 <div className="p-6 border-b border-muted/40">
                   <div className="flex items-center gap-2">
@@ -860,7 +925,7 @@ export default function SettingsPage() {
             </div>
           )}
         </main>
-      </div>
-    </div>
+      </div >
+    </div >
   )
 }

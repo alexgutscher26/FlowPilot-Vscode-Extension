@@ -16,6 +16,11 @@ model User {
   image           String?
   bio             String?
   theme           String?   // 'light' | 'dark' | 'system'
+  plan            Plan      @default(FREE)
+  stripeCustomerId       String?   @unique @map(name: "stripe_customer_id")
+  stripeSubscriptionId   String?   @unique @map(name: "stripe_subscription_id")
+  stripePriceId          String?   @map(name: "stripe_price_id")
+  stripeCurrentPeriodEnd DateTime? @map(name: "stripe_current_period_end")
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
   sessions        Session[]
@@ -31,7 +36,35 @@ model User {
   skills          Skill[]
   skillGoals      SkillGoal[]
   integrations    Integration[]
+  usage           UserUsage?
   @@map("user")
+}
+
+enum Plan {
+  FREE
+  PRO
+}
+
+model UserUsage {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Daily counters
+  explanationsCount   Int    @default(0)
+  refactoringCount    Int    @default(0)
+  errorAnalysisCount  Int    @default(0)
+  lastDailyReset      DateTime @default(now())
+
+  // Weekly counters
+  securityScanCount   Int    @default(0)
+  lastWeeklyReset     DateTime @default(now())
+
+  // API Rate Limiting (Window based)
+  apiRequestsCount    Int      @default(0)
+  currentWindowStart  DateTime @default(now())
+
+  @@map("user_usage")
 }
 
 model Session {

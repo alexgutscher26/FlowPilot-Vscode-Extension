@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server"
 import OpenAI from "openai"
+import { auth } from "@/lib/auth"
+import { headers } from "next/headers"
+import { checkLimit, incrementUsage, checkLineCountLimit, checkRateLimit } from "@/lib/user-usage"
 
 export async function POST(req: Request) {
   // Initialize OpenAI client inside handler to avoid top-level errors if env vars are missing
@@ -36,6 +39,40 @@ export async function POST(req: Request) {
       errorCount: errors?.length,
       hasKey: !!process.env.OPENROUTER_API_KEY,
     })
+
+    // 1. Authenticate User
+    let userId: string | null = null
+    try {
+      const session = await auth.api.getSession({
+        headers: await headers(),
+      })
+      userId = session?.user?.id || null
+    } catch (authError) {
+      console.log("[Explain Error API] No authenticated user, proceeding anonymously")
+    }
+
+    if (!userId) {
+      return NextResponse.json({ error: "Authentication required" }, { status: 401 })
+    }
+
+    // 2. Check API Rate Limit
+    const rateLimit = await checkRateLimit(userId)
+    if (!rateLimit.allowed) {
+      return NextResponse.json({ error: "API rate limit exceeded. Upgrade to Pro for more." }, { status: 429 })
+    }
+
+    // 3. Check Line Count Limit
+    const lineLimit = await checkLineCountLimit(userId, codeSnippet?.split('\n').length || 0)
+    if (!lineLimit.allowed) {
+      return NextResponse.json({ error: `Line count limit exceeded. Max ${lineLimit.limit} lines allowed.` }, { status: 403 })
+    }
+
+    // 4. Check Feature Limit
+    const featureLimit = await checkLimit(userId, "ERROR_ANALYSIS")
+    if (!featureLimit.allowed) {
+      return NextResponse.json({ error: "Daily error analysis limit reached. Upgrade to Pro for unlimited." }, { status: 403 })
+    }
+
 
     if (!process.env.OPENROUTER_API_KEY) {
       console.error("[Explain Error API] Missing OPENROUTER_API_KEY")
@@ -142,6 +179,9 @@ Please explain this error and how to fix it.
             }
           },
         })
+
+        // Increment Usage
+        await incrementUsage(userId, "ERROR_ANALYSIS")
 
         // Log the usage
         try {

@@ -19,6 +19,11 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  */
 export type User = $Result.DefaultSelection<Prisma.$UserPayload>
 /**
+ * Model UserUsage
+ * 
+ */
+export type UserUsage = $Result.DefaultSelection<Prisma.$UserUsagePayload>
+/**
  * Model Session
  * 
  */
@@ -93,7 +98,15 @@ export type Integration = $Result.DefaultSelection<Prisma.$IntegrationPayload>
  * Enums
  */
 export namespace $Enums {
-  export const FeatureStatus: {
+  export const Plan: {
+  FREE: 'FREE',
+  PRO: 'PRO'
+};
+
+export type Plan = (typeof Plan)[keyof typeof Plan]
+
+
+export const FeatureStatus: {
   now: 'now',
   in_progress: 'in_progress',
   next: 'next',
@@ -126,6 +139,10 @@ export const GoalStatus: {
 export type GoalStatus = (typeof GoalStatus)[keyof typeof GoalStatus]
 
 }
+
+export type Plan = $Enums.Plan
+
+export const Plan: typeof $Enums.Plan
 
 export type FeatureStatus = $Enums.FeatureStatus
 
@@ -271,6 +288,16 @@ export class PrismaClient<
     * ```
     */
   get user(): Prisma.UserDelegate<ExtArgs>;
+
+  /**
+   * `prisma.userUsage`: Exposes CRUD operations for the **UserUsage** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more UserUsages
+    * const userUsages = await prisma.userUsage.findMany()
+    * ```
+    */
+  get userUsage(): Prisma.UserUsageDelegate<ExtArgs>;
 
   /**
    * `prisma.session`: Exposes CRUD operations for the **Session** model.
@@ -853,6 +880,7 @@ export namespace Prisma {
 
   export const ModelName: {
     User: 'User',
+    UserUsage: 'UserUsage',
     Session: 'Session',
     Account: 'Account',
     Verification: 'Verification',
@@ -882,7 +910,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "user" | "session" | "account" | "verification" | "apiKey" | "codingSession" | "tip" | "feature" | "featureVote" | "featureComment" | "commentReaction" | "explanation" | "skill" | "skillGoal" | "integration"
+      modelProps: "user" | "userUsage" | "session" | "account" | "verification" | "apiKey" | "codingSession" | "tip" | "feature" | "featureVote" | "featureComment" | "commentReaction" | "explanation" | "skill" | "skillGoal" | "integration"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -953,6 +981,76 @@ export namespace Prisma {
           count: {
             args: Prisma.UserCountArgs<ExtArgs>
             result: $Utils.Optional<UserCountAggregateOutputType> | number
+          }
+        }
+      }
+      UserUsage: {
+        payload: Prisma.$UserUsagePayload<ExtArgs>
+        fields: Prisma.UserUsageFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.UserUsageFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserUsagePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.UserUsageFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserUsagePayload>
+          }
+          findFirst: {
+            args: Prisma.UserUsageFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserUsagePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.UserUsageFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserUsagePayload>
+          }
+          findMany: {
+            args: Prisma.UserUsageFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserUsagePayload>[]
+          }
+          create: {
+            args: Prisma.UserUsageCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserUsagePayload>
+          }
+          createMany: {
+            args: Prisma.UserUsageCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.UserUsageCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserUsagePayload>[]
+          }
+          delete: {
+            args: Prisma.UserUsageDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserUsagePayload>
+          }
+          update: {
+            args: Prisma.UserUsageUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserUsagePayload>
+          }
+          deleteMany: {
+            args: Prisma.UserUsageDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.UserUsageUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.UserUsageUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserUsagePayload>
+          }
+          aggregate: {
+            args: Prisma.UserUsageAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateUserUsage>
+          }
+          groupBy: {
+            args: Prisma.UserUsageGroupByArgs<ExtArgs>
+            result: $Utils.Optional<UserUsageGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.UserUsageCountArgs<ExtArgs>
+            result: $Utils.Optional<UserUsageCountAggregateOutputType> | number
           }
         }
       }
@@ -2364,6 +2462,11 @@ export namespace Prisma {
     image: string | null
     bio: string | null
     theme: string | null
+    plan: $Enums.Plan | null
+    stripeCustomerId: string | null
+    stripeSubscriptionId: string | null
+    stripePriceId: string | null
+    stripeCurrentPeriodEnd: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -2376,6 +2479,11 @@ export namespace Prisma {
     image: string | null
     bio: string | null
     theme: string | null
+    plan: $Enums.Plan | null
+    stripeCustomerId: string | null
+    stripeSubscriptionId: string | null
+    stripePriceId: string | null
+    stripeCurrentPeriodEnd: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -2388,6 +2496,11 @@ export namespace Prisma {
     image: number
     bio: number
     theme: number
+    plan: number
+    stripeCustomerId: number
+    stripeSubscriptionId: number
+    stripePriceId: number
+    stripeCurrentPeriodEnd: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -2402,6 +2515,11 @@ export namespace Prisma {
     image?: true
     bio?: true
     theme?: true
+    plan?: true
+    stripeCustomerId?: true
+    stripeSubscriptionId?: true
+    stripePriceId?: true
+    stripeCurrentPeriodEnd?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -2414,6 +2532,11 @@ export namespace Prisma {
     image?: true
     bio?: true
     theme?: true
+    plan?: true
+    stripeCustomerId?: true
+    stripeSubscriptionId?: true
+    stripePriceId?: true
+    stripeCurrentPeriodEnd?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -2426,6 +2549,11 @@ export namespace Prisma {
     image?: true
     bio?: true
     theme?: true
+    plan?: true
+    stripeCustomerId?: true
+    stripeSubscriptionId?: true
+    stripePriceId?: true
+    stripeCurrentPeriodEnd?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -2511,6 +2639,11 @@ export namespace Prisma {
     image: string | null
     bio: string | null
     theme: string | null
+    plan: $Enums.Plan
+    stripeCustomerId: string | null
+    stripeSubscriptionId: string | null
+    stripePriceId: string | null
+    stripeCurrentPeriodEnd: Date | null
     createdAt: Date
     updatedAt: Date
     _count: UserCountAggregateOutputType | null
@@ -2540,6 +2673,11 @@ export namespace Prisma {
     image?: boolean
     bio?: boolean
     theme?: boolean
+    plan?: boolean
+    stripeCustomerId?: boolean
+    stripeSubscriptionId?: boolean
+    stripePriceId?: boolean
+    stripeCurrentPeriodEnd?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     sessions?: boolean | User$sessionsArgs<ExtArgs>
@@ -2555,6 +2693,7 @@ export namespace Prisma {
     skills?: boolean | User$skillsArgs<ExtArgs>
     skillGoals?: boolean | User$skillGoalsArgs<ExtArgs>
     integrations?: boolean | User$integrationsArgs<ExtArgs>
+    usage?: boolean | User$usageArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2566,6 +2705,11 @@ export namespace Prisma {
     image?: boolean
     bio?: boolean
     theme?: boolean
+    plan?: boolean
+    stripeCustomerId?: boolean
+    stripeSubscriptionId?: boolean
+    stripePriceId?: boolean
+    stripeCurrentPeriodEnd?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["user"]>
@@ -2578,6 +2722,11 @@ export namespace Prisma {
     image?: boolean
     bio?: boolean
     theme?: boolean
+    plan?: boolean
+    stripeCustomerId?: boolean
+    stripeSubscriptionId?: boolean
+    stripePriceId?: boolean
+    stripeCurrentPeriodEnd?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
@@ -2596,6 +2745,7 @@ export namespace Prisma {
     skills?: boolean | User$skillsArgs<ExtArgs>
     skillGoals?: boolean | User$skillGoalsArgs<ExtArgs>
     integrations?: boolean | User$integrationsArgs<ExtArgs>
+    usage?: boolean | User$usageArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2616,6 +2766,7 @@ export namespace Prisma {
       skills: Prisma.$SkillPayload<ExtArgs>[]
       skillGoals: Prisma.$SkillGoalPayload<ExtArgs>[]
       integrations: Prisma.$IntegrationPayload<ExtArgs>[]
+      usage: Prisma.$UserUsagePayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2625,6 +2776,11 @@ export namespace Prisma {
       image: string | null
       bio: string | null
       theme: string | null
+      plan: $Enums.Plan
+      stripeCustomerId: string | null
+      stripeSubscriptionId: string | null
+      stripePriceId: string | null
+      stripeCurrentPeriodEnd: Date | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["user"]>
@@ -3004,6 +3160,7 @@ export namespace Prisma {
     skills<T extends User$skillsArgs<ExtArgs> = {}>(args?: Subset<T, User$skillsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "findMany"> | Null>
     skillGoals<T extends User$skillGoalsArgs<ExtArgs> = {}>(args?: Subset<T, User$skillGoalsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SkillGoalPayload<ExtArgs>, T, "findMany"> | Null>
     integrations<T extends User$integrationsArgs<ExtArgs> = {}>(args?: Subset<T, User$integrationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$IntegrationPayload<ExtArgs>, T, "findMany"> | Null>
+    usage<T extends User$usageArgs<ExtArgs> = {}>(args?: Subset<T, User$usageArgs<ExtArgs>>): Prisma__UserUsageClient<$Result.GetResult<Prisma.$UserUsagePayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3040,6 +3197,11 @@ export namespace Prisma {
     readonly image: FieldRef<"User", 'String'>
     readonly bio: FieldRef<"User", 'String'>
     readonly theme: FieldRef<"User", 'String'>
+    readonly plan: FieldRef<"User", 'Plan'>
+    readonly stripeCustomerId: FieldRef<"User", 'String'>
+    readonly stripeSubscriptionId: FieldRef<"User", 'String'>
+    readonly stripePriceId: FieldRef<"User", 'String'>
+    readonly stripeCurrentPeriodEnd: FieldRef<"User", 'DateTime'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
   }
@@ -3616,6 +3778,21 @@ export namespace Prisma {
   }
 
   /**
+   * User.usage
+   */
+  export type User$usageArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserUsage
+     */
+    select?: UserUsageSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserUsageInclude<ExtArgs> | null
+    where?: UserUsageWhereInput
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3627,6 +3804,1049 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: UserInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model UserUsage
+   */
+
+  export type AggregateUserUsage = {
+    _count: UserUsageCountAggregateOutputType | null
+    _avg: UserUsageAvgAggregateOutputType | null
+    _sum: UserUsageSumAggregateOutputType | null
+    _min: UserUsageMinAggregateOutputType | null
+    _max: UserUsageMaxAggregateOutputType | null
+  }
+
+  export type UserUsageAvgAggregateOutputType = {
+    explanationsCount: number | null
+    refactoringCount: number | null
+    errorAnalysisCount: number | null
+    securityScanCount: number | null
+    apiRequestsCount: number | null
+  }
+
+  export type UserUsageSumAggregateOutputType = {
+    explanationsCount: number | null
+    refactoringCount: number | null
+    errorAnalysisCount: number | null
+    securityScanCount: number | null
+    apiRequestsCount: number | null
+  }
+
+  export type UserUsageMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    explanationsCount: number | null
+    refactoringCount: number | null
+    errorAnalysisCount: number | null
+    lastDailyReset: Date | null
+    securityScanCount: number | null
+    lastWeeklyReset: Date | null
+    apiRequestsCount: number | null
+    currentWindowStart: Date | null
+  }
+
+  export type UserUsageMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    explanationsCount: number | null
+    refactoringCount: number | null
+    errorAnalysisCount: number | null
+    lastDailyReset: Date | null
+    securityScanCount: number | null
+    lastWeeklyReset: Date | null
+    apiRequestsCount: number | null
+    currentWindowStart: Date | null
+  }
+
+  export type UserUsageCountAggregateOutputType = {
+    id: number
+    userId: number
+    explanationsCount: number
+    refactoringCount: number
+    errorAnalysisCount: number
+    lastDailyReset: number
+    securityScanCount: number
+    lastWeeklyReset: number
+    apiRequestsCount: number
+    currentWindowStart: number
+    _all: number
+  }
+
+
+  export type UserUsageAvgAggregateInputType = {
+    explanationsCount?: true
+    refactoringCount?: true
+    errorAnalysisCount?: true
+    securityScanCount?: true
+    apiRequestsCount?: true
+  }
+
+  export type UserUsageSumAggregateInputType = {
+    explanationsCount?: true
+    refactoringCount?: true
+    errorAnalysisCount?: true
+    securityScanCount?: true
+    apiRequestsCount?: true
+  }
+
+  export type UserUsageMinAggregateInputType = {
+    id?: true
+    userId?: true
+    explanationsCount?: true
+    refactoringCount?: true
+    errorAnalysisCount?: true
+    lastDailyReset?: true
+    securityScanCount?: true
+    lastWeeklyReset?: true
+    apiRequestsCount?: true
+    currentWindowStart?: true
+  }
+
+  export type UserUsageMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    explanationsCount?: true
+    refactoringCount?: true
+    errorAnalysisCount?: true
+    lastDailyReset?: true
+    securityScanCount?: true
+    lastWeeklyReset?: true
+    apiRequestsCount?: true
+    currentWindowStart?: true
+  }
+
+  export type UserUsageCountAggregateInputType = {
+    id?: true
+    userId?: true
+    explanationsCount?: true
+    refactoringCount?: true
+    errorAnalysisCount?: true
+    lastDailyReset?: true
+    securityScanCount?: true
+    lastWeeklyReset?: true
+    apiRequestsCount?: true
+    currentWindowStart?: true
+    _all?: true
+  }
+
+  export type UserUsageAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UserUsage to aggregate.
+     */
+    where?: UserUsageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserUsages to fetch.
+     */
+    orderBy?: UserUsageOrderByWithRelationInput | UserUsageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: UserUsageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserUsages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserUsages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned UserUsages
+    **/
+    _count?: true | UserUsageCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: UserUsageAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: UserUsageSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: UserUsageMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: UserUsageMaxAggregateInputType
+  }
+
+  export type GetUserUsageAggregateType<T extends UserUsageAggregateArgs> = {
+        [P in keyof T & keyof AggregateUserUsage]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateUserUsage[P]>
+      : GetScalarType<T[P], AggregateUserUsage[P]>
+  }
+
+
+
+
+  export type UserUsageGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserUsageWhereInput
+    orderBy?: UserUsageOrderByWithAggregationInput | UserUsageOrderByWithAggregationInput[]
+    by: UserUsageScalarFieldEnum[] | UserUsageScalarFieldEnum
+    having?: UserUsageScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: UserUsageCountAggregateInputType | true
+    _avg?: UserUsageAvgAggregateInputType
+    _sum?: UserUsageSumAggregateInputType
+    _min?: UserUsageMinAggregateInputType
+    _max?: UserUsageMaxAggregateInputType
+  }
+
+  export type UserUsageGroupByOutputType = {
+    id: string
+    userId: string
+    explanationsCount: number
+    refactoringCount: number
+    errorAnalysisCount: number
+    lastDailyReset: Date
+    securityScanCount: number
+    lastWeeklyReset: Date
+    apiRequestsCount: number
+    currentWindowStart: Date
+    _count: UserUsageCountAggregateOutputType | null
+    _avg: UserUsageAvgAggregateOutputType | null
+    _sum: UserUsageSumAggregateOutputType | null
+    _min: UserUsageMinAggregateOutputType | null
+    _max: UserUsageMaxAggregateOutputType | null
+  }
+
+  type GetUserUsageGroupByPayload<T extends UserUsageGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<UserUsageGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof UserUsageGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], UserUsageGroupByOutputType[P]>
+            : GetScalarType<T[P], UserUsageGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type UserUsageSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    explanationsCount?: boolean
+    refactoringCount?: boolean
+    errorAnalysisCount?: boolean
+    lastDailyReset?: boolean
+    securityScanCount?: boolean
+    lastWeeklyReset?: boolean
+    apiRequestsCount?: boolean
+    currentWindowStart?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userUsage"]>
+
+  export type UserUsageSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    explanationsCount?: boolean
+    refactoringCount?: boolean
+    errorAnalysisCount?: boolean
+    lastDailyReset?: boolean
+    securityScanCount?: boolean
+    lastWeeklyReset?: boolean
+    apiRequestsCount?: boolean
+    currentWindowStart?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userUsage"]>
+
+  export type UserUsageSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    explanationsCount?: boolean
+    refactoringCount?: boolean
+    errorAnalysisCount?: boolean
+    lastDailyReset?: boolean
+    securityScanCount?: boolean
+    lastWeeklyReset?: boolean
+    apiRequestsCount?: boolean
+    currentWindowStart?: boolean
+  }
+
+  export type UserUsageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type UserUsageIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $UserUsagePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "UserUsage"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      explanationsCount: number
+      refactoringCount: number
+      errorAnalysisCount: number
+      lastDailyReset: Date
+      securityScanCount: number
+      lastWeeklyReset: Date
+      apiRequestsCount: number
+      currentWindowStart: Date
+    }, ExtArgs["result"]["userUsage"]>
+    composites: {}
+  }
+
+  type UserUsageGetPayload<S extends boolean | null | undefined | UserUsageDefaultArgs> = $Result.GetResult<Prisma.$UserUsagePayload, S>
+
+  type UserUsageCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<UserUsageFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: UserUsageCountAggregateInputType | true
+    }
+
+  export interface UserUsageDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['UserUsage'], meta: { name: 'UserUsage' } }
+    /**
+     * Find zero or one UserUsage that matches the filter.
+     * @param {UserUsageFindUniqueArgs} args - Arguments to find a UserUsage
+     * @example
+     * // Get one UserUsage
+     * const userUsage = await prisma.userUsage.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends UserUsageFindUniqueArgs>(args: SelectSubset<T, UserUsageFindUniqueArgs<ExtArgs>>): Prisma__UserUsageClient<$Result.GetResult<Prisma.$UserUsagePayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one UserUsage that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {UserUsageFindUniqueOrThrowArgs} args - Arguments to find a UserUsage
+     * @example
+     * // Get one UserUsage
+     * const userUsage = await prisma.userUsage.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends UserUsageFindUniqueOrThrowArgs>(args: SelectSubset<T, UserUsageFindUniqueOrThrowArgs<ExtArgs>>): Prisma__UserUsageClient<$Result.GetResult<Prisma.$UserUsagePayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first UserUsage that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserUsageFindFirstArgs} args - Arguments to find a UserUsage
+     * @example
+     * // Get one UserUsage
+     * const userUsage = await prisma.userUsage.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends UserUsageFindFirstArgs>(args?: SelectSubset<T, UserUsageFindFirstArgs<ExtArgs>>): Prisma__UserUsageClient<$Result.GetResult<Prisma.$UserUsagePayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first UserUsage that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserUsageFindFirstOrThrowArgs} args - Arguments to find a UserUsage
+     * @example
+     * // Get one UserUsage
+     * const userUsage = await prisma.userUsage.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends UserUsageFindFirstOrThrowArgs>(args?: SelectSubset<T, UserUsageFindFirstOrThrowArgs<ExtArgs>>): Prisma__UserUsageClient<$Result.GetResult<Prisma.$UserUsagePayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more UserUsages that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserUsageFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all UserUsages
+     * const userUsages = await prisma.userUsage.findMany()
+     * 
+     * // Get first 10 UserUsages
+     * const userUsages = await prisma.userUsage.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const userUsageWithIdOnly = await prisma.userUsage.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends UserUsageFindManyArgs>(args?: SelectSubset<T, UserUsageFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserUsagePayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a UserUsage.
+     * @param {UserUsageCreateArgs} args - Arguments to create a UserUsage.
+     * @example
+     * // Create one UserUsage
+     * const UserUsage = await prisma.userUsage.create({
+     *   data: {
+     *     // ... data to create a UserUsage
+     *   }
+     * })
+     * 
+     */
+    create<T extends UserUsageCreateArgs>(args: SelectSubset<T, UserUsageCreateArgs<ExtArgs>>): Prisma__UserUsageClient<$Result.GetResult<Prisma.$UserUsagePayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many UserUsages.
+     * @param {UserUsageCreateManyArgs} args - Arguments to create many UserUsages.
+     * @example
+     * // Create many UserUsages
+     * const userUsage = await prisma.userUsage.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends UserUsageCreateManyArgs>(args?: SelectSubset<T, UserUsageCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many UserUsages and returns the data saved in the database.
+     * @param {UserUsageCreateManyAndReturnArgs} args - Arguments to create many UserUsages.
+     * @example
+     * // Create many UserUsages
+     * const userUsage = await prisma.userUsage.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many UserUsages and only return the `id`
+     * const userUsageWithIdOnly = await prisma.userUsage.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends UserUsageCreateManyAndReturnArgs>(args?: SelectSubset<T, UserUsageCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserUsagePayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a UserUsage.
+     * @param {UserUsageDeleteArgs} args - Arguments to delete one UserUsage.
+     * @example
+     * // Delete one UserUsage
+     * const UserUsage = await prisma.userUsage.delete({
+     *   where: {
+     *     // ... filter to delete one UserUsage
+     *   }
+     * })
+     * 
+     */
+    delete<T extends UserUsageDeleteArgs>(args: SelectSubset<T, UserUsageDeleteArgs<ExtArgs>>): Prisma__UserUsageClient<$Result.GetResult<Prisma.$UserUsagePayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one UserUsage.
+     * @param {UserUsageUpdateArgs} args - Arguments to update one UserUsage.
+     * @example
+     * // Update one UserUsage
+     * const userUsage = await prisma.userUsage.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends UserUsageUpdateArgs>(args: SelectSubset<T, UserUsageUpdateArgs<ExtArgs>>): Prisma__UserUsageClient<$Result.GetResult<Prisma.$UserUsagePayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more UserUsages.
+     * @param {UserUsageDeleteManyArgs} args - Arguments to filter UserUsages to delete.
+     * @example
+     * // Delete a few UserUsages
+     * const { count } = await prisma.userUsage.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends UserUsageDeleteManyArgs>(args?: SelectSubset<T, UserUsageDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UserUsages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserUsageUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many UserUsages
+     * const userUsage = await prisma.userUsage.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends UserUsageUpdateManyArgs>(args: SelectSubset<T, UserUsageUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one UserUsage.
+     * @param {UserUsageUpsertArgs} args - Arguments to update or create a UserUsage.
+     * @example
+     * // Update or create a UserUsage
+     * const userUsage = await prisma.userUsage.upsert({
+     *   create: {
+     *     // ... data to create a UserUsage
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the UserUsage we want to update
+     *   }
+     * })
+     */
+    upsert<T extends UserUsageUpsertArgs>(args: SelectSubset<T, UserUsageUpsertArgs<ExtArgs>>): Prisma__UserUsageClient<$Result.GetResult<Prisma.$UserUsagePayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of UserUsages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserUsageCountArgs} args - Arguments to filter UserUsages to count.
+     * @example
+     * // Count the number of UserUsages
+     * const count = await prisma.userUsage.count({
+     *   where: {
+     *     // ... the filter for the UserUsages we want to count
+     *   }
+     * })
+    **/
+    count<T extends UserUsageCountArgs>(
+      args?: Subset<T, UserUsageCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], UserUsageCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a UserUsage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserUsageAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends UserUsageAggregateArgs>(args: Subset<T, UserUsageAggregateArgs>): Prisma.PrismaPromise<GetUserUsageAggregateType<T>>
+
+    /**
+     * Group by UserUsage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserUsageGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends UserUsageGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: UserUsageGroupByArgs['orderBy'] }
+        : { orderBy?: UserUsageGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, UserUsageGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetUserUsageGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the UserUsage model
+   */
+  readonly fields: UserUsageFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for UserUsage.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__UserUsageClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the UserUsage model
+   */ 
+  interface UserUsageFieldRefs {
+    readonly id: FieldRef<"UserUsage", 'String'>
+    readonly userId: FieldRef<"UserUsage", 'String'>
+    readonly explanationsCount: FieldRef<"UserUsage", 'Int'>
+    readonly refactoringCount: FieldRef<"UserUsage", 'Int'>
+    readonly errorAnalysisCount: FieldRef<"UserUsage", 'Int'>
+    readonly lastDailyReset: FieldRef<"UserUsage", 'DateTime'>
+    readonly securityScanCount: FieldRef<"UserUsage", 'Int'>
+    readonly lastWeeklyReset: FieldRef<"UserUsage", 'DateTime'>
+    readonly apiRequestsCount: FieldRef<"UserUsage", 'Int'>
+    readonly currentWindowStart: FieldRef<"UserUsage", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * UserUsage findUnique
+   */
+  export type UserUsageFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserUsage
+     */
+    select?: UserUsageSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserUsageInclude<ExtArgs> | null
+    /**
+     * Filter, which UserUsage to fetch.
+     */
+    where: UserUsageWhereUniqueInput
+  }
+
+  /**
+   * UserUsage findUniqueOrThrow
+   */
+  export type UserUsageFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserUsage
+     */
+    select?: UserUsageSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserUsageInclude<ExtArgs> | null
+    /**
+     * Filter, which UserUsage to fetch.
+     */
+    where: UserUsageWhereUniqueInput
+  }
+
+  /**
+   * UserUsage findFirst
+   */
+  export type UserUsageFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserUsage
+     */
+    select?: UserUsageSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserUsageInclude<ExtArgs> | null
+    /**
+     * Filter, which UserUsage to fetch.
+     */
+    where?: UserUsageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserUsages to fetch.
+     */
+    orderBy?: UserUsageOrderByWithRelationInput | UserUsageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UserUsages.
+     */
+    cursor?: UserUsageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserUsages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserUsages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserUsages.
+     */
+    distinct?: UserUsageScalarFieldEnum | UserUsageScalarFieldEnum[]
+  }
+
+  /**
+   * UserUsage findFirstOrThrow
+   */
+  export type UserUsageFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserUsage
+     */
+    select?: UserUsageSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserUsageInclude<ExtArgs> | null
+    /**
+     * Filter, which UserUsage to fetch.
+     */
+    where?: UserUsageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserUsages to fetch.
+     */
+    orderBy?: UserUsageOrderByWithRelationInput | UserUsageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UserUsages.
+     */
+    cursor?: UserUsageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserUsages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserUsages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserUsages.
+     */
+    distinct?: UserUsageScalarFieldEnum | UserUsageScalarFieldEnum[]
+  }
+
+  /**
+   * UserUsage findMany
+   */
+  export type UserUsageFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserUsage
+     */
+    select?: UserUsageSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserUsageInclude<ExtArgs> | null
+    /**
+     * Filter, which UserUsages to fetch.
+     */
+    where?: UserUsageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserUsages to fetch.
+     */
+    orderBy?: UserUsageOrderByWithRelationInput | UserUsageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing UserUsages.
+     */
+    cursor?: UserUsageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserUsages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserUsages.
+     */
+    skip?: number
+    distinct?: UserUsageScalarFieldEnum | UserUsageScalarFieldEnum[]
+  }
+
+  /**
+   * UserUsage create
+   */
+  export type UserUsageCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserUsage
+     */
+    select?: UserUsageSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserUsageInclude<ExtArgs> | null
+    /**
+     * The data needed to create a UserUsage.
+     */
+    data: XOR<UserUsageCreateInput, UserUsageUncheckedCreateInput>
+  }
+
+  /**
+   * UserUsage createMany
+   */
+  export type UserUsageCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many UserUsages.
+     */
+    data: UserUsageCreateManyInput | UserUsageCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * UserUsage createManyAndReturn
+   */
+  export type UserUsageCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserUsage
+     */
+    select?: UserUsageSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many UserUsages.
+     */
+    data: UserUsageCreateManyInput | UserUsageCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserUsageIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * UserUsage update
+   */
+  export type UserUsageUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserUsage
+     */
+    select?: UserUsageSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserUsageInclude<ExtArgs> | null
+    /**
+     * The data needed to update a UserUsage.
+     */
+    data: XOR<UserUsageUpdateInput, UserUsageUncheckedUpdateInput>
+    /**
+     * Choose, which UserUsage to update.
+     */
+    where: UserUsageWhereUniqueInput
+  }
+
+  /**
+   * UserUsage updateMany
+   */
+  export type UserUsageUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update UserUsages.
+     */
+    data: XOR<UserUsageUpdateManyMutationInput, UserUsageUncheckedUpdateManyInput>
+    /**
+     * Filter which UserUsages to update
+     */
+    where?: UserUsageWhereInput
+  }
+
+  /**
+   * UserUsage upsert
+   */
+  export type UserUsageUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserUsage
+     */
+    select?: UserUsageSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserUsageInclude<ExtArgs> | null
+    /**
+     * The filter to search for the UserUsage to update in case it exists.
+     */
+    where: UserUsageWhereUniqueInput
+    /**
+     * In case the UserUsage found by the `where` argument doesn't exist, create a new UserUsage with this data.
+     */
+    create: XOR<UserUsageCreateInput, UserUsageUncheckedCreateInput>
+    /**
+     * In case the UserUsage was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<UserUsageUpdateInput, UserUsageUncheckedUpdateInput>
+  }
+
+  /**
+   * UserUsage delete
+   */
+  export type UserUsageDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserUsage
+     */
+    select?: UserUsageSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserUsageInclude<ExtArgs> | null
+    /**
+     * Filter which UserUsage to delete.
+     */
+    where: UserUsageWhereUniqueInput
+  }
+
+  /**
+   * UserUsage deleteMany
+   */
+  export type UserUsageDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UserUsages to delete
+     */
+    where?: UserUsageWhereInput
+  }
+
+  /**
+   * UserUsage without action
+   */
+  export type UserUsageDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserUsage
+     */
+    select?: UserUsageSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserUsageInclude<ExtArgs> | null
   }
 
 
@@ -17300,11 +18520,32 @@ export namespace Prisma {
     image: 'image',
     bio: 'bio',
     theme: 'theme',
+    plan: 'plan',
+    stripeCustomerId: 'stripeCustomerId',
+    stripeSubscriptionId: 'stripeSubscriptionId',
+    stripePriceId: 'stripePriceId',
+    stripeCurrentPeriodEnd: 'stripeCurrentPeriodEnd',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+  export const UserUsageScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    explanationsCount: 'explanationsCount',
+    refactoringCount: 'refactoringCount',
+    errorAnalysisCount: 'errorAnalysisCount',
+    lastDailyReset: 'lastDailyReset',
+    securityScanCount: 'securityScanCount',
+    lastWeeklyReset: 'lastWeeklyReset',
+    apiRequestsCount: 'apiRequestsCount',
+    currentWindowStart: 'currentWindowStart'
+  };
+
+  export type UserUsageScalarFieldEnum = (typeof UserUsageScalarFieldEnum)[keyof typeof UserUsageScalarFieldEnum]
 
 
   export const SessionScalarFieldEnum: {
@@ -17567,6 +18808,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Plan'
+   */
+  export type EnumPlanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Plan'>
+    
+
+
+  /**
+   * Reference to a field of type 'Plan[]'
+   */
+  export type ListEnumPlanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Plan[]'>
+    
+
+
+  /**
    * Reference to a field of type 'DateTime'
    */
   export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
@@ -17577,6 +18832,20 @@ export namespace Prisma {
    * Reference to a field of type 'DateTime[]'
    */
   export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int'
+   */
+  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int[]'
+   */
+  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
 
 
@@ -17612,20 +18881,6 @@ export namespace Prisma {
    * Reference to a field of type 'FeatureTag[]'
    */
   export type ListEnumFeatureTagFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FeatureTag[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'Int'
-   */
-  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-  /**
-   * Reference to a field of type 'Int[]'
-   */
-  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
 
 
@@ -17671,6 +18926,11 @@ export namespace Prisma {
     image?: StringNullableFilter<"User"> | string | null
     bio?: StringNullableFilter<"User"> | string | null
     theme?: StringNullableFilter<"User"> | string | null
+    plan?: EnumPlanFilter<"User"> | $Enums.Plan
+    stripeCustomerId?: StringNullableFilter<"User"> | string | null
+    stripeSubscriptionId?: StringNullableFilter<"User"> | string | null
+    stripePriceId?: StringNullableFilter<"User"> | string | null
+    stripeCurrentPeriodEnd?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     sessions?: SessionListRelationFilter
@@ -17686,6 +18946,7 @@ export namespace Prisma {
     skills?: SkillListRelationFilter
     skillGoals?: SkillGoalListRelationFilter
     integrations?: IntegrationListRelationFilter
+    usage?: XOR<UserUsageNullableRelationFilter, UserUsageWhereInput> | null
   }
 
   export type UserOrderByWithRelationInput = {
@@ -17696,6 +18957,11 @@ export namespace Prisma {
     image?: SortOrderInput | SortOrder
     bio?: SortOrderInput | SortOrder
     theme?: SortOrderInput | SortOrder
+    plan?: SortOrder
+    stripeCustomerId?: SortOrderInput | SortOrder
+    stripeSubscriptionId?: SortOrderInput | SortOrder
+    stripePriceId?: SortOrderInput | SortOrder
+    stripeCurrentPeriodEnd?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     sessions?: SessionOrderByRelationAggregateInput
@@ -17711,11 +18977,14 @@ export namespace Prisma {
     skills?: SkillOrderByRelationAggregateInput
     skillGoals?: SkillGoalOrderByRelationAggregateInput
     integrations?: IntegrationOrderByRelationAggregateInput
+    usage?: UserUsageOrderByWithRelationInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
     id?: string
     email?: string
+    stripeCustomerId?: string
+    stripeSubscriptionId?: string
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
@@ -17724,6 +18993,9 @@ export namespace Prisma {
     image?: StringNullableFilter<"User"> | string | null
     bio?: StringNullableFilter<"User"> | string | null
     theme?: StringNullableFilter<"User"> | string | null
+    plan?: EnumPlanFilter<"User"> | $Enums.Plan
+    stripePriceId?: StringNullableFilter<"User"> | string | null
+    stripeCurrentPeriodEnd?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     sessions?: SessionListRelationFilter
@@ -17739,7 +19011,8 @@ export namespace Prisma {
     skills?: SkillListRelationFilter
     skillGoals?: SkillGoalListRelationFilter
     integrations?: IntegrationListRelationFilter
-  }, "id" | "email">
+    usage?: XOR<UserUsageNullableRelationFilter, UserUsageWhereInput> | null
+  }, "id" | "email" | "stripeCustomerId" | "stripeSubscriptionId">
 
   export type UserOrderByWithAggregationInput = {
     id?: SortOrder
@@ -17749,6 +19022,11 @@ export namespace Prisma {
     image?: SortOrderInput | SortOrder
     bio?: SortOrderInput | SortOrder
     theme?: SortOrderInput | SortOrder
+    plan?: SortOrder
+    stripeCustomerId?: SortOrderInput | SortOrder
+    stripeSubscriptionId?: SortOrderInput | SortOrder
+    stripePriceId?: SortOrderInput | SortOrder
+    stripeCurrentPeriodEnd?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: UserCountOrderByAggregateInput
@@ -17767,8 +19045,95 @@ export namespace Prisma {
     image?: StringNullableWithAggregatesFilter<"User"> | string | null
     bio?: StringNullableWithAggregatesFilter<"User"> | string | null
     theme?: StringNullableWithAggregatesFilter<"User"> | string | null
+    plan?: EnumPlanWithAggregatesFilter<"User"> | $Enums.Plan
+    stripeCustomerId?: StringNullableWithAggregatesFilter<"User"> | string | null
+    stripeSubscriptionId?: StringNullableWithAggregatesFilter<"User"> | string | null
+    stripePriceId?: StringNullableWithAggregatesFilter<"User"> | string | null
+    stripeCurrentPeriodEnd?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
+  }
+
+  export type UserUsageWhereInput = {
+    AND?: UserUsageWhereInput | UserUsageWhereInput[]
+    OR?: UserUsageWhereInput[]
+    NOT?: UserUsageWhereInput | UserUsageWhereInput[]
+    id?: StringFilter<"UserUsage"> | string
+    userId?: StringFilter<"UserUsage"> | string
+    explanationsCount?: IntFilter<"UserUsage"> | number
+    refactoringCount?: IntFilter<"UserUsage"> | number
+    errorAnalysisCount?: IntFilter<"UserUsage"> | number
+    lastDailyReset?: DateTimeFilter<"UserUsage"> | Date | string
+    securityScanCount?: IntFilter<"UserUsage"> | number
+    lastWeeklyReset?: DateTimeFilter<"UserUsage"> | Date | string
+    apiRequestsCount?: IntFilter<"UserUsage"> | number
+    currentWindowStart?: DateTimeFilter<"UserUsage"> | Date | string
+    user?: XOR<UserRelationFilter, UserWhereInput>
+  }
+
+  export type UserUsageOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    explanationsCount?: SortOrder
+    refactoringCount?: SortOrder
+    errorAnalysisCount?: SortOrder
+    lastDailyReset?: SortOrder
+    securityScanCount?: SortOrder
+    lastWeeklyReset?: SortOrder
+    apiRequestsCount?: SortOrder
+    currentWindowStart?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type UserUsageWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    userId?: string
+    AND?: UserUsageWhereInput | UserUsageWhereInput[]
+    OR?: UserUsageWhereInput[]
+    NOT?: UserUsageWhereInput | UserUsageWhereInput[]
+    explanationsCount?: IntFilter<"UserUsage"> | number
+    refactoringCount?: IntFilter<"UserUsage"> | number
+    errorAnalysisCount?: IntFilter<"UserUsage"> | number
+    lastDailyReset?: DateTimeFilter<"UserUsage"> | Date | string
+    securityScanCount?: IntFilter<"UserUsage"> | number
+    lastWeeklyReset?: DateTimeFilter<"UserUsage"> | Date | string
+    apiRequestsCount?: IntFilter<"UserUsage"> | number
+    currentWindowStart?: DateTimeFilter<"UserUsage"> | Date | string
+    user?: XOR<UserRelationFilter, UserWhereInput>
+  }, "id" | "userId">
+
+  export type UserUsageOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    explanationsCount?: SortOrder
+    refactoringCount?: SortOrder
+    errorAnalysisCount?: SortOrder
+    lastDailyReset?: SortOrder
+    securityScanCount?: SortOrder
+    lastWeeklyReset?: SortOrder
+    apiRequestsCount?: SortOrder
+    currentWindowStart?: SortOrder
+    _count?: UserUsageCountOrderByAggregateInput
+    _avg?: UserUsageAvgOrderByAggregateInput
+    _max?: UserUsageMaxOrderByAggregateInput
+    _min?: UserUsageMinOrderByAggregateInput
+    _sum?: UserUsageSumOrderByAggregateInput
+  }
+
+  export type UserUsageScalarWhereWithAggregatesInput = {
+    AND?: UserUsageScalarWhereWithAggregatesInput | UserUsageScalarWhereWithAggregatesInput[]
+    OR?: UserUsageScalarWhereWithAggregatesInput[]
+    NOT?: UserUsageScalarWhereWithAggregatesInput | UserUsageScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"UserUsage"> | string
+    userId?: StringWithAggregatesFilter<"UserUsage"> | string
+    explanationsCount?: IntWithAggregatesFilter<"UserUsage"> | number
+    refactoringCount?: IntWithAggregatesFilter<"UserUsage"> | number
+    errorAnalysisCount?: IntWithAggregatesFilter<"UserUsage"> | number
+    lastDailyReset?: DateTimeWithAggregatesFilter<"UserUsage"> | Date | string
+    securityScanCount?: IntWithAggregatesFilter<"UserUsage"> | number
+    lastWeeklyReset?: DateTimeWithAggregatesFilter<"UserUsage"> | Date | string
+    apiRequestsCount?: IntWithAggregatesFilter<"UserUsage"> | number
+    currentWindowStart?: DateTimeWithAggregatesFilter<"UserUsage"> | Date | string
   }
 
   export type SessionWhereInput = {
@@ -18741,6 +20106,11 @@ export namespace Prisma {
     image?: string | null
     bio?: string | null
     theme?: string | null
+    plan?: $Enums.Plan
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    stripePriceId?: string | null
+    stripeCurrentPeriodEnd?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -18756,6 +20126,7 @@ export namespace Prisma {
     skills?: SkillCreateNestedManyWithoutUserInput
     skillGoals?: SkillGoalCreateNestedManyWithoutUserInput
     integrations?: IntegrationCreateNestedManyWithoutUserInput
+    usage?: UserUsageCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -18766,6 +20137,11 @@ export namespace Prisma {
     image?: string | null
     bio?: string | null
     theme?: string | null
+    plan?: $Enums.Plan
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    stripePriceId?: string | null
+    stripeCurrentPeriodEnd?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -18781,6 +20157,7 @@ export namespace Prisma {
     skills?: SkillUncheckedCreateNestedManyWithoutUserInput
     skillGoals?: SkillGoalUncheckedCreateNestedManyWithoutUserInput
     integrations?: IntegrationUncheckedCreateNestedManyWithoutUserInput
+    usage?: UserUsageUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -18791,6 +20168,11 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     theme?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeCurrentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -18806,6 +20188,7 @@ export namespace Prisma {
     skills?: SkillUpdateManyWithoutUserNestedInput
     skillGoals?: SkillGoalUpdateManyWithoutUserNestedInput
     integrations?: IntegrationUpdateManyWithoutUserNestedInput
+    usage?: UserUsageUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -18816,6 +20199,11 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     theme?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeCurrentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -18831,6 +20219,7 @@ export namespace Prisma {
     skills?: SkillUncheckedUpdateManyWithoutUserNestedInput
     skillGoals?: SkillGoalUncheckedUpdateManyWithoutUserNestedInput
     integrations?: IntegrationUncheckedUpdateManyWithoutUserNestedInput
+    usage?: UserUsageUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -18841,6 +20230,11 @@ export namespace Prisma {
     image?: string | null
     bio?: string | null
     theme?: string | null
+    plan?: $Enums.Plan
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    stripePriceId?: string | null
+    stripeCurrentPeriodEnd?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -18853,6 +20247,11 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     theme?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeCurrentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -18865,8 +20264,103 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     theme?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeCurrentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserUsageCreateInput = {
+    id?: string
+    explanationsCount?: number
+    refactoringCount?: number
+    errorAnalysisCount?: number
+    lastDailyReset?: Date | string
+    securityScanCount?: number
+    lastWeeklyReset?: Date | string
+    apiRequestsCount?: number
+    currentWindowStart?: Date | string
+    user: UserCreateNestedOneWithoutUsageInput
+  }
+
+  export type UserUsageUncheckedCreateInput = {
+    id?: string
+    userId: string
+    explanationsCount?: number
+    refactoringCount?: number
+    errorAnalysisCount?: number
+    lastDailyReset?: Date | string
+    securityScanCount?: number
+    lastWeeklyReset?: Date | string
+    apiRequestsCount?: number
+    currentWindowStart?: Date | string
+  }
+
+  export type UserUsageUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    explanationsCount?: IntFieldUpdateOperationsInput | number
+    refactoringCount?: IntFieldUpdateOperationsInput | number
+    errorAnalysisCount?: IntFieldUpdateOperationsInput | number
+    lastDailyReset?: DateTimeFieldUpdateOperationsInput | Date | string
+    securityScanCount?: IntFieldUpdateOperationsInput | number
+    lastWeeklyReset?: DateTimeFieldUpdateOperationsInput | Date | string
+    apiRequestsCount?: IntFieldUpdateOperationsInput | number
+    currentWindowStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutUsageNestedInput
+  }
+
+  export type UserUsageUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    explanationsCount?: IntFieldUpdateOperationsInput | number
+    refactoringCount?: IntFieldUpdateOperationsInput | number
+    errorAnalysisCount?: IntFieldUpdateOperationsInput | number
+    lastDailyReset?: DateTimeFieldUpdateOperationsInput | Date | string
+    securityScanCount?: IntFieldUpdateOperationsInput | number
+    lastWeeklyReset?: DateTimeFieldUpdateOperationsInput | Date | string
+    apiRequestsCount?: IntFieldUpdateOperationsInput | number
+    currentWindowStart?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserUsageCreateManyInput = {
+    id?: string
+    userId: string
+    explanationsCount?: number
+    refactoringCount?: number
+    errorAnalysisCount?: number
+    lastDailyReset?: Date | string
+    securityScanCount?: number
+    lastWeeklyReset?: Date | string
+    apiRequestsCount?: number
+    currentWindowStart?: Date | string
+  }
+
+  export type UserUsageUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    explanationsCount?: IntFieldUpdateOperationsInput | number
+    refactoringCount?: IntFieldUpdateOperationsInput | number
+    errorAnalysisCount?: IntFieldUpdateOperationsInput | number
+    lastDailyReset?: DateTimeFieldUpdateOperationsInput | Date | string
+    securityScanCount?: IntFieldUpdateOperationsInput | number
+    lastWeeklyReset?: DateTimeFieldUpdateOperationsInput | Date | string
+    apiRequestsCount?: IntFieldUpdateOperationsInput | number
+    currentWindowStart?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserUsageUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    explanationsCount?: IntFieldUpdateOperationsInput | number
+    refactoringCount?: IntFieldUpdateOperationsInput | number
+    errorAnalysisCount?: IntFieldUpdateOperationsInput | number
+    lastDailyReset?: DateTimeFieldUpdateOperationsInput | Date | string
+    securityScanCount?: IntFieldUpdateOperationsInput | number
+    lastWeeklyReset?: DateTimeFieldUpdateOperationsInput | Date | string
+    apiRequestsCount?: IntFieldUpdateOperationsInput | number
+    currentWindowStart?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type SessionCreateInput = {
@@ -19907,6 +21401,24 @@ export namespace Prisma {
     not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
   }
 
+  export type EnumPlanFilter<$PrismaModel = never> = {
+    equals?: $Enums.Plan | EnumPlanFieldRefInput<$PrismaModel>
+    in?: $Enums.Plan[] | ListEnumPlanFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Plan[] | ListEnumPlanFieldRefInput<$PrismaModel>
+    not?: NestedEnumPlanFilter<$PrismaModel> | $Enums.Plan
+  }
+
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type DateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -19996,6 +21508,11 @@ export namespace Prisma {
     none?: IntegrationWhereInput
   }
 
+  export type UserUsageNullableRelationFilter = {
+    is?: UserUsageWhereInput | null
+    isNot?: UserUsageWhereInput | null
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -20061,6 +21578,11 @@ export namespace Prisma {
     image?: SortOrder
     bio?: SortOrder
     theme?: SortOrder
+    plan?: SortOrder
+    stripeCustomerId?: SortOrder
+    stripeSubscriptionId?: SortOrder
+    stripePriceId?: SortOrder
+    stripeCurrentPeriodEnd?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -20073,6 +21595,11 @@ export namespace Prisma {
     image?: SortOrder
     bio?: SortOrder
     theme?: SortOrder
+    plan?: SortOrder
+    stripeCustomerId?: SortOrder
+    stripeSubscriptionId?: SortOrder
+    stripePriceId?: SortOrder
+    stripeCurrentPeriodEnd?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -20085,6 +21612,11 @@ export namespace Prisma {
     image?: SortOrder
     bio?: SortOrder
     theme?: SortOrder
+    plan?: SortOrder
+    stripeCustomerId?: SortOrder
+    stripeSubscriptionId?: SortOrder
+    stripePriceId?: SortOrder
+    stripeCurrentPeriodEnd?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -20133,6 +21665,30 @@ export namespace Prisma {
     _max?: NestedBoolNullableFilter<$PrismaModel>
   }
 
+  export type EnumPlanWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Plan | EnumPlanFieldRefInput<$PrismaModel>
+    in?: $Enums.Plan[] | ListEnumPlanFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Plan[] | ListEnumPlanFieldRefInput<$PrismaModel>
+    not?: NestedEnumPlanWithAggregatesFilter<$PrismaModel> | $Enums.Plan
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPlanFilter<$PrismaModel>
+    _max?: NestedEnumPlanFilter<$PrismaModel>
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -20147,9 +21703,91 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
   export type UserRelationFilter = {
     is?: UserWhereInput
     isNot?: UserWhereInput
+  }
+
+  export type UserUsageCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    explanationsCount?: SortOrder
+    refactoringCount?: SortOrder
+    errorAnalysisCount?: SortOrder
+    lastDailyReset?: SortOrder
+    securityScanCount?: SortOrder
+    lastWeeklyReset?: SortOrder
+    apiRequestsCount?: SortOrder
+    currentWindowStart?: SortOrder
+  }
+
+  export type UserUsageAvgOrderByAggregateInput = {
+    explanationsCount?: SortOrder
+    refactoringCount?: SortOrder
+    errorAnalysisCount?: SortOrder
+    securityScanCount?: SortOrder
+    apiRequestsCount?: SortOrder
+  }
+
+  export type UserUsageMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    explanationsCount?: SortOrder
+    refactoringCount?: SortOrder
+    errorAnalysisCount?: SortOrder
+    lastDailyReset?: SortOrder
+    securityScanCount?: SortOrder
+    lastWeeklyReset?: SortOrder
+    apiRequestsCount?: SortOrder
+    currentWindowStart?: SortOrder
+  }
+
+  export type UserUsageMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    explanationsCount?: SortOrder
+    refactoringCount?: SortOrder
+    errorAnalysisCount?: SortOrder
+    lastDailyReset?: SortOrder
+    securityScanCount?: SortOrder
+    lastWeeklyReset?: SortOrder
+    apiRequestsCount?: SortOrder
+    currentWindowStart?: SortOrder
+  }
+
+  export type UserUsageSumOrderByAggregateInput = {
+    explanationsCount?: SortOrder
+    refactoringCount?: SortOrder
+    errorAnalysisCount?: SortOrder
+    securityScanCount?: SortOrder
+    apiRequestsCount?: SortOrder
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type SessionCountOrderByAggregateInput = {
@@ -20252,17 +21890,6 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
-  export type DateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
   export type ApiKeyCountOrderByAggregateInput = {
     id?: SortOrder
     key?: SortOrder
@@ -20291,20 +21918,6 @@ export namespace Prisma {
     userId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-  }
-
-  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
   export type JsonNullableFilter<$PrismaModel = never> = 
     | PatchUndefined<
@@ -20627,17 +22240,6 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
-  export type IntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
-  }
-
   export type SkillUserIdConceptCompoundUniqueInput = {
     userId: string
     concept: string
@@ -20692,22 +22294,6 @@ export namespace Prisma {
     totalExplanations?: SortOrder
     sessionsCount?: SortOrder
     confidence?: SortOrder
-  }
-
-  export type IntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type EnumGoalStatusFilter<$PrismaModel = never> = {
@@ -20949,6 +22535,12 @@ export namespace Prisma {
     connect?: IntegrationWhereUniqueInput | IntegrationWhereUniqueInput[]
   }
 
+  export type UserUsageCreateNestedOneWithoutUserInput = {
+    create?: XOR<UserUsageCreateWithoutUserInput, UserUsageUncheckedCreateWithoutUserInput>
+    connectOrCreate?: UserUsageCreateOrConnectWithoutUserInput
+    connect?: UserUsageWhereUniqueInput
+  }
+
   export type SessionUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -21040,6 +22632,12 @@ export namespace Prisma {
     connect?: IntegrationWhereUniqueInput | IntegrationWhereUniqueInput[]
   }
 
+  export type UserUsageUncheckedCreateNestedOneWithoutUserInput = {
+    create?: XOR<UserUsageCreateWithoutUserInput, UserUsageUncheckedCreateWithoutUserInput>
+    connectOrCreate?: UserUsageCreateOrConnectWithoutUserInput
+    connect?: UserUsageWhereUniqueInput
+  }
+
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
@@ -21050,6 +22648,14 @@ export namespace Prisma {
 
   export type NullableBoolFieldUpdateOperationsInput = {
     set?: boolean | null
+  }
+
+  export type EnumPlanFieldUpdateOperationsInput = {
+    set?: $Enums.Plan
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
   }
 
   export type DateTimeFieldUpdateOperationsInput = {
@@ -21238,6 +22844,16 @@ export namespace Prisma {
     deleteMany?: IntegrationScalarWhereInput | IntegrationScalarWhereInput[]
   }
 
+  export type UserUsageUpdateOneWithoutUserNestedInput = {
+    create?: XOR<UserUsageCreateWithoutUserInput, UserUsageUncheckedCreateWithoutUserInput>
+    connectOrCreate?: UserUsageCreateOrConnectWithoutUserInput
+    upsert?: UserUsageUpsertWithoutUserInput
+    disconnect?: UserUsageWhereInput | boolean
+    delete?: UserUsageWhereInput | boolean
+    connect?: UserUsageWhereUniqueInput
+    update?: XOR<XOR<UserUsageUpdateToOneWithWhereWithoutUserInput, UserUsageUpdateWithoutUserInput>, UserUsageUncheckedUpdateWithoutUserInput>
+  }
+
   export type SessionUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -21420,6 +23036,38 @@ export namespace Prisma {
     deleteMany?: IntegrationScalarWhereInput | IntegrationScalarWhereInput[]
   }
 
+  export type UserUsageUncheckedUpdateOneWithoutUserNestedInput = {
+    create?: XOR<UserUsageCreateWithoutUserInput, UserUsageUncheckedCreateWithoutUserInput>
+    connectOrCreate?: UserUsageCreateOrConnectWithoutUserInput
+    upsert?: UserUsageUpsertWithoutUserInput
+    disconnect?: UserUsageWhereInput | boolean
+    delete?: UserUsageWhereInput | boolean
+    connect?: UserUsageWhereUniqueInput
+    update?: XOR<XOR<UserUsageUpdateToOneWithWhereWithoutUserInput, UserUsageUpdateWithoutUserInput>, UserUsageUncheckedUpdateWithoutUserInput>
+  }
+
+  export type UserCreateNestedOneWithoutUsageInput = {
+    create?: XOR<UserCreateWithoutUsageInput, UserUncheckedCreateWithoutUsageInput>
+    connectOrCreate?: UserCreateOrConnectWithoutUsageInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type UserUpdateOneRequiredWithoutUsageNestedInput = {
+    create?: XOR<UserCreateWithoutUsageInput, UserUncheckedCreateWithoutUsageInput>
+    connectOrCreate?: UserCreateOrConnectWithoutUsageInput
+    upsert?: UserUpsertWithoutUsageInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutUsageInput, UserUpdateWithoutUsageInput>, UserUncheckedUpdateWithoutUsageInput>
+  }
+
   export type UserCreateNestedOneWithoutSessionsInput = {
     create?: XOR<UserCreateWithoutSessionsInput, UserUncheckedCreateWithoutSessionsInput>
     connectOrCreate?: UserCreateOrConnectWithoutSessionsInput
@@ -21452,10 +23100,6 @@ export namespace Prisma {
     create?: XOR<UserCreateWithoutApiKeysInput, UserUncheckedCreateWithoutApiKeysInput>
     connectOrCreate?: UserCreateOrConnectWithoutApiKeysInput
     connect?: UserWhereUniqueInput
-  }
-
-  export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null
   }
 
   export type UserUpdateOneRequiredWithoutApiKeysNestedInput = {
@@ -21829,14 +23473,6 @@ export namespace Prisma {
     connect?: SkillGoalWhereUniqueInput | SkillGoalWhereUniqueInput[]
   }
 
-  export type IntFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
-  }
-
   export type UserUpdateOneRequiredWithoutSkillsNestedInput = {
     create?: XOR<UserCreateWithoutSkillsInput, UserUncheckedCreateWithoutSkillsInput>
     connectOrCreate?: UserCreateOrConnectWithoutSkillsInput
@@ -21954,6 +23590,24 @@ export namespace Prisma {
     not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
   }
 
+  export type NestedEnumPlanFilter<$PrismaModel = never> = {
+    equals?: $Enums.Plan | EnumPlanFieldRefInput<$PrismaModel>
+    in?: $Enums.Plan[] | ListEnumPlanFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Plan[] | ListEnumPlanFieldRefInput<$PrismaModel>
+    not?: NestedEnumPlanFilter<$PrismaModel> | $Enums.Plan
+  }
+
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type NestedDateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -22029,29 +23683,14 @@ export namespace Prisma {
     _max?: NestedBoolNullableFilter<$PrismaModel>
   }
 
-  export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
+  export type NestedEnumPlanWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Plan | EnumPlanFieldRefInput<$PrismaModel>
+    in?: $Enums.Plan[] | ListEnumPlanFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Plan[] | ListEnumPlanFieldRefInput<$PrismaModel>
+    not?: NestedEnumPlanWithAggregatesFilter<$PrismaModel> | $Enums.Plan
     _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
-  }
-
-  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+    _min?: NestedEnumPlanFilter<$PrismaModel>
+    _max?: NestedEnumPlanFilter<$PrismaModel>
   }
 
   export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -22066,6 +23705,47 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedDateTimeFilter<$PrismaModel>
+    _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
   }
   export type NestedJsonNullableFilter<$PrismaModel = never> = 
     | PatchUndefined<
@@ -22122,33 +23802,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumFeatureTagFilter<$PrismaModel>
     _max?: NestedEnumFeatureTagFilter<$PrismaModel>
-  }
-
-  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
-  }
-
-  export type NestedFloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
   }
 
   export type NestedEnumGoalStatusFilter<$PrismaModel = never> = {
@@ -22572,6 +24225,35 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type UserUsageCreateWithoutUserInput = {
+    id?: string
+    explanationsCount?: number
+    refactoringCount?: number
+    errorAnalysisCount?: number
+    lastDailyReset?: Date | string
+    securityScanCount?: number
+    lastWeeklyReset?: Date | string
+    apiRequestsCount?: number
+    currentWindowStart?: Date | string
+  }
+
+  export type UserUsageUncheckedCreateWithoutUserInput = {
+    id?: string
+    explanationsCount?: number
+    refactoringCount?: number
+    errorAnalysisCount?: number
+    lastDailyReset?: Date | string
+    securityScanCount?: number
+    lastWeeklyReset?: Date | string
+    apiRequestsCount?: number
+    currentWindowStart?: Date | string
+  }
+
+  export type UserUsageCreateOrConnectWithoutUserInput = {
+    where: UserUsageWhereUniqueInput
+    create: XOR<UserUsageCreateWithoutUserInput, UserUsageUncheckedCreateWithoutUserInput>
+  }
+
   export type SessionUpsertWithWhereUniqueWithoutUserInput = {
     where: SessionWhereUniqueInput
     update: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
@@ -22953,7 +24635,42 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Integration"> | Date | string
   }
 
-  export type UserCreateWithoutSessionsInput = {
+  export type UserUsageUpsertWithoutUserInput = {
+    update: XOR<UserUsageUpdateWithoutUserInput, UserUsageUncheckedUpdateWithoutUserInput>
+    create: XOR<UserUsageCreateWithoutUserInput, UserUsageUncheckedCreateWithoutUserInput>
+    where?: UserUsageWhereInput
+  }
+
+  export type UserUsageUpdateToOneWithWhereWithoutUserInput = {
+    where?: UserUsageWhereInput
+    data: XOR<UserUsageUpdateWithoutUserInput, UserUsageUncheckedUpdateWithoutUserInput>
+  }
+
+  export type UserUsageUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    explanationsCount?: IntFieldUpdateOperationsInput | number
+    refactoringCount?: IntFieldUpdateOperationsInput | number
+    errorAnalysisCount?: IntFieldUpdateOperationsInput | number
+    lastDailyReset?: DateTimeFieldUpdateOperationsInput | Date | string
+    securityScanCount?: IntFieldUpdateOperationsInput | number
+    lastWeeklyReset?: DateTimeFieldUpdateOperationsInput | Date | string
+    apiRequestsCount?: IntFieldUpdateOperationsInput | number
+    currentWindowStart?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserUsageUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    explanationsCount?: IntFieldUpdateOperationsInput | number
+    refactoringCount?: IntFieldUpdateOperationsInput | number
+    errorAnalysisCount?: IntFieldUpdateOperationsInput | number
+    lastDailyReset?: DateTimeFieldUpdateOperationsInput | Date | string
+    securityScanCount?: IntFieldUpdateOperationsInput | number
+    lastWeeklyReset?: DateTimeFieldUpdateOperationsInput | Date | string
+    apiRequestsCount?: IntFieldUpdateOperationsInput | number
+    currentWindowStart?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserCreateWithoutUsageInput = {
     id?: string
     email: string
     name?: string | null
@@ -22961,8 +24678,14 @@ export namespace Prisma {
     image?: string | null
     bio?: string | null
     theme?: string | null
+    plan?: $Enums.Plan
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    stripePriceId?: string | null
+    stripeCurrentPeriodEnd?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    sessions?: SessionCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
     apiKeys?: ApiKeyCreateNestedManyWithoutUserInput
     codingSessions?: CodingSessionCreateNestedManyWithoutUserInput
@@ -22977,6 +24700,142 @@ export namespace Prisma {
     integrations?: IntegrationCreateNestedManyWithoutUserInput
   }
 
+  export type UserUncheckedCreateWithoutUsageInput = {
+    id?: string
+    email: string
+    name?: string | null
+    emailVerified?: boolean | null
+    image?: string | null
+    bio?: string | null
+    theme?: string | null
+    plan?: $Enums.Plan
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    stripePriceId?: string | null
+    stripeCurrentPeriodEnd?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutUserInput
+    codingSessions?: CodingSessionUncheckedCreateNestedManyWithoutUserInput
+    tips?: TipUncheckedCreateNestedManyWithoutUserInput
+    createdFeatures?: FeatureUncheckedCreateNestedManyWithoutCreatedByInput
+    featureVotes?: FeatureVoteUncheckedCreateNestedManyWithoutUserInput
+    featureComments?: FeatureCommentUncheckedCreateNestedManyWithoutUserInput
+    commentReactions?: CommentReactionUncheckedCreateNestedManyWithoutUserInput
+    explanations?: ExplanationUncheckedCreateNestedManyWithoutUserInput
+    skills?: SkillUncheckedCreateNestedManyWithoutUserInput
+    skillGoals?: SkillGoalUncheckedCreateNestedManyWithoutUserInput
+    integrations?: IntegrationUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutUsageInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutUsageInput, UserUncheckedCreateWithoutUsageInput>
+  }
+
+  export type UserUpsertWithoutUsageInput = {
+    update: XOR<UserUpdateWithoutUsageInput, UserUncheckedUpdateWithoutUsageInput>
+    create: XOR<UserCreateWithoutUsageInput, UserUncheckedCreateWithoutUsageInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutUsageInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutUsageInput, UserUncheckedUpdateWithoutUsageInput>
+  }
+
+  export type UserUpdateWithoutUsageInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    theme?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeCurrentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    apiKeys?: ApiKeyUpdateManyWithoutUserNestedInput
+    codingSessions?: CodingSessionUpdateManyWithoutUserNestedInput
+    tips?: TipUpdateManyWithoutUserNestedInput
+    createdFeatures?: FeatureUpdateManyWithoutCreatedByNestedInput
+    featureVotes?: FeatureVoteUpdateManyWithoutUserNestedInput
+    featureComments?: FeatureCommentUpdateManyWithoutUserNestedInput
+    commentReactions?: CommentReactionUpdateManyWithoutUserNestedInput
+    explanations?: ExplanationUpdateManyWithoutUserNestedInput
+    skills?: SkillUpdateManyWithoutUserNestedInput
+    skillGoals?: SkillGoalUpdateManyWithoutUserNestedInput
+    integrations?: IntegrationUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutUsageInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    theme?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeCurrentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    apiKeys?: ApiKeyUncheckedUpdateManyWithoutUserNestedInput
+    codingSessions?: CodingSessionUncheckedUpdateManyWithoutUserNestedInput
+    tips?: TipUncheckedUpdateManyWithoutUserNestedInput
+    createdFeatures?: FeatureUncheckedUpdateManyWithoutCreatedByNestedInput
+    featureVotes?: FeatureVoteUncheckedUpdateManyWithoutUserNestedInput
+    featureComments?: FeatureCommentUncheckedUpdateManyWithoutUserNestedInput
+    commentReactions?: CommentReactionUncheckedUpdateManyWithoutUserNestedInput
+    explanations?: ExplanationUncheckedUpdateManyWithoutUserNestedInput
+    skills?: SkillUncheckedUpdateManyWithoutUserNestedInput
+    skillGoals?: SkillGoalUncheckedUpdateManyWithoutUserNestedInput
+    integrations?: IntegrationUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutSessionsInput = {
+    id?: string
+    email: string
+    name?: string | null
+    emailVerified?: boolean | null
+    image?: string | null
+    bio?: string | null
+    theme?: string | null
+    plan?: $Enums.Plan
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    stripePriceId?: string | null
+    stripeCurrentPeriodEnd?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    apiKeys?: ApiKeyCreateNestedManyWithoutUserInput
+    codingSessions?: CodingSessionCreateNestedManyWithoutUserInput
+    tips?: TipCreateNestedManyWithoutUserInput
+    createdFeatures?: FeatureCreateNestedManyWithoutCreatedByInput
+    featureVotes?: FeatureVoteCreateNestedManyWithoutUserInput
+    featureComments?: FeatureCommentCreateNestedManyWithoutUserInput
+    commentReactions?: CommentReactionCreateNestedManyWithoutUserInput
+    explanations?: ExplanationCreateNestedManyWithoutUserInput
+    skills?: SkillCreateNestedManyWithoutUserInput
+    skillGoals?: SkillGoalCreateNestedManyWithoutUserInput
+    integrations?: IntegrationCreateNestedManyWithoutUserInput
+    usage?: UserUsageCreateNestedOneWithoutUserInput
+  }
+
   export type UserUncheckedCreateWithoutSessionsInput = {
     id?: string
     email: string
@@ -22985,6 +24844,11 @@ export namespace Prisma {
     image?: string | null
     bio?: string | null
     theme?: string | null
+    plan?: $Enums.Plan
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    stripePriceId?: string | null
+    stripeCurrentPeriodEnd?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
@@ -22999,6 +24863,7 @@ export namespace Prisma {
     skills?: SkillUncheckedCreateNestedManyWithoutUserInput
     skillGoals?: SkillGoalUncheckedCreateNestedManyWithoutUserInput
     integrations?: IntegrationUncheckedCreateNestedManyWithoutUserInput
+    usage?: UserUsageUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -23025,6 +24890,11 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     theme?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeCurrentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
@@ -23039,6 +24909,7 @@ export namespace Prisma {
     skills?: SkillUpdateManyWithoutUserNestedInput
     skillGoals?: SkillGoalUpdateManyWithoutUserNestedInput
     integrations?: IntegrationUpdateManyWithoutUserNestedInput
+    usage?: UserUsageUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -23049,6 +24920,11 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     theme?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeCurrentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
@@ -23063,6 +24939,7 @@ export namespace Prisma {
     skills?: SkillUncheckedUpdateManyWithoutUserNestedInput
     skillGoals?: SkillGoalUncheckedUpdateManyWithoutUserNestedInput
     integrations?: IntegrationUncheckedUpdateManyWithoutUserNestedInput
+    usage?: UserUsageUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type UserCreateWithoutAccountsInput = {
@@ -23073,6 +24950,11 @@ export namespace Prisma {
     image?: string | null
     bio?: string | null
     theme?: string | null
+    plan?: $Enums.Plan
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    stripePriceId?: string | null
+    stripeCurrentPeriodEnd?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -23087,6 +24969,7 @@ export namespace Prisma {
     skills?: SkillCreateNestedManyWithoutUserInput
     skillGoals?: SkillGoalCreateNestedManyWithoutUserInput
     integrations?: IntegrationCreateNestedManyWithoutUserInput
+    usage?: UserUsageCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -23097,6 +24980,11 @@ export namespace Prisma {
     image?: string | null
     bio?: string | null
     theme?: string | null
+    plan?: $Enums.Plan
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    stripePriceId?: string | null
+    stripeCurrentPeriodEnd?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -23111,6 +24999,7 @@ export namespace Prisma {
     skills?: SkillUncheckedCreateNestedManyWithoutUserInput
     skillGoals?: SkillGoalUncheckedCreateNestedManyWithoutUserInput
     integrations?: IntegrationUncheckedCreateNestedManyWithoutUserInput
+    usage?: UserUsageUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -23137,6 +25026,11 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     theme?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeCurrentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -23151,6 +25045,7 @@ export namespace Prisma {
     skills?: SkillUpdateManyWithoutUserNestedInput
     skillGoals?: SkillGoalUpdateManyWithoutUserNestedInput
     integrations?: IntegrationUpdateManyWithoutUserNestedInput
+    usage?: UserUsageUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -23161,6 +25056,11 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     theme?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeCurrentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -23175,6 +25075,7 @@ export namespace Prisma {
     skills?: SkillUncheckedUpdateManyWithoutUserNestedInput
     skillGoals?: SkillGoalUncheckedUpdateManyWithoutUserNestedInput
     integrations?: IntegrationUncheckedUpdateManyWithoutUserNestedInput
+    usage?: UserUsageUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type UserCreateWithoutApiKeysInput = {
@@ -23185,6 +25086,11 @@ export namespace Prisma {
     image?: string | null
     bio?: string | null
     theme?: string | null
+    plan?: $Enums.Plan
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    stripePriceId?: string | null
+    stripeCurrentPeriodEnd?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -23199,6 +25105,7 @@ export namespace Prisma {
     skills?: SkillCreateNestedManyWithoutUserInput
     skillGoals?: SkillGoalCreateNestedManyWithoutUserInput
     integrations?: IntegrationCreateNestedManyWithoutUserInput
+    usage?: UserUsageCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutApiKeysInput = {
@@ -23209,6 +25116,11 @@ export namespace Prisma {
     image?: string | null
     bio?: string | null
     theme?: string | null
+    plan?: $Enums.Plan
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    stripePriceId?: string | null
+    stripeCurrentPeriodEnd?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -23223,6 +25135,7 @@ export namespace Prisma {
     skills?: SkillUncheckedCreateNestedManyWithoutUserInput
     skillGoals?: SkillGoalUncheckedCreateNestedManyWithoutUserInput
     integrations?: IntegrationUncheckedCreateNestedManyWithoutUserInput
+    usage?: UserUsageUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutApiKeysInput = {
@@ -23249,6 +25162,11 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     theme?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeCurrentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -23263,6 +25181,7 @@ export namespace Prisma {
     skills?: SkillUpdateManyWithoutUserNestedInput
     skillGoals?: SkillGoalUpdateManyWithoutUserNestedInput
     integrations?: IntegrationUpdateManyWithoutUserNestedInput
+    usage?: UserUsageUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutApiKeysInput = {
@@ -23273,6 +25192,11 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     theme?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeCurrentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -23287,6 +25211,7 @@ export namespace Prisma {
     skills?: SkillUncheckedUpdateManyWithoutUserNestedInput
     skillGoals?: SkillGoalUncheckedUpdateManyWithoutUserNestedInput
     integrations?: IntegrationUncheckedUpdateManyWithoutUserNestedInput
+    usage?: UserUsageUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type UserCreateWithoutCodingSessionsInput = {
@@ -23297,6 +25222,11 @@ export namespace Prisma {
     image?: string | null
     bio?: string | null
     theme?: string | null
+    plan?: $Enums.Plan
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    stripePriceId?: string | null
+    stripeCurrentPeriodEnd?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -23311,6 +25241,7 @@ export namespace Prisma {
     skills?: SkillCreateNestedManyWithoutUserInput
     skillGoals?: SkillGoalCreateNestedManyWithoutUserInput
     integrations?: IntegrationCreateNestedManyWithoutUserInput
+    usage?: UserUsageCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCodingSessionsInput = {
@@ -23321,6 +25252,11 @@ export namespace Prisma {
     image?: string | null
     bio?: string | null
     theme?: string | null
+    plan?: $Enums.Plan
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    stripePriceId?: string | null
+    stripeCurrentPeriodEnd?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -23335,6 +25271,7 @@ export namespace Prisma {
     skills?: SkillUncheckedCreateNestedManyWithoutUserInput
     skillGoals?: SkillGoalUncheckedCreateNestedManyWithoutUserInput
     integrations?: IntegrationUncheckedCreateNestedManyWithoutUserInput
+    usage?: UserUsageUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCodingSessionsInput = {
@@ -23361,6 +25298,11 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     theme?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeCurrentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -23375,6 +25317,7 @@ export namespace Prisma {
     skills?: SkillUpdateManyWithoutUserNestedInput
     skillGoals?: SkillGoalUpdateManyWithoutUserNestedInput
     integrations?: IntegrationUpdateManyWithoutUserNestedInput
+    usage?: UserUsageUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCodingSessionsInput = {
@@ -23385,6 +25328,11 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     theme?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeCurrentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -23399,6 +25347,7 @@ export namespace Prisma {
     skills?: SkillUncheckedUpdateManyWithoutUserNestedInput
     skillGoals?: SkillGoalUncheckedUpdateManyWithoutUserNestedInput
     integrations?: IntegrationUncheckedUpdateManyWithoutUserNestedInput
+    usage?: UserUsageUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type UserCreateWithoutTipsInput = {
@@ -23409,6 +25358,11 @@ export namespace Prisma {
     image?: string | null
     bio?: string | null
     theme?: string | null
+    plan?: $Enums.Plan
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    stripePriceId?: string | null
+    stripeCurrentPeriodEnd?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -23423,6 +25377,7 @@ export namespace Prisma {
     skills?: SkillCreateNestedManyWithoutUserInput
     skillGoals?: SkillGoalCreateNestedManyWithoutUserInput
     integrations?: IntegrationCreateNestedManyWithoutUserInput
+    usage?: UserUsageCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutTipsInput = {
@@ -23433,6 +25388,11 @@ export namespace Prisma {
     image?: string | null
     bio?: string | null
     theme?: string | null
+    plan?: $Enums.Plan
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    stripePriceId?: string | null
+    stripeCurrentPeriodEnd?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -23447,6 +25407,7 @@ export namespace Prisma {
     skills?: SkillUncheckedCreateNestedManyWithoutUserInput
     skillGoals?: SkillGoalUncheckedCreateNestedManyWithoutUserInput
     integrations?: IntegrationUncheckedCreateNestedManyWithoutUserInput
+    usage?: UserUsageUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutTipsInput = {
@@ -23473,6 +25434,11 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     theme?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeCurrentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -23487,6 +25453,7 @@ export namespace Prisma {
     skills?: SkillUpdateManyWithoutUserNestedInput
     skillGoals?: SkillGoalUpdateManyWithoutUserNestedInput
     integrations?: IntegrationUpdateManyWithoutUserNestedInput
+    usage?: UserUsageUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTipsInput = {
@@ -23497,6 +25464,11 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     theme?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeCurrentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -23511,6 +25483,7 @@ export namespace Prisma {
     skills?: SkillUncheckedUpdateManyWithoutUserNestedInput
     skillGoals?: SkillGoalUncheckedUpdateManyWithoutUserNestedInput
     integrations?: IntegrationUncheckedUpdateManyWithoutUserNestedInput
+    usage?: UserUsageUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type UserCreateWithoutCreatedFeaturesInput = {
@@ -23521,6 +25494,11 @@ export namespace Prisma {
     image?: string | null
     bio?: string | null
     theme?: string | null
+    plan?: $Enums.Plan
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    stripePriceId?: string | null
+    stripeCurrentPeriodEnd?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -23535,6 +25513,7 @@ export namespace Prisma {
     skills?: SkillCreateNestedManyWithoutUserInput
     skillGoals?: SkillGoalCreateNestedManyWithoutUserInput
     integrations?: IntegrationCreateNestedManyWithoutUserInput
+    usage?: UserUsageCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCreatedFeaturesInput = {
@@ -23545,6 +25524,11 @@ export namespace Prisma {
     image?: string | null
     bio?: string | null
     theme?: string | null
+    plan?: $Enums.Plan
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    stripePriceId?: string | null
+    stripeCurrentPeriodEnd?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -23559,6 +25543,7 @@ export namespace Prisma {
     skills?: SkillUncheckedCreateNestedManyWithoutUserInput
     skillGoals?: SkillGoalUncheckedCreateNestedManyWithoutUserInput
     integrations?: IntegrationUncheckedCreateNestedManyWithoutUserInput
+    usage?: UserUsageUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCreatedFeaturesInput = {
@@ -23639,6 +25624,11 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     theme?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeCurrentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -23653,6 +25643,7 @@ export namespace Prisma {
     skills?: SkillUpdateManyWithoutUserNestedInput
     skillGoals?: SkillGoalUpdateManyWithoutUserNestedInput
     integrations?: IntegrationUpdateManyWithoutUserNestedInput
+    usage?: UserUsageUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedFeaturesInput = {
@@ -23663,6 +25654,11 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     theme?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeCurrentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -23677,6 +25673,7 @@ export namespace Prisma {
     skills?: SkillUncheckedUpdateManyWithoutUserNestedInput
     skillGoals?: SkillGoalUncheckedUpdateManyWithoutUserNestedInput
     integrations?: IntegrationUncheckedUpdateManyWithoutUserNestedInput
+    usage?: UserUsageUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type FeatureVoteUpsertWithWhereUniqueWithoutFeatureInput = {
@@ -23748,6 +25745,11 @@ export namespace Prisma {
     image?: string | null
     bio?: string | null
     theme?: string | null
+    plan?: $Enums.Plan
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    stripePriceId?: string | null
+    stripeCurrentPeriodEnd?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -23762,6 +25764,7 @@ export namespace Prisma {
     skills?: SkillCreateNestedManyWithoutUserInput
     skillGoals?: SkillGoalCreateNestedManyWithoutUserInput
     integrations?: IntegrationCreateNestedManyWithoutUserInput
+    usage?: UserUsageCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutFeatureVotesInput = {
@@ -23772,6 +25775,11 @@ export namespace Prisma {
     image?: string | null
     bio?: string | null
     theme?: string | null
+    plan?: $Enums.Plan
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    stripePriceId?: string | null
+    stripeCurrentPeriodEnd?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -23786,6 +25794,7 @@ export namespace Prisma {
     skills?: SkillUncheckedCreateNestedManyWithoutUserInput
     skillGoals?: SkillGoalUncheckedCreateNestedManyWithoutUserInput
     integrations?: IntegrationUncheckedCreateNestedManyWithoutUserInput
+    usage?: UserUsageUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutFeatureVotesInput = {
@@ -23847,6 +25856,11 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     theme?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeCurrentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -23861,6 +25875,7 @@ export namespace Prisma {
     skills?: SkillUpdateManyWithoutUserNestedInput
     skillGoals?: SkillGoalUpdateManyWithoutUserNestedInput
     integrations?: IntegrationUpdateManyWithoutUserNestedInput
+    usage?: UserUsageUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFeatureVotesInput = {
@@ -23871,6 +25886,11 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     theme?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeCurrentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -23885,6 +25905,7 @@ export namespace Prisma {
     skills?: SkillUncheckedUpdateManyWithoutUserNestedInput
     skillGoals?: SkillGoalUncheckedUpdateManyWithoutUserNestedInput
     integrations?: IntegrationUncheckedUpdateManyWithoutUserNestedInput
+    usage?: UserUsageUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type FeatureCreateWithoutCommentsInput = {
@@ -23924,6 +25945,11 @@ export namespace Prisma {
     image?: string | null
     bio?: string | null
     theme?: string | null
+    plan?: $Enums.Plan
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    stripePriceId?: string | null
+    stripeCurrentPeriodEnd?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -23938,6 +25964,7 @@ export namespace Prisma {
     skills?: SkillCreateNestedManyWithoutUserInput
     skillGoals?: SkillGoalCreateNestedManyWithoutUserInput
     integrations?: IntegrationCreateNestedManyWithoutUserInput
+    usage?: UserUsageCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutFeatureCommentsInput = {
@@ -23948,6 +25975,11 @@ export namespace Prisma {
     image?: string | null
     bio?: string | null
     theme?: string | null
+    plan?: $Enums.Plan
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    stripePriceId?: string | null
+    stripeCurrentPeriodEnd?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -23962,6 +25994,7 @@ export namespace Prisma {
     skills?: SkillUncheckedCreateNestedManyWithoutUserInput
     skillGoals?: SkillGoalUncheckedCreateNestedManyWithoutUserInput
     integrations?: IntegrationUncheckedCreateNestedManyWithoutUserInput
+    usage?: UserUsageUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutFeatureCommentsInput = {
@@ -24106,6 +26139,11 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     theme?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeCurrentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -24120,6 +26158,7 @@ export namespace Prisma {
     skills?: SkillUpdateManyWithoutUserNestedInput
     skillGoals?: SkillGoalUpdateManyWithoutUserNestedInput
     integrations?: IntegrationUpdateManyWithoutUserNestedInput
+    usage?: UserUsageUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFeatureCommentsInput = {
@@ -24130,6 +26169,11 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     theme?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeCurrentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -24144,6 +26188,7 @@ export namespace Prisma {
     skills?: SkillUncheckedUpdateManyWithoutUserNestedInput
     skillGoals?: SkillGoalUncheckedUpdateManyWithoutUserNestedInput
     integrations?: IntegrationUncheckedUpdateManyWithoutUserNestedInput
+    usage?: UserUsageUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type FeatureCommentUpsertWithoutRepliesInput = {
@@ -24246,6 +26291,11 @@ export namespace Prisma {
     image?: string | null
     bio?: string | null
     theme?: string | null
+    plan?: $Enums.Plan
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    stripePriceId?: string | null
+    stripeCurrentPeriodEnd?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -24260,6 +26310,7 @@ export namespace Prisma {
     skills?: SkillCreateNestedManyWithoutUserInput
     skillGoals?: SkillGoalCreateNestedManyWithoutUserInput
     integrations?: IntegrationCreateNestedManyWithoutUserInput
+    usage?: UserUsageCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCommentReactionsInput = {
@@ -24270,6 +26321,11 @@ export namespace Prisma {
     image?: string | null
     bio?: string | null
     theme?: string | null
+    plan?: $Enums.Plan
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    stripePriceId?: string | null
+    stripeCurrentPeriodEnd?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -24284,6 +26340,7 @@ export namespace Prisma {
     skills?: SkillUncheckedCreateNestedManyWithoutUserInput
     skillGoals?: SkillGoalUncheckedCreateNestedManyWithoutUserInput
     integrations?: IntegrationUncheckedCreateNestedManyWithoutUserInput
+    usage?: UserUsageUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCommentReactionsInput = {
@@ -24343,6 +26400,11 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     theme?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeCurrentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -24357,6 +26419,7 @@ export namespace Prisma {
     skills?: SkillUpdateManyWithoutUserNestedInput
     skillGoals?: SkillGoalUpdateManyWithoutUserNestedInput
     integrations?: IntegrationUpdateManyWithoutUserNestedInput
+    usage?: UserUsageUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCommentReactionsInput = {
@@ -24367,6 +26430,11 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     theme?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeCurrentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -24381,6 +26449,7 @@ export namespace Prisma {
     skills?: SkillUncheckedUpdateManyWithoutUserNestedInput
     skillGoals?: SkillGoalUncheckedUpdateManyWithoutUserNestedInput
     integrations?: IntegrationUncheckedUpdateManyWithoutUserNestedInput
+    usage?: UserUsageUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type UserCreateWithoutExplanationsInput = {
@@ -24391,6 +26460,11 @@ export namespace Prisma {
     image?: string | null
     bio?: string | null
     theme?: string | null
+    plan?: $Enums.Plan
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    stripePriceId?: string | null
+    stripeCurrentPeriodEnd?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -24405,6 +26479,7 @@ export namespace Prisma {
     skills?: SkillCreateNestedManyWithoutUserInput
     skillGoals?: SkillGoalCreateNestedManyWithoutUserInput
     integrations?: IntegrationCreateNestedManyWithoutUserInput
+    usage?: UserUsageCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutExplanationsInput = {
@@ -24415,6 +26490,11 @@ export namespace Prisma {
     image?: string | null
     bio?: string | null
     theme?: string | null
+    plan?: $Enums.Plan
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    stripePriceId?: string | null
+    stripeCurrentPeriodEnd?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -24429,6 +26509,7 @@ export namespace Prisma {
     skills?: SkillUncheckedCreateNestedManyWithoutUserInput
     skillGoals?: SkillGoalUncheckedCreateNestedManyWithoutUserInput
     integrations?: IntegrationUncheckedCreateNestedManyWithoutUserInput
+    usage?: UserUsageUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutExplanationsInput = {
@@ -24455,6 +26536,11 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     theme?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeCurrentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -24469,6 +26555,7 @@ export namespace Prisma {
     skills?: SkillUpdateManyWithoutUserNestedInput
     skillGoals?: SkillGoalUpdateManyWithoutUserNestedInput
     integrations?: IntegrationUpdateManyWithoutUserNestedInput
+    usage?: UserUsageUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutExplanationsInput = {
@@ -24479,6 +26566,11 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     theme?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeCurrentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -24493,6 +26585,7 @@ export namespace Prisma {
     skills?: SkillUncheckedUpdateManyWithoutUserNestedInput
     skillGoals?: SkillGoalUncheckedUpdateManyWithoutUserNestedInput
     integrations?: IntegrationUncheckedUpdateManyWithoutUserNestedInput
+    usage?: UserUsageUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type UserCreateWithoutSkillsInput = {
@@ -24503,6 +26596,11 @@ export namespace Prisma {
     image?: string | null
     bio?: string | null
     theme?: string | null
+    plan?: $Enums.Plan
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    stripePriceId?: string | null
+    stripeCurrentPeriodEnd?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -24517,6 +26615,7 @@ export namespace Prisma {
     explanations?: ExplanationCreateNestedManyWithoutUserInput
     skillGoals?: SkillGoalCreateNestedManyWithoutUserInput
     integrations?: IntegrationCreateNestedManyWithoutUserInput
+    usage?: UserUsageCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSkillsInput = {
@@ -24527,6 +26626,11 @@ export namespace Prisma {
     image?: string | null
     bio?: string | null
     theme?: string | null
+    plan?: $Enums.Plan
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    stripePriceId?: string | null
+    stripeCurrentPeriodEnd?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -24541,6 +26645,7 @@ export namespace Prisma {
     explanations?: ExplanationUncheckedCreateNestedManyWithoutUserInput
     skillGoals?: SkillGoalUncheckedCreateNestedManyWithoutUserInput
     integrations?: IntegrationUncheckedCreateNestedManyWithoutUserInput
+    usage?: UserUsageUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSkillsInput = {
@@ -24601,6 +26706,11 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     theme?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeCurrentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -24615,6 +26725,7 @@ export namespace Prisma {
     explanations?: ExplanationUpdateManyWithoutUserNestedInput
     skillGoals?: SkillGoalUpdateManyWithoutUserNestedInput
     integrations?: IntegrationUpdateManyWithoutUserNestedInput
+    usage?: UserUsageUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSkillsInput = {
@@ -24625,6 +26736,11 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     theme?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeCurrentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -24639,6 +26755,7 @@ export namespace Prisma {
     explanations?: ExplanationUncheckedUpdateManyWithoutUserNestedInput
     skillGoals?: SkillGoalUncheckedUpdateManyWithoutUserNestedInput
     integrations?: IntegrationUncheckedUpdateManyWithoutUserNestedInput
+    usage?: UserUsageUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type SkillGoalUpsertWithWhereUniqueWithoutSkillInput = {
@@ -24665,6 +26782,11 @@ export namespace Prisma {
     image?: string | null
     bio?: string | null
     theme?: string | null
+    plan?: $Enums.Plan
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    stripePriceId?: string | null
+    stripeCurrentPeriodEnd?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -24679,6 +26801,7 @@ export namespace Prisma {
     explanations?: ExplanationCreateNestedManyWithoutUserInput
     skills?: SkillCreateNestedManyWithoutUserInput
     integrations?: IntegrationCreateNestedManyWithoutUserInput
+    usage?: UserUsageCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSkillGoalsInput = {
@@ -24689,6 +26812,11 @@ export namespace Prisma {
     image?: string | null
     bio?: string | null
     theme?: string | null
+    plan?: $Enums.Plan
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    stripePriceId?: string | null
+    stripeCurrentPeriodEnd?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -24703,6 +26831,7 @@ export namespace Prisma {
     explanations?: ExplanationUncheckedCreateNestedManyWithoutUserInput
     skills?: SkillUncheckedCreateNestedManyWithoutUserInput
     integrations?: IntegrationUncheckedCreateNestedManyWithoutUserInput
+    usage?: UserUsageUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSkillGoalsInput = {
@@ -24760,6 +26889,11 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     theme?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeCurrentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -24774,6 +26908,7 @@ export namespace Prisma {
     explanations?: ExplanationUpdateManyWithoutUserNestedInput
     skills?: SkillUpdateManyWithoutUserNestedInput
     integrations?: IntegrationUpdateManyWithoutUserNestedInput
+    usage?: UserUsageUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSkillGoalsInput = {
@@ -24784,6 +26919,11 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     theme?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeCurrentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -24798,6 +26938,7 @@ export namespace Prisma {
     explanations?: ExplanationUncheckedUpdateManyWithoutUserNestedInput
     skills?: SkillUncheckedUpdateManyWithoutUserNestedInput
     integrations?: IntegrationUncheckedUpdateManyWithoutUserNestedInput
+    usage?: UserUsageUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type SkillUpsertWithoutGoalsInput = {
@@ -24845,6 +26986,11 @@ export namespace Prisma {
     image?: string | null
     bio?: string | null
     theme?: string | null
+    plan?: $Enums.Plan
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    stripePriceId?: string | null
+    stripeCurrentPeriodEnd?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -24859,6 +27005,7 @@ export namespace Prisma {
     explanations?: ExplanationCreateNestedManyWithoutUserInput
     skills?: SkillCreateNestedManyWithoutUserInput
     skillGoals?: SkillGoalCreateNestedManyWithoutUserInput
+    usage?: UserUsageCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutIntegrationsInput = {
@@ -24869,6 +27016,11 @@ export namespace Prisma {
     image?: string | null
     bio?: string | null
     theme?: string | null
+    plan?: $Enums.Plan
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    stripePriceId?: string | null
+    stripeCurrentPeriodEnd?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -24883,6 +27035,7 @@ export namespace Prisma {
     explanations?: ExplanationUncheckedCreateNestedManyWithoutUserInput
     skills?: SkillUncheckedCreateNestedManyWithoutUserInput
     skillGoals?: SkillGoalUncheckedCreateNestedManyWithoutUserInput
+    usage?: UserUsageUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutIntegrationsInput = {
@@ -24909,6 +27062,11 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     theme?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeCurrentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -24923,6 +27081,7 @@ export namespace Prisma {
     explanations?: ExplanationUpdateManyWithoutUserNestedInput
     skills?: SkillUpdateManyWithoutUserNestedInput
     skillGoals?: SkillGoalUpdateManyWithoutUserNestedInput
+    usage?: UserUsageUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutIntegrationsInput = {
@@ -24933,6 +27092,11 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     theme?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeCurrentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -24947,6 +27111,7 @@ export namespace Prisma {
     explanations?: ExplanationUncheckedUpdateManyWithoutUserNestedInput
     skills?: SkillUncheckedUpdateManyWithoutUserNestedInput
     skillGoals?: SkillGoalUncheckedUpdateManyWithoutUserNestedInput
+    usage?: UserUsageUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type SessionCreateManyUserInput = {
@@ -25648,6 +27813,10 @@ export namespace Prisma {
      * @deprecated Use UserDefaultArgs instead
      */
     export type UserArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = UserDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use UserUsageDefaultArgs instead
+     */
+    export type UserUsageArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = UserUsageDefaultArgs<ExtArgs>
     /**
      * @deprecated Use SessionDefaultArgs instead
      */

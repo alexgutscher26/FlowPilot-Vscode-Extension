@@ -130,8 +130,26 @@ exports.Prisma.UserScalarFieldEnum = {
   image: 'image',
   bio: 'bio',
   theme: 'theme',
+  plan: 'plan',
+  stripeCustomerId: 'stripeCustomerId',
+  stripeSubscriptionId: 'stripeSubscriptionId',
+  stripePriceId: 'stripePriceId',
+  stripeCurrentPeriodEnd: 'stripeCurrentPeriodEnd',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.UserUsageScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  explanationsCount: 'explanationsCount',
+  refactoringCount: 'refactoringCount',
+  errorAnalysisCount: 'errorAnalysisCount',
+  lastDailyReset: 'lastDailyReset',
+  securityScanCount: 'securityScanCount',
+  lastWeeklyReset: 'lastWeeklyReset',
+  apiRequestsCount: 'apiRequestsCount',
+  currentWindowStart: 'currentWindowStart'
 };
 
 exports.Prisma.SessionScalarFieldEnum = {
@@ -306,6 +324,11 @@ exports.Prisma.JsonNullValueFilter = {
   JsonNull: Prisma.JsonNull,
   AnyNull: Prisma.AnyNull
 };
+exports.Plan = exports.$Enums.Plan = {
+  FREE: 'FREE',
+  PRO: 'PRO'
+};
+
 exports.FeatureStatus = exports.$Enums.FeatureStatus = {
   now: 'now',
   in_progress: 'in_progress',
@@ -332,6 +355,7 @@ exports.GoalStatus = exports.$Enums.GoalStatus = {
 
 exports.Prisma.ModelName = {
   User: 'User',
+  UserUsage: 'UserUsage',
   Session: 'Session',
   Account: 'Account',
   Verification: 'Verification',
