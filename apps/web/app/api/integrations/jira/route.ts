@@ -9,6 +9,7 @@ const jiraConfigSchema = z.object({
     domain: z.string().min(1, "Domain is required"),
     email: z.string().email("Invalid email address"),
     apiToken: z.string().min(1, "API Token is required"),
+    defaultProject: z.string().optional(),
 })
 
 export async function GET(req: Request) {
@@ -39,6 +40,7 @@ export async function GET(req: Request) {
             connected: true,
             domain: config.domain,
             email: config.email,
+            defaultProject: config.defaultProject,
             // Never return the API token
         })
     } catch (error) {
@@ -67,7 +69,7 @@ export async function POST(req: Request) {
             )
         }
 
-        const { domain, email, apiToken } = result.data
+        const { domain, email, apiToken, defaultProject } = result.data
 
         // Verify Jira credentials
         // Remove "https://" or "http://" if present for the host, but needed for the URL
@@ -98,12 +100,12 @@ export async function POST(req: Request) {
                 },
             },
             update: {
-                config: { domain: host, email, apiToken },
+                config: { domain: host, email, apiToken, defaultProject },
             },
             create: {
                 userId: session.user.id,
                 provider: "jira",
-                config: { domain: host, email, apiToken },
+                config: { domain: host, email, apiToken, defaultProject },
             },
         })
 

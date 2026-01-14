@@ -55,7 +55,9 @@ export function RecentSessions() {
         throw new Error("Failed to fetch")
       })
       .then((data) => {
-        if (Array.isArray(data)) {
+        if (data.sessions && Array.isArray(data.sessions)) {
+          setSessions(data.sessions.slice(0, 5))
+        } else if (Array.isArray(data)) {
           setSessions(data.slice(0, 5))
         }
       })

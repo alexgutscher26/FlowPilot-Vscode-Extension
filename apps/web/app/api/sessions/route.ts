@@ -64,10 +64,27 @@ export async function POST(req: Request) {
       },
     })
 
+
     // Create Explanation record for Skills & Mastery tracking
     const concepts = sessionData.concepts || []
     const language = sessionData.language || null
     const interactionType = sessionData.interactionType || "Explanation"
+
+    // [New] Trigger Jira Sync
+    try {
+      const { JiraService } = await import("@/lib/services/jira-service")
+      const jira = await JiraService.getForUser(apiKeyRecord.userId)
+      if (jira) {
+        await jira.syncSession({
+          description: description,
+          codeSnippet: sessionData.codeSnippet,
+          language: language
+        })
+      }
+    } catch (syncError) {
+      console.error("[Sessions API] Jira Sync Error:", syncError)
+      // Non-blocking error, don't fail the request
+    }
 
     if (concepts.length > 0) {
       // Create explanation record
@@ -130,6 +147,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Failed to save session" }, { status: 500 })
   }
 }
+
 
 // GET: Fetch sessions for the Dashboard with pagination
 export async function GET(req: Request) {

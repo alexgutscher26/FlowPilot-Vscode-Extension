@@ -14,6 +14,7 @@ export function JiraConnectModal({ onClose, onConnect }: JiraConnectModalProps) 
     const [domain, setDomain] = useState("")
     const [email, setEmail] = useState("")
     const [apiToken, setApiToken] = useState("")
+    const [defaultProject, setDefaultProject] = useState("")
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const router = useRouter()
@@ -27,7 +28,7 @@ export function JiraConnectModal({ onClose, onConnect }: JiraConnectModalProps) 
             const res = await fetch("/api/integrations/jira", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ domain, email, apiToken }),
+                body: JSON.stringify({ domain, email, apiToken, defaultProject }),
             })
 
             const data = await res.json()
@@ -124,6 +125,22 @@ export function JiraConnectModal({ onClose, onConnect }: JiraConnectModalProps) 
                                 Atlassian Account Settings
                             </a>
                             .
+                        </p>
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium mb-1.5">
+                            Default Project Key <span className="text-muted-foreground font-normal">(Optional)</span>
+                        </label>
+                        <input
+                            type="text"
+                            placeholder="e.g. PROJ"
+                            className="w-full px-3 py-2 border border-muted/40 rounded-lg bg-card text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-muted-foreground/50 uppercase"
+                            value={defaultProject}
+                            onChange={(e) => setDefaultProject(e.target.value)}
+                        />
+                        <p className="text-xs text-muted-foreground mt-1">
+                            Used for creating new tickets if no issue key is found in the session description.
                         </p>
                     </div>
 
