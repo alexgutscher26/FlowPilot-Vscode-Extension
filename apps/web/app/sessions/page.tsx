@@ -24,6 +24,8 @@ import {
   Gauge,
   Shield,
   Loader2,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react"
 
 interface CodingSession {
@@ -40,6 +42,10 @@ export default function SessionsPage() {
   const { data: session, isPending } = authClient.useSession()
   const [sessions, setSessions] = useState<CodingSession[]>([])
   const [isLoadingSessions, setIsLoadingSessions] = useState(true)
+  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+  const [totalSessions, setTotalSessions] = useState(0)
+  const LIMIT = 10
 
   useEffect(() => {
     if (!isPending && !session) {
@@ -50,11 +56,14 @@ export default function SessionsPage() {
   useEffect(() => {
     async function fetchSessions() {
       if (session) {
+        setIsLoadingSessions(true)
         try {
-          const res = await fetch("/api/sessions")
+          const res = await fetch(`/api/sessions?page=${page}&limit=${LIMIT}`)
           if (res.ok) {
             const data = await res.json()
-            setSessions(data)
+            setSessions(data.sessions)
+            setTotalPages(data.pagination.pages)
+            setTotalSessions(data.pagination.total)
           }
         } catch (error) {
           console.error("Failed to fetch sessions", error)
@@ -64,7 +73,7 @@ export default function SessionsPage() {
       }
     }
     fetchSessions()
-  }, [session])
+  }, [session, page])
 
   if (isPending) {
     return <div className="container py-12">Loading...</div>
@@ -293,6 +302,40 @@ export default function SessionsPage() {
                     </tbody>
                   </table>
                 </div>
+
+                {/* Pagination Controls */}
+                {!isLoadingSessions && sessions.length > 0 && (
+                  <div className="flex items-center justify-between px-6 py-4 border-t border-muted/40 bg-muted/20">
+                    <div className="text-sm text-muted-foreground">
+                      Showing <span className="font-medium">{(page - 1) * LIMIT + 1}</span> to{" "}
+                      <span className="font-medium">
+                        {Math.min(page * LIMIT, totalSessions)}
+                      </span>{" "}
+                      of <span className="font-medium">{totalSessions}</span> results
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => setPage((p) => Math.max(1, p - 1))}
+                        disabled={page === 1}
+                        className="p-2 rounded-md hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        aria-label="Previous page"
+                      >
+                        <ChevronLeft size={16} />
+                      </button>
+                      <div className="text-sm font-medium px-2">
+                        Page {page} of {totalPages}
+                      </div>
+                      <button
+                        onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                        disabled={page === totalPages}
+                        className="p-2 rounded-md hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        aria-label="Next page"
+                      >
+                        <ChevronRight size={16} />
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>

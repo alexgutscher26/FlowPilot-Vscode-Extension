@@ -131,7 +131,7 @@ export async function POST(req: Request) {
   }
 }
 
-// GET: Fetch sessions for the Dashboard
+// GET: Fetch sessions for the Dashboard with pagination
 export async function GET(req: Request) {
   try {
     const session = await auth.api.getSession({
@@ -142,17 +142,38 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const sessions = await prisma.codingSession.findMany({
-      where: {
-        userId: session.user.id,
-      },
-      orderBy: {
-        startedAt: "desc",
-      },
-      take: 50, // Limit for now
-    })
+    const { searchParams } = new URL(req.url)
+    const page = parseInt(searchParams.get("page") || "1")
+    const limit = parseInt(searchParams.get("limit") || "10")
+    const skip = (page - 1) * limit
 
-    return NextResponse.json(sessions)
+    const [sessions, total] = await prisma.$transaction([
+      prisma.codingSession.findMany({
+        where: {
+          userId: session.user.id,
+        },
+        orderBy: {
+          startedAt: "desc",
+        },
+        take: limit,
+        skip: skip,
+      }),
+      prisma.codingSession.count({
+        where: {
+          userId: session.user.id,
+        },
+      }),
+    ])
+
+    return NextResponse.json({
+      sessions,
+      pagination: {
+        total,
+        pages: Math.ceil(total / limit),
+        page,
+        limit,
+      },
+    })
   } catch (error) {
     console.error("[Sessions API] GET Error:", error)
     return NextResponse.json({ error: "Failed to fetch sessions" }, { status: 500 })
