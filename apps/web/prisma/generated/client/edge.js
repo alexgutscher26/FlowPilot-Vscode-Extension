@@ -312,7 +312,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\gutsc\\OneDrive\\Desktop\\New folder\\apps\\web\\prisma\\generated\\client",
+      "value": "C:\\Users\\gutsc\\OneDrive\\Desktop\\FlowPilot-Vscode-Extension\\apps\\web\\prisma\\generated\\client",
       "fromEnvVar": null
     },
     "config": {
@@ -326,7 +326,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\gutsc\\OneDrive\\Desktop\\New folder\\apps\\web\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\Users\\gutsc\\OneDrive\\Desktop\\FlowPilot-Vscode-Extension\\apps\\web\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -340,6 +340,7 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
+  "postinstall": true,
   "inlineDatasources": {
     "db": {
       "url": {
