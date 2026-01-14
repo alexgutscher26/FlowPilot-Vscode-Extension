@@ -8,6 +8,7 @@ import {
   Globe,
   ExternalLink,
   ChevronDown,
+  Code2,
 } from "lucide-react"
 import { Nav } from "@/components/Nav"
 
@@ -483,8 +484,10 @@ export default function Page() {
           <div className="flex flex-col md:flex-row justify-between items-center gap-8 mb-12">
             <div className="text-center md:text-left">
               <div className="flex items-center justify-center md:justify-start gap-2 mb-4">
-                <span className="text-primary text-2xl">›_</span>
-                <span className="text-xl font-bold">FlowPilot</span>
+                <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center text-primary-foreground">
+                  <Code2 size={18} />
+                </div>
+                <span className="text-xl font-bold tracking-tight">FlowPilot</span>
               </div>
               <p className="text-sm text-muted-foreground max-w-xs">
                 The AI mentor that helps you write better code, faster.
