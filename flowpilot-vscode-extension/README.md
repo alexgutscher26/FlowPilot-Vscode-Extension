@@ -15,7 +15,7 @@ A VSCode extension that provides an AI coding coach to help developers understan
 ## Installation
 
 1. Clone this repository
-2. Run `buninstall` to install dependencies
+2. Run `bun install` to install dependencies
 3. Press `F5` to open a new Extension Development Host window
 4. The extension will be active in the new window
 

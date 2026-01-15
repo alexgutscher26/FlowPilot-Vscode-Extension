@@ -6,6 +6,7 @@ import { prisma } from '@/lib/db';
 
 export async function POST(req: Request) {
     try {
+        console.log("[STRIPE_CHECKOUT] Processing checkout request")
         const session = await auth.api.getSession({
             headers: await headers()
         })

@@ -33,8 +33,9 @@ export const PricingModal = ({ isOpen, onClose }: PricingModalProps) => {
 
             const { url } = await response.json()
             window.location.href = url
-        } catch (error) {
+        } catch (error: any) {
             console.log(error)
+            alert("Checkout Error: " + (error.message || "Something went wrong"))
         } finally {
             setIsLoading(false)
         }
@@ -44,42 +45,50 @@ export const PricingModal = ({ isOpen, onClose }: PricingModalProps) => {
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle className="flex justify-center items-center flex-col gap-y-4 pb-2">
-                        Upgrade to FlowPilot Pro
+                    <DialogTitle className="flex flex-col gap-y-1 pb-2">
+                        <span className="text-xl font-bold">Pro Coach</span>
+                        <div className="flex items-baseline gap-1">
+                            <span className="text-4xl font-bold">$9</span>
+                            <span className="text-muted-foreground font-medium">/ month</span>
+                        </div>
                     </DialogTitle>
-                    <DialogDescription className="text-center pt-2 space-y-2 font-medium">
-                        Unlock the full potential of AI-powered coding assistance.
+                    <DialogDescription className="pt-1 font-medium text-muted-foreground">
+                        For serious learners who want to grow faster.
                     </DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                     <div className="flex items-center gap-2">
-                        <Check className="w-5 h-5 text-green-500" />
-                        <p>Unlimited AI Explanations</p>
+                        <Check className="w-5 h-5 text-blue-500" />
+                        <p className="font-medium">Unlimited AI Explanations</p>
                     </div>
                     <div className="flex items-center gap-2">
-                        <Check className="w-5 h-5 text-green-500" />
-                        <p>Unlimited Refactoring Suggestions</p>
+                        <Check className="w-5 h-5 text-blue-500" />
+                        <p className="font-medium">Unlimited Refactoring Suggestions</p>
                     </div>
                     <div className="flex items-center gap-2">
-                        <Check className="w-5 h-5 text-green-500" />
-                        <p>Unlimited Error Analysis</p>
+                        <Check className="w-5 h-5 text-blue-500" />
+                        <p className="font-medium">Unlimited Error Analysis</p>
                     </div>
                     <div className="flex items-center gap-2">
-                        <Check className="w-5 h-5 text-green-500" />
-                        <p>Unlimited Security Scans</p>
+                        <Check className="w-5 h-5 text-blue-500" />
+                        <p className="font-medium">Unlimited Security Scans</p>
                     </div>
                     <div className="flex items-center gap-2">
-                        <Check className="w-5 h-5 text-green-500" />
-                        <p>Higher API Rate Limits (120/min)</p>
+                        <Check className="w-5 h-5 text-blue-500" />
+                        <p className="font-medium">Priority Processing</p>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <Check className="w-5 h-5 text-green-500" />
-                        <p>Analyze files up to 500 lines</p>
+                    <div className="flex items-center gap-2 pl-1">
+                        <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground/60" />
+                        <p className="text-muted-foreground">Max 500 lines / request</p>
+                    </div>
+                    <div className="flex items-center gap-2 pl-1">
+                        <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground/60" />
+                        <p className="text-muted-foreground">120 API requests / min</p>
                     </div>
                 </div>
                 <DialogFooter>
-                    <Button disabled={isLoading} onClick={onUpgrade} className="w-full" size="lg">
-                        {isLoading ? "Processing..." : "Upgrade for $9.99/mo"}
+                    <Button disabled={isLoading} onClick={onUpgrade} className="w-full bg-blue-600 hover:bg-blue-700 text-white" size="lg">
+                        {isLoading ? "Processing..." : "Get Early Access"}
                     </Button>
                 </DialogFooter>
             </DialogContent>

@@ -51,28 +51,25 @@ export async function POST(req: Request) {
       console.log("[Explain Error API] No authenticated user, proceeding anonymously")
     }
 
-    if (!userId) {
-      return NextResponse.json({ error: "Authentication required" }, { status: 401 })
-    }
+    if (userId) {
+      // 2. Check API Rate Limit
+      const rateLimit = await checkRateLimit(userId)
+      if (!rateLimit.allowed) {
+        return NextResponse.json({ error: "API rate limit exceeded. Upgrade to Pro for more." }, { status: 429 })
+      }
 
-    // 2. Check API Rate Limit
-    const rateLimit = await checkRateLimit(userId)
-    if (!rateLimit.allowed) {
-      return NextResponse.json({ error: "API rate limit exceeded. Upgrade to Pro for more." }, { status: 429 })
-    }
+      // 3. Check Line Count Limit
+      const lineLimit = await checkLineCountLimit(userId, codeSnippet?.split('\n').length || 0)
+      if (!lineLimit.allowed) {
+        return NextResponse.json({ error: `Line count limit exceeded. Max ${lineLimit.limit} lines allowed.` }, { status: 403 })
+      }
 
-    // 3. Check Line Count Limit
-    const lineLimit = await checkLineCountLimit(userId, codeSnippet?.split('\n').length || 0)
-    if (!lineLimit.allowed) {
-      return NextResponse.json({ error: `Line count limit exceeded. Max ${lineLimit.limit} lines allowed.` }, { status: 403 })
+      // 4. Check Feature Limit
+      const featureLimit = await checkLimit(userId, "ERROR_ANALYSIS")
+      if (!featureLimit.allowed) {
+        return NextResponse.json({ error: "Daily error analysis limit reached. Upgrade to Pro for unlimited." }, { status: 403 })
+      }
     }
-
-    // 4. Check Feature Limit
-    const featureLimit = await checkLimit(userId, "ERROR_ANALYSIS")
-    if (!featureLimit.allowed) {
-      return NextResponse.json({ error: "Daily error analysis limit reached. Upgrade to Pro for unlimited." }, { status: 403 })
-    }
-
 
     if (!process.env.OPENROUTER_API_KEY) {
       console.error("[Explain Error API] Missing OPENROUTER_API_KEY")
@@ -181,7 +178,9 @@ Please explain this error and how to fix it.
         })
 
         // Increment Usage
-        await incrementUsage(userId, "ERROR_ANALYSIS")
+        if (userId) {
+          await incrementUsage(userId, "ERROR_ANALYSIS")
+        }
 
         // Log the usage
         try {
@@ -212,8 +211,8 @@ Please explain this error and how to fix it.
             Connection: "keep-alive",
           },
         })
-      } catch (error: any) {
-        console.warn(`[Explain Error API] Model ${model} failed:`, error?.message || error)
+      } catch (error: unknown) {
+        console.warn(`[Explain Error API] Model ${model} failed:`, error instanceof Error ? error.message : String(error))
 
         // If this is the last model, throw the error
         if (model === models[models.length - 1]) {
@@ -226,7 +225,7 @@ Please explain this error and how to fix it.
 
     // This should never be reached due to the throw above
     throw new Error("All models failed")
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("[Explain Error API] Error:", error)
     return NextResponse.json({ error: "Failed to process request" }, { status: 500 })
   }

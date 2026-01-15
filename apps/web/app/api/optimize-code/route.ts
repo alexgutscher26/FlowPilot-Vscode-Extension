@@ -25,26 +25,24 @@ export async function POST(req: Request) {
             console.log("[Optimize Code API] No authenticated user, proceeding anonymously")
         }
 
-        if (!userId) {
-            return NextResponse.json({ error: "Authentication required" }, { status: 401 })
-        }
+        if (userId) {
+            // 2. Check API Rate Limit
+            const rateLimit = await checkRateLimit(userId)
+            if (!rateLimit.allowed) {
+                return NextResponse.json({ error: "API rate limit exceeded. Upgrade to Pro for more." }, { status: 429 })
+            }
 
-        // 2. Check API Rate Limit
-        const rateLimit = await checkRateLimit(userId)
-        if (!rateLimit.allowed) {
-            return NextResponse.json({ error: "API rate limit exceeded. Upgrade to Pro for more." }, { status: 429 })
-        }
+            // 3. Check Line Count Limit
+            const lineLimit = await checkLineCountLimit(userId, code?.split('\n').length || 0)
+            if (!lineLimit.allowed) {
+                return NextResponse.json({ error: `Line count limit exceeded. Max ${lineLimit.limit} lines allowed.` }, { status: 403 })
+            }
 
-        // 3. Check Line Count Limit
-        const lineLimit = await checkLineCountLimit(userId, code?.split('\n').length || 0)
-        if (!lineLimit.allowed) {
-            return NextResponse.json({ error: `Line count limit exceeded. Max ${lineLimit.limit} lines allowed.` }, { status: 403 })
-        }
-
-        // 4. Check Feature Limit
-        const featureLimit = await checkLimit(userId, "REFACTORING")
-        if (!featureLimit.allowed) {
-            return NextResponse.json({ error: "Daily refactoring limit reached. Upgrade to Pro for unlimited." }, { status: 403 })
+            // 4. Check Feature Limit
+            const featureLimit = await checkLimit(userId, "REFACTORING")
+            if (!featureLimit.allowed) {
+                return NextResponse.json({ error: "Daily refactoring limit reached. Upgrade to Pro for unlimited." }, { status: 403 })
+            }
         }
 
         if (!process.env.OPENROUTER_API_KEY) {
@@ -97,11 +95,13 @@ ${code}
         const jsonResponse = JSON.parse(content)
 
         // 5. Increment Usage
-        await incrementUsage(userId, "REFACTORING")
+        if (userId) {
+            await incrementUsage(userId, "REFACTORING")
+        }
 
         return NextResponse.json(jsonResponse)
 
-    } catch (error) {
+    } catch (error: unknown) {
         console.error("[Optimize Code API] Error:", error)
         return NextResponse.json({ error: "Failed to process request" }, { status: 500 })
     }

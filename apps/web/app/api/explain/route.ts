@@ -33,26 +33,24 @@ export async function POST(req: Request) {
       console.log("[Explain API] No authenticated user, proceeding anonymously")
     }
 
-    if (!userId) {
-      return NextResponse.json({ error: "Authentication required" }, { status: 401 })
-    }
+    if (userId) {
+      // Rate Limit
+      const rateLimit = await checkRateLimit(userId)
+      if (!rateLimit.allowed) {
+        return NextResponse.json({ error: "API rate limit exceeded. Upgrade to Pro for more." }, { status: 429 })
+      }
 
-    // Rate Limit
-    const rateLimit = await checkRateLimit(userId)
-    if (!rateLimit.allowed) {
-      return NextResponse.json({ error: "API rate limit exceeded. Upgrade to Pro for more." }, { status: 429 })
-    }
+      // Line Count Limit
+      const lineLimit = await checkLineCountLimit(userId, code?.split('\n').length || 0)
+      if (!lineLimit.allowed) {
+        return NextResponse.json({ error: `Line count limit exceeded. Max ${lineLimit.limit} lines allowed.` }, { status: 403 })
+      }
 
-    // Line Count Limit
-    const lineLimit = await checkLineCountLimit(userId, code?.split('\n').length || 0)
-    if (!lineLimit.allowed) {
-      return NextResponse.json({ error: `Line count limit exceeded. Max ${lineLimit.limit} lines allowed.` }, { status: 403 })
-    }
-
-    // Feature Limit
-    const featureLimit = await checkLimit(userId, "EXPLANATION")
-    if (!featureLimit.allowed) {
-      return NextResponse.json({ error: "Daily explanation limit reached. Upgrade to Pro for unlimited." }, { status: 403 })
+      // Feature Limit
+      const featureLimit = await checkLimit(userId, "EXPLANATION")
+      if (!featureLimit.allowed) {
+        return NextResponse.json({ error: "Daily explanation limit reached. Upgrade to Pro for unlimited." }, { status: 403 })
+      }
     }
 
     if (!process.env.OPENROUTER_API_KEY) {
@@ -220,8 +218,8 @@ ${code}
             Connection: "keep-alive",
           },
         })
-      } catch (error: any) {
-        console.warn(`[Explain API] Model ${model} failed:`, error?.message || error)
+      } catch (error: unknown) {
+        console.warn(`[Explain API] Model ${model} failed:`, error instanceof Error ? error.message : String(error))
 
         // If this is the last model, throw the error
         if (model === models[models.length - 1]) {
@@ -234,7 +232,7 @@ ${code}
 
     // This should never be reached due to the throw above
     throw new Error("All models failed")
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("[Explain API] Error:", error)
     return NextResponse.json({ error: "Failed to process request" }, { status: 500 })
   }

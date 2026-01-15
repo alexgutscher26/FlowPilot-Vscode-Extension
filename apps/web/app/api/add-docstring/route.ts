@@ -4,6 +4,10 @@ import OpenAI from "openai"
 const openai = new OpenAI({
     baseURL: "https://openrouter.ai/api/v1",
     apiKey: process.env.OPENROUTER_API_KEY,
+    defaultHeaders: {
+        "HTTP-Referer": "https://flowpilot.ai",
+        "X-Title": "FlowPilot",
+    },
 })
 
 function cleanAndParseJson(content: string) {
@@ -120,8 +124,9 @@ ${code}
                     throw new Error("Invalid JSON response");
                 }
 
-            } catch (error: any) {
-                console.warn(`[Add Docstring] Model ${model} failed:`, error.message);
+            } catch (error: unknown) {
+                const errorMessage = error instanceof Error ? error.message : String(error);
+                console.warn(`[Add Docstring] Model ${model} failed:`, errorMessage);
                 lastError = error;
                 // Continue to next model
                 continue;
@@ -134,8 +139,11 @@ ${code}
 
         return NextResponse.json(jsonResponse);
 
-    } catch (error) {
+    } catch (error: unknown) {
         console.error("[Add Docstring API] Error:", error)
-        return NextResponse.json({ error: "Failed to process request" }, { status: 500 })
+        return NextResponse.json({
+            error: "Failed to process request",
+            details: error instanceof Error ? error.message : String(error)
+        }, { status: 500 })
     }
 }
